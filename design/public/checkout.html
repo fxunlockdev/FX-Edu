@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Checkout</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .co-top{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--outline-var);background:var(--surface);}
+  .co-wrap{max-width:1040px;margin:0 auto;padding:36px 24px 80px;display:grid;grid-template-columns:1fr 360px;gap:40px;align-items:start;}
+  .stepper{display:flex;gap:6px;margin-bottom:30px;}
+  .stp{flex:1;}
+  .stp .lbl{font-size:12px;font-weight:700;color:var(--outline);margin-bottom:7px;display:flex;align-items:center;gap:7px;}
+  .stp .ln{height:4px;border-radius:9999px;background:var(--c-high);}
+  .stp.done .lbl,.stp.active .lbl{color:var(--primary);}
+  .stp.done .ln,.stp.active .ln{background:var(--lime-dim);}
+  .stp .n{width:20px;height:20px;border-radius:50%;background:var(--c-high);color:var(--outline);display:grid;place-items:center;font-size:11px;}
+  .stp.done .n,.stp.active .n{background:var(--primary);color:#fff;}
+  .panel{display:none;} .panel.on{display:block;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .summary{position:sticky;top:88px;}
+  .plan-pick{border:1.5px solid var(--outline-var);border-radius:var(--r-lg);padding:18px;cursor:pointer;display:flex;gap:14px;align-items:flex-start;transition:.15s;}
+  .plan-pick.sel{border-color:var(--lime-dim);background:rgba(168,214,66,.07);box-shadow:0 0 0 3px rgba(168,214,66,.15);}
+  .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--outline);flex:none;margin-top:2px;display:grid;place-items:center;}
+  .plan-pick.sel .radio{border-color:var(--lime-dim);} .plan-pick.sel .radio::after{content:'';width:10px;height:10px;border-radius:50%;background:var(--lime-dim);}
+  .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .opt{border:1.5px solid var(--outline-var);border-radius:var(--r);padding:12px 14px;cursor:pointer;font-size:14px;font-weight:600;transition:.12s;}
+  .opt.sel{border-color:var(--lime-dim);background:rgba(168,214,66,.08);color:var(--primary);}
+  .pay-row{display:flex;gap:12px;}
+  .modal-bg{position:fixed;inset:0;background:rgba(10,20,16,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:90;}
+  .modal-bg.on{display:flex;}
+  .modal{background:var(--c-lowest);border-radius:var(--r-xl);padding:30px;max-width:400px;width:90%;box-shadow:var(--shadow-lg);text-align:center;}
+  @media(max-width:860px){.co-wrap{grid-template-columns:1fr;}.summary{position:static;}}
+</style>
+</head>
+<body>
+<div class="co-top">
+  <a href="home.html"><span id="logo"></span></a>
+  <div class="row gap2"><span class="chip chip-pos">🔒 Secure checkout · Stripe</span><a href="home.html" class="muted" style="font-size:13px;font-weight:600;">Exit</a></div>
+</div>
+
+<div class="co-wrap">
+  <div>
+    <div class="stepper" id="stepper"></div>
+
+    <!-- Step 1: Account -->
+    <div class="panel" data-step="1">
+      <h2 class="h-md">Create your account</h2>
+      <p class="muted" style="margin:6px 0 22px;">You’ll choose a plan and complete payment next.</p>
+      <div class="stack gap3" style="max-width:520px;">
+        <div class="field"><label>Full name</label><input class="input" id="f_name" value="Alex Rivera"></div>
+        <div class="field"><label>Email</label><input class="input" id="f_email" value="alex@email.com"></div>
+        <div class="grid2">
+          <div class="field"><label>Password</label><input class="input" type="password" value="trader2026"></div>
+          <div class="field"><label>Country</label><select class="input"><option>United Kingdom</option><option>United States</option><option>Germany</option><option>Nigeria</option><option>India</option><option>UAE</option></select></div>
+        </div>
+        <button class="btn btn-lime btn-lg" onclick="goto(2)">Continue</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Plan -->
+    <div class="panel" data-step="2">
+      <h2 class="h-md">Choose your plan</h2>
+      <p class="muted" style="margin:6px 0 22px;">Pro is recommended, switch anytime.</p>
+      <div class="stack gap2" id="planPick"></div>
+      <button class="btn btn-lime btn-lg" style="margin-top:22px;" onclick="goto(3)">Continue to payment</button>
+    </div>
+
+    <!-- Step 3: Payment -->
+    <div class="panel" data-step="3">
+      <h2 class="h-md">Payment</h2>
+      <p class="muted" style="margin:6px 0 22px;">All payments are encrypted and processed by Stripe.</p>
+      <div class="stack gap3" style="max-width:520px;">
+        <div class="field"><label>Card number</label><input class="input" id="card" placeholder="4242 4242 4242 4242" value="4242 4242 4242 4242"></div>
+        <div class="grid2">
+          <div class="field"><label>Expiry</label><input class="input" placeholder="MM / YY" value="08 / 28"></div>
+          <div class="field"><label>CVC</label><input class="input" placeholder="123" value="123"></div>
+        </div>
+        <div class="field"><label>Name on card</label><input class="input" value="Alex Rivera"></div>
+        <div style="background:var(--c-low);border-radius:var(--r);padding:12px 14px;font-size:12.5px;color:var(--on-surface-var);">
+          <strong>Test cards:</strong> use <code>4242…</code> to succeed, <code>4000…0002</code> to decline, <code>4000…3220</code> for 3D Secure.
+          <div class="row gap1" style="margin-top:8px;flex-wrap:wrap;">
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('card').value='4242 4242 4242 4242'">Success</button>
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('card').value='4000 0000 0000 0002'">Decline</button>
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('card').value='4000 0000 0000 3220'">3D Secure</button>
+          </div>
+        </div>
+        <div id="payErr" style="display:none;background:var(--error-container);color:var(--on-error-container);border-radius:var(--r);padding:12px 14px;font-size:13.5px;font-weight:600;"></div>
+        <button class="btn btn-lime btn-lg" id="payBtn" onclick="pay()">Pay & continue</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Trading profile -->
+    <div class="panel" data-step="4">
+      <h2 class="h-md">Your trading profile</h2>
+      <p class="muted" style="margin:6px 0 22px;">We’ll use this to personalize your dashboard and pre-fill your risk calculator.</p>
+      <div class="stack gap4" style="max-width:560px;">
+        <div><label style="font-weight:700;font-size:14px;">What is your current experience level?</label>
+          <div class="opt-grid" style="margin-top:10px;" data-q="exp">
+            <div class="opt sel">New to forex</div><div class="opt">Some charting experience</div>
+            <div class="opt">Actively trading</div><div class="opt">Preparing for prop firm</div></div></div>
+        <div><label style="font-weight:700;font-size:14px;">What is your main goal?</label>
+          <div class="opt-grid" style="margin-top:10px;" data-q="goal">
+            <div class="opt sel">Learn fundamentals</div><div class="opt">Build consistency</div>
+            <div class="opt">Pass prop firm challenge</div><div class="opt">Improve psychology</div>
+            <div class="opt" style="grid-column:span 2;">Track performance</div></div></div>
+        <div class="grid2">
+          <div class="field"><label>Approximate account size</label><select class="input"><option>$1,000</option><option selected>$5,000</option><option>$10,000</option><option>$25,000</option><option>$50,000+</option></select></div>
+          <div class="field"><label>Risk comfort</label><select class="input"><option>Conservative (0.5%)</option><option selected>Balanced (1%)</option><option>Aggressive (2%)</option></select></div>
+        </div>
+        <div class="field"><label>How did you hear about us?</label><select class="input"><option>Affiliate / creator</option><option>YouTube</option><option>Webinar</option><option>Friend</option><option>Search</option></select></div>
+        <button class="btn btn-lime btn-lg" onclick="finish()">Finish & enter FX Academy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order summary -->
+  <div class="summary">
+    <div class="card card-pad">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:14px;">Order summary</h3>
+      <div class="between" style="margin-bottom:10px;gap:16px;"><span class="muted" id="sumPlan" style="white-space:nowrap;">FX Academy Pro</span><span class="num" id="sumPrice">$97.00</span></div>
+      <div class="between" style="margin-bottom:8px;font-size:14px;"><span class="muted">Billing</span><span>Monthly</span></div>
+      <div id="couponLine"></div>
+      <div class="divider" style="margin:14px 0;"></div>
+      <div class="between" style="font-weight:800;font-size:18px;"><span>Due today</span><span class="num" id="sumTotal">$97.00</span></div>
+      <div class="row gap1" style="margin-top:16px;">
+        <input class="input" id="coupon" placeholder="Coupon code" style="flex:1;padding:9px 12px;">
+        <button class="btn btn-ghost btn-sm" onclick="applyCoupon()">Apply</button>
+      </div>
+      <p class="muted" style="font-size:11.5px;margin-top:16px;line-height:1.6;">Cancel anytime. By subscribing you agree to our Terms. FX Academy provides educational content only, not financial advice.</p>
+    </div>
+    <div id="refNote"></div>
+  </div>
+</div>
+
+<!-- 3DS modal -->
+<div class="modal-bg" id="tdsModal">
+  <div class="modal">
+    <div style="width:48px;height:48px;border-radius:12px;background:var(--primary-container);color:var(--on-primary-container);display:grid;place-items:center;margin:0 auto 16px;font-size:22px;">🔐</div>
+    <h3 class="h-sm">Verify with your bank</h3>
+    <p class="muted" style="margin:8px 0 20px;font-size:14px;">Your bank requires 3-D Secure authentication to complete this payment.</p>
+    <button class="btn btn-lime btn-block" onclick="tds3dsApprove()">Approve payment</button>
+    <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="document.getElementById('tdsModal').classList.remove('on')">Cancel</button>
+  </div>
+</div>
+
+<script>
+document.getElementById('logo').innerHTML = FXShell.logo('dark',26);
+const params = new URLSearchParams(location.search);
+const PLANS = {basic:{name:'Basic',price:49}, pro:{name:'Pro',price:97}, elite:{name:'Elite',price:147}};
+let plan = params.get('plan')||'pro';
+let coupon = 0;
+let step = parseInt(params.get('step'))||1;
+
+if(params.get('ref')){ document.getElementById('refNote').innerHTML=`<div class="chip chip-forest" style="margin-top:14px;width:100%;justify-content:center;">Referred by ${params.get('ref')}, credit applied</div>`; }
+
+const STEPS=['Account','Plan','Payment','Profile'];
+function renderStepper(){
+  document.getElementById('stepper').innerHTML = STEPS.map((s,i)=>{
+    const n=i+1; const cls = n<step?'done':n===step?'active':'';
+    return `<div class="stp ${cls}"><div class="lbl"><span class="n">${n<step?'✓':n}</span>${s}</div><div class="ln"></div></div>`;
+  }).join('');
+}
+function renderPlanPick(){
+  document.getElementById('planPick').innerHTML = Object.entries(PLANS).filter(([k])=>k!=='elite').map(([k,p])=>`
+    <div class="plan-pick ${k===plan?'sel':''}" onclick="pickPlan('${k}')">
+      <div class="radio"></div>
+      <div style="flex:1;"><div class="between"><strong>${p.name}</strong><span class="num" style="font-weight:700;">$${p.price}/mo</span></div>
+      <p class="muted" style="font-size:13px;margin:4px 0 0;">${k==='pro'?'Full curriculum, webinars, AI, analytics, community':'Entry + Beginner courses, journal, risk calculator'}</p>
+      ${k==='pro'?'<span class="chip chip-lime" style="margin-top:8px;">★ Recommended</span>':''}</div>
+    </div>`).join('');
+}
+function pickPlan(k){ plan=k; renderPlanPick(); updateSummary(); }
+function updateSummary(){
+  const p=PLANS[plan];
+  document.getElementById('sumPlan').textContent='FX Academy '+p.name;
+  document.getElementById('sumPrice').textContent='$'+p.price.toFixed(2);
+  const total=Math.max(0,p.price-coupon);
+  document.getElementById('sumTotal').textContent='$'+total.toFixed(2);
+  document.getElementById('couponLine').innerHTML = coupon? `<div class="between" style="font-size:14px;color:var(--pos);"><span>Coupon WELCOME20</span><span>-$${coupon.toFixed(2)}</span></div>`:'';
+}
+function applyCoupon(){
+  const c=document.getElementById('coupon').value.trim().toUpperCase();
+  if(c==='WELCOME20'){ coupon=PLANS[plan].price*0.2; FX.toast('Coupon applied, 20% off'); }
+  else if(c==='EXPIRED'){ FX.toast('This coupon has expired','warn'); coupon=0; }
+  else if(c){ FX.toast('Invalid coupon code','neg'); coupon=0; }
+  updateSummary();
+}
+function show(){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on', +p.dataset.step===step));
+  renderStepper(); updateSummary();
+  window.scrollTo(0,0);
+}
+function goto(n){ step=n; show(); }
+function pay(){
+  const card=document.getElementById('card').value.replace(/\s/g,'');
+  const err=document.getElementById('payErr');
+  err.style.display='none';
+  if(card.startsWith('40000000000000002')||card==='4000000000000002'){
+    err.style.display='block'; err.innerHTML='Your card was declined. Please try a different payment method or contact your bank.'; return;
+  }
+  if(card==='4000000000003220'){ document.getElementById('tdsModal').classList.add('on'); return; }
+  paymentSuccess();
+}
+function tds3dsApprove(){ document.getElementById('tdsModal').classList.remove('on'); paymentSuccess(); }
+function paymentSuccess(){
+  const btn=document.getElementById('payBtn'); btn.textContent='Processing…'; btn.style.opacity=.7;
+  setTimeout(()=>{ btn.textContent='Pay & continue'; btn.style.opacity=1; FX.toast('Payment successful'); goto(4); }, 900);
+}
+function finish(){ location.href='checkout-success.html?plan='+plan; }
+
+// option pickers
+document.addEventListener('click',e=>{
+  const o=e.target.closest('.opt'); if(o){ o.parentElement.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel')); o.classList.add('sel'); }
+});
+
+renderPlanPick(); show();
+</script>
+</body>
+</html>

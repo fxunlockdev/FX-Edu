@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Lesson</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .lesson-wrap{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;}
+  .player{background:#06100b;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--d-outline);}
+  .stage{aspect-ratio:16/9;background:radial-gradient(circle at 50% 40%,#14241b,#06100b);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;}
+  .playbtn{width:74px;height:74px;border-radius:50%;background:var(--lime);color:var(--on-lime);display:grid;place-items:center;box-shadow:0 8px 30px rgba(168,214,66,.5);transition:.2s;}
+  .stage:hover .playbtn{transform:scale(1.07);}
+  .ctrlbar{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#0a1410;color:var(--d-ink);font-size:13px;}
+  .seek{flex:1;height:5px;border-radius:9999px;background:rgba(255,255,255,.15);position:relative;cursor:pointer;}
+  .seek i{position:absolute;left:0;top:0;bottom:0;background:var(--lime);border-radius:9999px;width:32%;}
+  .ctrl-ic{color:var(--d-ink);opacity:.85;cursor:pointer;display:inline-flex;}
+  .ctrl-ic:hover{opacity:1;}
+  .speed{background:rgba(255,255,255,.1);border:0;color:var(--d-ink);border-radius:6px;padding:3px 8px;font-weight:700;font-size:12px;cursor:pointer;}
+  .ltab{padding:9px 14px;font-size:13.5px;font-weight:600;color:var(--on-surface-var);border-radius:9999px;cursor:pointer;}
+  .ltab.on{background:var(--primary-container);color:var(--on-primary-container);}
+  .aipanel{border:1px solid var(--outline-var);border-radius:var(--r-lg);background:var(--c-lowest);display:flex;flex-direction:column;height:560px;position:sticky;top:88px;overflow:hidden;}
+  .ai-head{padding:14px 16px;border-bottom:1px solid var(--outline-var);display:flex;align-items:center;gap:9px;}
+  .ai-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+  .ai-msg{max-width:90%;padding:10px 13px;border-radius:13px;font-size:13.5px;line-height:1.5;}
+  .ai-bot{background:var(--c-low);border:1px solid var(--outline-var);align-self:flex-start;border-bottom-left-radius:4px;}
+  .ai-user{background:var(--lime);color:var(--on-lime);align-self:flex-end;font-weight:600;border-bottom-right-radius:4px;}
+  .ai-foot{padding:12px;border-top:1px solid var(--outline-var);}
+  .ai-sugg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+  .ai-sugg span{font-size:12px;font-weight:600;padding:6px 10px;border-radius:9999px;background:var(--c-low);border:1px solid var(--outline-var);cursor:pointer;}
+  .ai-sugg span:hover{background:var(--primary-container);}
+  .quiz-opt{display:flex;gap:10px;align-items:center;padding:12px 14px;border:1.5px solid var(--outline-var);border-radius:var(--r);cursor:pointer;margin-bottom:8px;font-size:14px;}
+  .quiz-opt:hover{border-color:var(--leaf);}
+  .quiz-opt.correct{border-color:var(--pos);background:rgba(78,168,99,.1);}
+  .quiz-opt.wrong{border-color:var(--neg);background:var(--error-container);}
+  .modal-bg{position:fixed;inset:0;background:rgba(10,20,16,.6);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:90;}
+  .modal-bg.on{display:flex;}
+  @media(max-width:1000px){.lesson-wrap{grid-template-columns:1fr;}.aipanel{position:static;height:480px;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <div class="muted" style="font-size:13px;margin-bottom:6px;">Advanced · Market Structure & Liquidity · <span style="color:var(--primary);font-weight:600;">Module 3</span></div>
+      <h1 class="h-md" style="margin-bottom:16px;">Lesson 3, Identifying Liquidity Pools</h1>
+      <div class="lesson-wrap">
+        <div>
+          <div class="player">
+            <div class="stage" id="stage" onclick="playToggle()">
+              <div class="playbtn" id="playbtn"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+              <div style="position:absolute;top:14px;left:16px;" id="bufferChip"></div>
+            </div>
+            <div class="ctrlbar">
+              <span class="ctrl-ic" onclick="playToggle()" id="ppIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="num" id="time">7:12 / 22:40</span>
+              <div class="seek" onclick="seek(event)"><i id="seekfill"></i></div>
+              <select class="speed" onchange="FX.toast('Playback speed '+this.value)"><option>0.75x</option><option selected>1x</option><option>1.25x</option><option>1.5x</option><option>2x</option></select>
+              <span class="ctrl-ic" title="Captions" onclick="FX.toast('Captions on')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 11h3 M14 11h3 M7 14h6"/></svg></span>
+              <span class="ctrl-ic" title="Fullscreen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5 M20 9V4h-5 M4 15v5h5 M20 15v5h-5"/></svg></span>
+            </div>
+          </div>
+
+          <div class="row gap1" style="margin:16px 0;flex-wrap:wrap;">
+            <span class="ltab on" onclick="setTab(this,'transcript')">Transcript</span>
+            <span class="ltab" onclick="setTab(this,'notes')">Lesson notes</span>
+            <span class="ltab" onclick="setTab(this,'quiz')">Mini quiz</span>
+            <div style="flex:1;"></div>
+            <button class="btn btn-ghost btn-sm" onclick="FX.toast('Bookmarked')">☆ Bookmark</button>
+            <button class="btn btn-ghost btn-sm" onclick="FX.toast('Notes downloaded (PDF)')">↓ Notes</button>
+            <button class="btn btn-lime btn-sm" id="completeBtn" onclick="complete()">Mark complete</button>
+          </div>
+
+          <div class="card card-pad" id="tabContent"></div>
+        </div>
+
+        <!-- AI Tutor panel -->
+        <div class="aipanel">
+          <div class="ai-head">
+            <span style="width:30px;height:30px;border-radius:8px;background:rgba(168,214,66,.18);color:var(--primary);display:grid;place-items:center;">✦</span>
+            <div><div style="font-weight:700;font-size:14px;">AI Tutor</div><div class="muted" style="font-size:11.5px;">Scoped to this lesson</div></div>
+            <span class="chip chip-lime" style="margin-left:auto;font-size:10.5px;">Pro</span>
+          </div>
+          <div class="ai-body" id="aiBody">
+            <div class="ai-msg ai-bot">Hi Alex 👋 I can help with <strong>Identifying Liquidity Pools</strong>. Ask me to explain a concept, quiz you, or summarize the key points.</div>
+          </div>
+          <div class="ai-foot">
+            <div class="ai-sugg">
+              <span onclick="ask('Explain this simpler')">Explain simpler</span>
+              <span onclick="ask('Quiz me')">Quiz me</span>
+              <span onclick="ask('Give me an example')">Example</span>
+              <span onclick="ask('Summarize key points')">Summarize</span>
+            </div>
+            <div class="row gap1">
+              <input class="input" id="aiInput" placeholder="Ask about this lesson…" style="flex:1;padding:9px 12px;" onkeydown="if(event.key==='Enter')ask(this.value)">
+              <button class="btn btn-lime btn-sm" onclick="ask(document.getElementById('aiInput').value)">Send</button>
+            </div>
+            <p class="muted" style="font-size:10.5px;margin:10px 0 0;line-height:1.5;">AI explains course material only, no personalized financial advice or trade signals.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Completion modal -->
+<div class="modal-bg" id="done">
+  <div class="card" style="max-width:420px;width:90%;padding:32px;text-align:center;">
+    <div style="width:70px;height:70px;border-radius:50%;background:var(--lime);color:var(--on-lime);display:grid;place-items:center;margin:0 auto 18px;"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div>
+    <h2 class="h-sm">Lesson complete</h2>
+    <p class="muted" style="margin:8px 0 4px;">You earned</p>
+    <div style="font-family:var(--font-display);font-weight:800;font-size:32px;color:var(--primary);">+50 XP</div>
+    <div class="stack gap2" style="margin-top:22px;">
+      <button class="btn btn-lime btn-block" onclick="document.getElementById('done').classList.remove('on');setTab(document.querySelectorAll('.ltab')[2],'quiz')">Take the mini quiz →</button>
+      <a href="trade-new.html" class="btn btn-ghost btn-block">Add a note to journal</a>
+      <a href="lesson.html" class="btn btn-ghost btn-block" style="border:0;">Next lesson: Liquidity Sweeps →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Learn',{plan:'pro'});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Lesson', right:'<a href="learn.html" class="btn btn-ghost btn-sm">Exit to library</a>'});
+
+let playing=false;
+function playToggle(){
+  playing=!playing;
+  const pb=document.getElementById('playbtn'), icon=document.getElementById('ppIcon');
+  const pauseSVG='<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h4v14H7z M13 5h4v14h-4z"/></svg>';
+  const playSVG='<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+  pb.style.opacity = playing?0:1;
+  icon.innerHTML = playing?'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h4v14H7z M13 5h4v14h-4z"/></svg>':playSVG;
+  if(playing){ FX.toast('Resuming from 7:12'); buffer(); }
+}
+function buffer(){
+  const c=document.getElementById('bufferChip');
+  c.className='chip'; c.style.background='rgba(255,255,255,.12)'; c.style.color='#fff'; c.textContent='Buffering…';
+  setTimeout(()=>{ c.textContent=''; c.className='chip'; c.style.background='transparent'; },1100);
+}
+function seek(e){ const r=e.currentTarget.getBoundingClientRect(); const p=(e.clientX-r.left)/r.width; document.getElementById('seekfill').style.width=(p*100)+'%'; const t=Math.round(p*1360); document.getElementById('time').textContent=fmt(t)+' / 22:40'; }
+function fmt(s){ return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+
+const TABS={
+  transcript:`<div style="font-size:14.5px;line-height:1.7;color:var(--on-surface-var);max-height:280px;overflow-y:auto;">
+    <p><strong style="color:var(--on-surface);">[07:05]</strong> Liquidity pools form where clusters of orders rest, typically just beyond obvious swing highs and swing lows, and around round numbers.</p>
+    <p><strong style="color:var(--on-surface);">[07:48]</strong> Price is often drawn toward these zones because that's where stop losses and pending orders sit. We call this a liquidity grab when price sweeps the level then reverses.</p>
+    <p><strong style="color:var(--on-surface);">[08:30]</strong> On EUR/USD, notice how price ran the prior day's high before reversing, that sweep is your signal that liquidity was taken.</p>
+  </div>`,
+  notes:`<div style="font-size:14.5px;line-height:1.7;">
+    <h4 style="margin:0 0 8px;">Key points</h4>
+    <ul style="margin:0;padding-left:18px;color:var(--on-surface-var);">
+      <li>Liquidity rests beyond swing highs/lows and round numbers.</li>
+      <li>A liquidity sweep = price runs a level, then reverses.</li>
+      <li>Mark prior-day high/low and Asian-session range before London.</li>
+      <li>Wait for the sweep + confirmation; don't anticipate.</li>
+    </ul>
+    <button class="btn btn-ghost btn-sm" style="margin-top:14px;" onclick="FX.toast('Notes downloaded (PDF)')">↓ Download notes</button></div>`,
+  quiz:''
+};
+const QUIZ={ q:'Where does liquidity most commonly rest?', opts:['At the exact mid-point of a candle','Just beyond swing highs/lows and round numbers','Only during the Asian session','Wherever the moving average crosses'], correct:1 };
+
+function setTab(eln, key){
+  document.querySelectorAll('.ltab').forEach(t=>t.classList.remove('on')); eln.classList.add('on');
+  const c=document.getElementById('tabContent');
+  if(key==='quiz'){
+    c.innerHTML=`<div><div class="row gap2" style="margin-bottom:14px;"><span class="chip chip-lime">Mini quiz</span><span class="muted" style="font-size:13px;">1 of 3 · pass to unlock certificate progress</span></div>
+      <h4 style="margin:0 0 14px;font-size:16px;">${QUIZ.q}</h4><div id="qopts"></div><div id="qres" style="margin-top:8px;"></div></div>`;
+    document.getElementById('qopts').innerHTML=QUIZ.opts.map((o,i)=>`<div class="quiz-opt" onclick="answer(this,${i})">${String.fromCharCode(65+i)}. ${o}</div>`).join('');
+  } else c.innerHTML=TABS[key];
+}
+function answer(eln,i){
+  document.querySelectorAll('.quiz-opt').forEach(o=>o.style.pointerEvents='none');
+  if(i===QUIZ.correct){ eln.classList.add('correct'); document.getElementById('qres').innerHTML='<div class="chip chip-pos" style="margin-top:6px;">✓ Correct, liquidity clusters beyond obvious levels.</div>'; }
+  else { eln.classList.add('wrong'); document.querySelectorAll('.quiz-opt')[QUIZ.correct].classList.add('correct'); document.getElementById('qres').innerHTML='<div class="chip chip-neg" style="margin-top:6px;">Not quite, review the transcript at 07:05.</div>'; }
+}
+setTab(document.querySelectorAll('.ltab')[0],'transcript');
+
+function complete(){ document.getElementById('done').classList.add('on'); confetti(); }
+document.getElementById('done').addEventListener('click',e=>{ if(e.target.id==='done') e.currentTarget.classList.remove('on'); });
+
+// AI tutor canned responses
+const RESP={
+  'explain this simpler':'Think of liquidity as a pile of orders. Big players need lots of orders to fill their trades, so price tends to "hunt" the spots where everyone puts stops, just past the recent high or low. Once it grabs those orders, it often turns around.',
+  'quiz me':'Quick one: if price spikes above yesterday\'s high and then immediately drops back below it, what likely just happened? (a) breakout, (b) liquidity sweep, (c) news spike. Reply with a, b or c.',
+  'give me an example':'Example: EUR/USD sits at 1.0850. Yesterday\'s high was 1.0875. Price rallies to 1.0878 (grabbing stops above the high), then reverses down. That overshoot-and-reverse is a textbook liquidity grab.',
+  'summarize key points':'Key points: (1) liquidity rests beyond swing highs/lows & round numbers, (2) a sweep is a run-then-reverse, (3) mark prior-day levels pre-London, (4) wait for confirmation, never anticipate.'
+};
+function ask(text){
+  text=(text||'').trim(); if(!text) return;
+  const body=document.getElementById('aiBody');
+  body.insertAdjacentHTML('beforeend',`<div class="ai-msg ai-user">${text}</div>`);
+  document.getElementById('aiInput').value='';
+  body.scrollTop=body.scrollHeight;
+  const typing=document.createElement('div'); typing.className='ai-msg ai-bot'; typing.textContent='…'; body.appendChild(typing); body.scrollTop=body.scrollHeight;
+  setTimeout(()=>{
+    const key=text.toLowerCase();
+    let r=RESP[key];
+    if(!r){
+      if(/profit|guarantee|signal|should i (buy|sell|enter)/.test(key)) r='I can\'t give trade signals or guarantee outcomes, but I can explain the concept behind your question and point you to risk management. What would you like me to clarify?';
+      else if(/liquidity|sweep|structure|stop/.test(key)) r='Great question. In this lesson, liquidity refers to resting orders beyond obvious levels. Price often moves toward them, sweeps them, and reverses. Want an example or a quick quiz?';
+      else r='I\'m scoped to this lesson on liquidity pools. I can explain the concept, give an example, quiz you, or summarize, which would help?';
+    }
+    typing.innerHTML=r;
+    body.scrollTop=body.scrollHeight;
+  },650);
+}
+
+function confetti(){ const colors=['#c3f35c','#a8d642','#6c9e75','#ffffff']; for(let i=0;i<40;i++){ const c=document.createElement('div'); c.style.cssText=`position:fixed;top:0;left:${Math.random()*100}vw;width:8px;height:13px;background:${colors[i%4]};z-index:99;border-radius:${Math.random()>.5?'50%':'2px'};animation:fall ${2+Math.random()*2}s linear ${Math.random()}s forwards;`; document.body.appendChild(c); setTimeout(()=>c.remove(),4500);} }
+const st=document.createElement('style'); st.textContent='@keyframes fall{to{transform:translateY(105vh) rotate(540deg);opacity:0}}'; document.head.appendChild(st);
+</script>
+</body>
+</html>

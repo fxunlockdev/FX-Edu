@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Certificates</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+  .cert{border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm);border:1px solid var(--outline-var);background:var(--c-lowest);}
+  .cert-face{aspect-ratio:1.6;position:relative;padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(150deg,#15271c,#0a1410);color:var(--d-ink);overflow:hidden;}
+  .cert-face.locked{background:var(--c);color:var(--on-surface-var);}
+  .seal{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:rgba(195,243,92,.16);border:1.5px solid rgba(195,243,92,.4);color:var(--lime);}
+  .cert-foot{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;}
+  .prog-mini{font-size:12px;color:var(--on-surface-var);}
+  .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+  .sm{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow-sm);}
+  .sm .v{font-family:var(--font-display);font-size:28px;font-weight:700;}
+  .sm .l{font-size:12.5px;color:var(--on-surface-var);font-weight:600;}
+  @media(max-width:760px){.cgrid{grid-template-columns:1fr;}.summary{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <h1 class="h-md" style="margin:0 0 4px;">Certificates</h1>
+      <p class="muted" style="margin:0 0 22px;">Complete a tier to earn a verifiable certificate of completion. These recognize education, not trading results.</p>
+
+      <div class="summary">
+        <div class="sm"><div class="v text-pos">2</div><div class="l">Certificates earned</div></div>
+        <div class="sm"><div class="v">68%</div><div class="l">Overall course progress</div></div>
+        <div class="sm"><div class="v">3</div><div class="l">Tiers remaining</div></div>
+      </div>
+
+      <div class="cgrid" id="grid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Certificates',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Certificates', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+
+const certs=[
+  ['Tier 1','Forex Foundations','earned','Issued Mar 4, 2025'],
+  ['Tier 2','Market Structure & Liquidity','earned','Issued Apr 18, 2025'],
+  ['Tier 3','Risk & Trade Management','progress','72% complete'],
+  ['Tier 4','Strategy Development','locked','Complete Tier 3 first'],
+  ['Tier 5','Trading Psychology','locked','Complete Tier 4 first']
+];
+document.getElementById('grid').innerHTML = certs.map(c=>{
+  const earned = c[2]==='earned', prog=c[2]==='progress';
+  return `<div class="cert">
+    <div class="cert-face ${earned?'':'locked'}">
+      ${earned?'<div class="glow glow-lime" style="width:180px;height:180px;top:-90px;right:-50px;opacity:.18;"></div>':''}
+      <div class="between" style="position:relative;z-index:1;">
+        <span style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;${earned?'color:var(--lime);':''}">${c[0]} Certificate</span>
+        <span class="seal" style="${earned?'':'background:transparent;border-color:var(--outline-var);color:var(--outline);'}">
+          ${earned?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="9" r="6"/><path d="m9 14-2 7 5-3 5 3-2-7"/></svg>':'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'}
+        </span>
+      </div>
+      <div style="position:relative;z-index:1;">
+        <h3 style="font-size:19px;font-weight:700;margin:0;${earned?'color:#fff;':''}">${c[1]}</h3>
+        <p style="font-size:12.5px;margin:6px 0 0;opacity:.8;">${earned?'Alex Rivera · FX Academy':'FX Academy'}</p>
+      </div>
+    </div>
+    <div class="cert-foot">
+      <span class="prog-mini">${c[3]}</span>
+      ${earned
+        ? '<div class="row gap1"><a class="btn btn-ghost btn-sm">Share</a><a class="btn btn-forest btn-sm" onclick="FX.toast(\'Certificate downloaded\')">Download</a></div>'
+        : prog
+          ? '<a href="learn.html" class="btn btn-lime btn-sm">Continue tier</a>'
+          : '<span class="lock-mini" style="font-size:12px;color:var(--outline);font-weight:600;">Locked</span>'}
+    </div></div>`;
+}).join('');
+</script>
+</body>
+</html>

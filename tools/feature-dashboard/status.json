@@ -1,0 +1,55 @@
+{
+  "project": "FX Academy — FX Unlock",
+  "region": "EU · Stockholm (eu-north-1)",
+  "updated": "2026-06-24",
+  "loop": ["build", "review", "unit", "e2e", "design"],
+  "groups": [
+    {
+      "name": "Planning & Scaffold",
+      "items": [
+        { "id": "P0", "title": "Full product plan (PROJECT.md, E2E)", "status": "done", "stages": { "build": "done", "review": "na", "unit": "na", "e2e": "na", "design": "na" } },
+        { "id": "P1", "title": "Monorepo scaffold (Turborepo · pnpm · TS)", "status": "done", "stages": { "build": "done", "review": "na", "unit": "na", "e2e": "na", "design": "na" } },
+        { "id": "P2", "title": "GDPR / compliance docs (RoPA, sub-processors, roles)", "status": "done", "stages": { "build": "done", "review": "na", "unit": "na", "e2e": "na", "design": "na" } },
+        { "id": "P3", "title": "Supabase project verified (eu-north-1, PG17)", "status": "done", "stages": { "build": "done", "review": "na", "unit": "na", "e2e": "na", "design": "na" } }
+      ]
+    },
+    {
+      "name": "Foundation Track",
+      "items": [
+        { "id": "F1", "title": "Design system port (Lumina → packages/ui)", "status": "done", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "na", "design": "done" } },
+        { "id": "F2", "title": "Identity & Access (Supabase Auth + RLS)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "F3", "title": "Data layer, RLS & audit (Drizzle)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "todo", "e2e": "todo", "design": "na" } },
+        { "id": "F4", "title": "Entitlements & Billing core (Stripe) — wiring blockers tracked", "status": "in_progress", "stages": { "build": "done", "review": "in_progress", "unit": "done", "e2e": "todo", "design": "na" } },
+        { "id": "F5", "title": "Media token & storage", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "todo", "e2e": "todo", "design": "na" } },
+        { "id": "F6", "title": "CI/CD & security baseline", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "na", "e2e": "na", "design": "na" } },
+        { "id": "F7", "title": "Admin shell + content authoring", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } }
+      ]
+    },
+    {
+      "name": "Product Modules",
+      "items": [
+        { "id": "M1", "title": "Public Marketing Site (8 pages ✓)", "status": "done", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "done", "design": "done" } },
+        { "id": "M2", "title": "Auth · Signup · Checkout · Onboarding", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M3", "title": "Learning Paths & Lesson Player (5 tiers)", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M4", "title": "Trading Tools & Risk Calculator", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M5", "title": "Trade Journal & Logging", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M6", "title": "Performance Analytics", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M7", "title": "AI Tutor", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M8", "title": "Live Webinars & Replays", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M9", "title": "Certificates", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M10", "title": "Strategy Library", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M11", "title": "Trade Ideas · News · Live Prices", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M12", "title": "Community & Pods", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M13", "title": "Prop Firm Prep", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M14", "title": "Affiliate Portal", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M15", "title": "Lifecycle Messaging", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "na", "design": "todo" } },
+        { "id": "M16", "title": "Billing (self-service)", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M17", "title": "Settings & Notifications", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M18", "title": "Member Dashboard", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M19", "title": "Admin Console (full)", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M20", "title": "White-Label Partner Portal", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M21", "title": "Elite Cohort & Coaching", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } }
+      ]
+    }
+  ]
+}

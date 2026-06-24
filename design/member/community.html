@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Community</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .clayout{display:grid;grid-template-columns:220px 1fr 260px;gap:20px;align-items:start;}
+  .chan{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:12px;box-shadow:var(--shadow-sm);}
+  .ch{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;color:var(--on-surface-var);transition:.15s;}
+  .ch.on{background:var(--primary-container);color:var(--on-primary-container);}
+  .ch:not(.on):hover{background:var(--c-low);}
+  .ch .hash{opacity:.5;font-weight:700;}
+  .post{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:16px 18px;box-shadow:var(--shadow-sm);margin-bottom:14px;}
+  .pa{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px;flex:none;}
+  .preact{display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--c-high);font-size:13px;color:var(--on-surface-var);}
+  .preact a{display:flex;align-items:center;gap:5px;font-weight:600;cursor:pointer;}
+  .preact a:hover{color:var(--primary);}
+  .composer{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:14px;box-shadow:var(--shadow-sm);margin-bottom:18px;display:flex;gap:12px;}
+  .sc{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:16px;box-shadow:var(--shadow-sm);margin-bottom:14px;}
+  .mem{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.5px;}
+  .rules li{font-size:13px;color:var(--on-surface-var);margin-bottom:7px;line-height:1.45;}
+  @media(max-width:1100px){.clayout{grid-template-columns:1fr;}.cright,.cleft{display:none;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <h1 class="h-md" style="margin:0 0 4px;">Community</h1>
+      <p class="muted" style="margin:0 0 20px;">Learn alongside other traders. Be supportive, stay on topic, no signal-selling.</p>
+      <div class="clayout">
+        <div class="cleft">
+          <div class="chan">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--on-surface-var);padding:4px 11px 8px;">Channels</div>
+            <div class="ch on"><span class="hash">#</span>general</div>
+            <div class="ch"><span class="hash">#</span>technical-analysis</div>
+            <div class="ch"><span class="hash">#</span>fundamentals</div>
+            <div class="ch"><span class="hash">#</span>psychology</div>
+            <div class="ch"><span class="hash">#</span>journaling</div>
+            <div class="ch"><span class="hash">#</span>wins-and-lessons</div>
+            <div class="ch"><span class="hash">#</span>prop-firm-prep</div>
+          </div>
+        </div>
+
+        <div class="cmid">
+          <div class="composer">
+            <span class="pa" style="background:linear-gradient(150deg,#0f3218,#436648);">AR</span>
+            <input class="input" placeholder="Share a chart, a lesson, or a question…">
+            <button class="btn btn-forest" onclick="FX.toast('Posted to #general')">Post</button>
+          </div>
+          <div id="posts"></div>
+        </div>
+
+        <div class="cright">
+          <div class="sc">
+            <h3 style="font-size:14px;font-weight:700;margin:0 0 4px;">Online now</h3>
+            <p class="muted" style="font-size:12px;margin:0 0 10px;">248 members active</p>
+            <div id="online"></div>
+          </div>
+          <div class="sc">
+            <h3 style="font-size:14px;font-weight:700;margin:0 0 10px;">Community rules</h3>
+            <ul class="rules" style="margin:0;padding-left:18px;">
+              <li>Educational discussion only. No signal-selling or DM solicitation.</li>
+              <li>Share your reasoning, not just calls.</li>
+              <li>Be respectful. We grow faster together.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Community',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Community', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+
+const pal=['#0f3218','#5b3d8a','#8a5a06','#1f6b8a','#8a2c4d'];
+function av(n,i){return `<span class="pa" style="background:linear-gradient(150deg,${pal[i%5]},${pal[(i+2)%5]});">${n}</span>`;}
+const posts=[
+  ['JS','Jordan S.','12m','technical-analysis','Finally clicked how liquidity sits above equal highs after re-watching the masterclass. Marked up EUR/USD and the sweep + reclaim was textbook. Not a trade, just an observation 📈',24,6],
+  ['PR','Priya R.','38m','psychology','Took a small loss today and instead of revenge trading I journaled it and walked away. Small win for discipline. The process > the outcome.',41,12],
+  ['MK','Mike K.','1h','prop-firm-prep','Passed phase 1 of my evaluation using strict 1% risk. The risk calculator here genuinely changed how I size. Onto phase 2.',58,15]
+];
+document.getElementById('posts').innerHTML = posts.map((p,i)=>`<div class="post">
+  <div style="display:flex;gap:11px;align-items:center;">${av(p[0],i)}
+    <div><div style="font-weight:700;font-size:14px;">${p[1]} <span class="muted" style="font-weight:500;">· ${p[2]}</span></div><div class="muted" style="font-size:12px;">in #${p[3]}</div></div></div>
+  <p style="margin:11px 0 0;font-size:14.5px;line-height:1.55;">${p[4]}</p>
+  <div class="preact">
+    <a><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10v11M2 13l1-7h6l-1-3a2 2 0 0 1 4 0l2 7h6l-1 11H4"/></svg>${p[5]}</a>
+    <a><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z"/></svg>${p[6]} replies</a>
+    <a style="margin-left:auto;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-6 0v4M5 9h14l1 11H4L5 9Z"/></svg>Save</a>
+  </div></div>`).join('');
+
+const on=[['Marcus Vale','Educator'],['Dana Cole','Educator'],['Jordan S.','Pro'],['Priya R.','Pro'],['Mike K.','Pro'],['Lena T.','Basic']];
+document.getElementById('online').innerHTML = on.map((m,i)=>`<div class="mem">${av(m[0].split(' ').map(s=>s[0]).join(''),i)}<div><div style="font-weight:600;">${m[0]}</div><div class="muted" style="font-size:11.5px;">${m[1]}</div></div><span class="dot dot-live" style="margin-left:auto;background:var(--pos);box-shadow:none;animation:none;"></span></div>`).join('');
+</script>
+</body>
+</html>

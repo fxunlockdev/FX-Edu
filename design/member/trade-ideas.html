@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Trade Ideas</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .disc-banner{display:flex;gap:12px;align-items:flex-start;background:rgba(224,162,53,.10);border:1px solid rgba(224,162,53,.32);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:22px;font-size:13.5px;color:#7a5305;line-height:1.5;}
+  .feed{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+  .idea{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:18px 20px;box-shadow:var(--shadow-sm);margin-bottom:16px;transition:border-color .2s,box-shadow .25s var(--ease);}
+  .idea:hover{border-color:var(--leaf);box-shadow:var(--shadow);}
+  .ih{display:flex;gap:12px;align-items:center;margin-bottom:12px;}
+  .ed{width:38px;height:38px;border-radius:10px;background:linear-gradient(150deg,#0f3218,#436648);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px;flex:none;}
+  .levels{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0;}
+  .lv{background:var(--c-low);border-radius:10px;padding:10px 12px;}
+  .lv span{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--on-surface-var);font-weight:600;}
+  .lv b{display:block;font-family:var(--font-display);font-size:17px;font-weight:700;margin-top:3px;}
+  .ifoot{display:flex;gap:18px;align-items:center;font-size:13px;color:var(--on-surface-var);padding-top:12px;border-top:1px solid var(--c-high);}
+  .ifoot a{display:flex;align-items:center;gap:5px;font-weight:600;cursor:pointer;}
+  .ifoot a:hover{color:var(--primary);}
+  .side-card{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow-sm);margin-bottom:16px;}
+  @media(max-width:980px){.feed{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <h1 class="h-md" style="margin:0 0 4px;">Trade Ideas</h1>
+      <p class="muted" style="margin:0 0 18px;">Educator-published setups, shared to teach analysis, not to copy.</p>
+      <div class="disc-banner">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none;margin-top:1px;"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+        <div>These ideas are educational examples of how our educators analyze markets. They are not signals, recommendations, or financial advice. Always do your own analysis and manage your risk.</div>
+      </div>
+
+      <div class="feed">
+        <div id="ideas"></div>
+        <div>
+          <div class="side-card">
+            <h3 style="font-size:14px;font-weight:700;margin:0 0 12px;">Idea filters</h3>
+            <div class="stack gap2">
+              <select class="input"><option>All pairs</option><option>EUR/USD</option><option>GBP/USD</option><option>XAU/USD</option></select>
+              <select class="input"><option>All timeframes</option><option>Intraday</option><option>Swing</option></select>
+              <select class="input"><option>All educators</option><option>Marcus Vale</option><option>Dana Cole</option></select>
+            </div>
+          </div>
+          <div class="side-card" style="background:linear-gradient(135deg,#14241b,#0f1d16);border:none;color:var(--d-ink);">
+            <h3 style="font-size:14px;font-weight:700;color:#fff;margin:0 0 8px;">Learn the framework</h3>
+            <p style="font-size:13px;color:var(--d-ink-var);margin:0 0 12px;line-height:1.5;">Every idea maps to a lesson. Study the setup, then practice spotting it yourself.</p>
+            <a href="strategies.html" class="btn btn-glass btn-sm btn-block">Open strategy library</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Trade Ideas',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Trade Ideas', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+
+const ideas=[
+  {ed:'MV',name:'Marcus Vale',ago:'2h ago',pair:'EUR/USD',dir:'Long bias',tf:'Swing · 4H',note:'Price swept Asian session lows and reclaimed the range. Watching for a 4H structure shift before continuation toward the prior high. Invalidation below the sweep.',e:'1.0840',s:'1.0795',t:'1.0930',tag:'Liquidity sweep'},
+  {ed:'DC',name:'Dana Cole',ago:'5h ago',pair:'XAU/USD',dir:'Neutral',tf:'Intraday · 1H',note:'Ahead of CPI, expect elevated volatility. Teaching how to stay flat into the release and react to the reaction, not the number itself.',e:'n/a',s:'n/a',t:'n/a',tag:'News event'},
+  {ed:'MV',name:'Marcus Vale',ago:'1d ago',pair:'GBP/USD',dir:'Short bias',tf:'Swing · Daily',note:'Daily rejected a clear supply zone with a bearish engulfing. Looking for lower-timeframe confirmation. This is about reading context, not predicting.',e:'1.2710',s:'1.2765',t:'1.2585',tag:'Supply zone'}
+];
+const dirC={'Long bias':'chip-pos','Short bias':'chip-neg','Neutral':'chip-outline'};
+document.getElementById('ideas').innerHTML = ideas.map(i=>`<div class="idea">
+  <div class="ih"><span class="ed">${i.ed}</span>
+    <div><div style="font-weight:700;font-size:14px;">${i.name}</div><div class="muted" style="font-size:12.5px;">${i.ago} · ${i.tf}</div></div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;"><span style="font-family:var(--font-display);font-weight:700;font-size:15px;">${i.pair}</span><span class="chip ${dirC[i.dir]}">${i.dir}</span></div>
+  </div>
+  <p style="margin:0;font-size:14.5px;line-height:1.55;">${i.note}</p>
+  <div class="levels">
+    <div class="lv"><span>Idea entry</span><b>${i.e}</b></div>
+    <div class="lv"><span>Invalidation</span><b style="color:var(--neg);">${i.s}</b></div>
+    <div class="lv"><span>Objective</span><b style="color:#2c6b3d;">${i.t}</b></div>
+  </div>
+  <div class="ifoot"><span class="chip chip-lime">${i.tag}</span>
+    <a><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-6 0v4M5 9h14l1 11H4L5 9Z"/></svg>Save</a>
+    <a><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z"/></svg>Discuss</a></div>
+</div>`).join('');
+</script>
+</body>
+</html>

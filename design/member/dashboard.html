@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Dashboard</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .bento{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;}
+  .col-4{grid-column:span 4;} .col-5{grid-column:span 5;} .col-6{grid-column:span 6;} .col-7{grid-column:span 7;} .col-8{grid-column:span 8;} .col-12{grid-column:span 12;}
+  .mod{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow-sm);}
+  .mod h3{font-size:15px;font-weight:700;white-space:nowrap;}
+  .mod-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;}
+  .welcome{background:linear-gradient(135deg,#0f3218,#0a1410);color:var(--d-ink);border:none;position:relative;overflow:hidden;}
+  .mini{display:flex;gap:8px;}
+  .stat{flex:1;background:var(--c-low);border-radius:var(--r);padding:12px;}
+  .stat .v{font-family:var(--font-display);font-weight:700;font-size:22px;}
+  .chip-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .ai-chip{font-size:13px;font-weight:600;padding:7px 12px;border-radius:9999px;background:var(--c-low);border:1px solid var(--outline-var);cursor:pointer;transition:.12s;}
+  .ai-chip:hover{background:var(--primary-container);border-color:var(--leaf);}
+  .lock-mini{position:relative;}
+  .checklist-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--c-high);}
+  .cl-box{width:22px;height:22px;border-radius:7px;border:2px solid var(--outline-var);flex:none;display:grid;place-items:center;}
+  .cl-box.done{background:var(--lime);border-color:var(--lime);}
+  .switch{display:inline-flex;background:var(--c);border-radius:9999px;padding:3px;gap:2px;}
+  .switch a{font-size:12px;font-weight:700;padding:6px 12px;border-radius:9999px;color:var(--on-surface-var);}
+  .switch a.on{background:var(--c-lowest);color:var(--primary);box-shadow:var(--shadow-sm);}
+  /* Live prices (dark terminal card) */
+  .px-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--d-outline);}
+  .px-row:last-child{border-bottom:none;}
+  .px-pair{font-family:var(--font-display);font-weight:700;font-size:14.5px;color:#fff;width:82px;flex:none;letter-spacing:-.01em;}
+  .px-spark{width:62px;height:30px;flex:none;}
+  .px-val{margin-left:auto;text-align:right;}
+  .px-price{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--d-ink);font-variant-numeric:tabular-nums;transition:color .45s var(--ease);}
+  .px-chg{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:1px;}
+  .flash-up{color:var(--lime)!important;} .flash-dn{color:var(--neg-on-dark)!important;}
+  /* Market news */
+  .news-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--c-high);}
+  .news-item:last-child{border-bottom:none;}
+  .news-impact{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:none;}
+  .imp-high{background:var(--neg);} .imp-med{background:var(--warn);} .imp-low{background:var(--leaf);}
+  .news-head{font-weight:600;font-size:14px;line-height:1.42;text-wrap:pretty;}
+  .news-head:hover{color:var(--primary);}
+  .news-meta{font-size:12px;color:var(--on-surface-var);margin-top:4px;display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+  .news-legend{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--on-surface-var);}
+  @media(max-width:1100px){.col-4,.col-5,.col-6,.col-7,.col-8{grid-column:span 12;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <div class="between" style="margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+        <div class="switch">
+          <a href="?view=new" id="sw-new">New user</a>
+          <a href="?view=pro" id="sw-pro">Pro member</a>
+          <a href="?view=basic" id="sw-basic">Basic member</a>
+        </div>
+        <span class="muted" style="font-size:12.5px;">Dashboard state preview</span>
+      </div>
+      <div class="bento" id="bento"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const view = new URLSearchParams(location.search).get('view')||'pro';
+const plan = view==='basic'?'basic':'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Dashboard',{plan, footer:`<div style="padding:14px;border-top:1px solid var(--d-outline);"><a href="../public/pricing.html" class="btn btn-lime btn-sm btn-block">${plan==='basic'?'Upgrade to Pro':'Manage plan'}</a></div>`});
+FXShell.appStyles && document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Dashboard', user:'Alex Rivera', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+['new','pro','basic'].forEach(v=>document.getElementById('sw-'+v).classList.toggle('on', v===view));
+
+const tierBadge = plan==='basic'?'<span class="chip" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid var(--d-outline-strong);">Basic</span>':'<span class="chip chip-lime-d">Pro</span>';
+
+function welcome(){
+  return `<div class="mod welcome col-12">
+    <div class="glow glow-lime" style="width:300px;height:300px;top:-160px;right:-80px;opacity:.25;"></div>
+    <div class="between" style="position:relative;z-index:1;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div class="row gap2" style="margin-bottom:8px;">${tierBadge}<span class="chip" style="background:rgba(255,255,255,.1);color:var(--lime);border:1px solid var(--d-outline-strong);">🔥 12-day streak</span><span class="chip" style="background:rgba(255,255,255,.1);color:#fff;border:1px solid var(--d-outline-strong);">⚡ 1,840 XP</span></div>
+        <h2 class="h-md" style="color:#fff;">Good morning, Alex</h2>
+        <p style="color:var(--d-ink-var);margin:6px 0 0;font-size:14.5px;">${view==='new'?'Let’s get you set up, finish your checklist to unlock the full dashboard.':'You’re on track. Here’s what to focus on today.'}</p>
+      </div>
+      ${plan==='basic'?`<a href="../public/pricing.html" class="btn btn-lime">Upgrade to Pro →</a>`:`<a href="lesson.html" class="btn btn-lime">Continue learning →</a>`}
+    </div></div>`;
+}
+
+function newUser(){
+  const items=[['Complete trading profile',1],['Set account size',1],['Start Entry Course',0],['Watch platform walkthrough',0],['Log first practice trade',0],['Register for weekly webinar',0],['Join community pod',0]];
+  const done=items.filter(i=>i[1]).length;
+  return welcome() + `
+  <div class="mod col-7">
+    <div class="mod-head"><h3>Get started checklist</h3><span class="chip chip-lime">${Math.round(done/items.length*100)}% complete</span></div>
+    <div class="bar" style="margin-bottom:14px;"><i style="width:${done/items.length*100}%"></i></div>
+    ${items.map(([t,d])=>`<div class="checklist-item"><span class="cl-box ${d?'done':''}">${d?'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#141f00" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>':''}</span><span style="flex:1;${d?'color:var(--outline);text-decoration:line-through;':'font-weight:600;'}">${t}</span>${!d?'<a href="'+(t.includes('Course')?'lesson.html':t.includes('trade')?'trade-new.html':t.includes('webinar')?'webinars.html':t.includes('pod')?'community.html':'#')+'" class="btn btn-ghost btn-sm">Start</a>':''}</div>`).join('')}
+    <a href="onboarding.html" class="btn btn-ghost btn-sm" style="margin-top:14px;">Open full onboarding</a>
+  </div>
+  <div class="mod col-5">
+    <div class="mod-head"><h3>Recommended first course</h3></div>
+    <div style="height:120px;border-radius:var(--r);background:linear-gradient(135deg,#0f3218,#14241b);display:flex;align-items:flex-end;padding:14px;margin-bottom:14px;"><span class="chip chip-lime-d">Entry · Tier 1</span></div>
+    <div style="font-weight:700;">What is Forex? Markets & Mechanics</div>
+    <p class="muted" style="font-size:13.5px;margin:6px 0 14px;">5 lessons · ~35 min · certificate on completion</p>
+    <a href="lesson.html" class="btn btn-lime btn-block">Start Entry Course</a>
+  </div>
+  ${livePricesCard()}${newsCard()}${aiCard()}`;
+}
+
+function continueCard(){
+  return `<div class="mod col-7">
+    <div class="mod-head"><h3>Continue learning</h3><a href="learn.html" class="muted" style="font-size:13px;font-weight:600;">All courses →</a></div>
+    <div class="row gap3" style="align-items:stretch;">
+      <div style="width:120px;border-radius:var(--r);background:linear-gradient(135deg,#0f3218,#14241b);flex:none;display:flex;align-items:flex-end;padding:10px;"><span class="chip chip-lime-d" style="font-size:11px;">Advanced</span></div>
+      <div style="flex:1;">
+        <div class="muted" style="font-size:12.5px;">Advanced · Module 3</div>
+        <div style="font-weight:700;font-size:17px;margin:2px 0 4px;">Market Structure & Liquidity</div>
+        <div class="muted" style="font-size:13px;">Lesson 3 of 6 · ~22 min remaining</div>
+        <div class="bar" style="margin:12px 0;"><i style="width:48%"></i></div>
+        <a href="lesson.html" class="btn btn-lime btn-sm">Resume lesson →</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+function focusCard(){
+  return `<div class="mod col-5" style="background:linear-gradient(135deg,#1b3024,#14241b);color:var(--d-ink);border:none;">
+    <div class="mod-head"><h3 style="color:#fff;">Today’s trading focus</h3><span style="font-size:18px;">✦</span></div>
+    <p style="font-size:15px;line-height:1.5;color:var(--d-ink);">“Review yesterday’s journal entries before placing any new trades. Confirm your setup matches your written plan.”</p>
+    <div class="row gap2" style="margin-top:16px;"><a href="journal.html" class="btn btn-glass btn-sm">Open journal</a><a href="ai-tutor.html" class="btn btn-glass btn-sm" style="background:transparent;">Ask AI why</a></div>
+  </div>`;
+}
+
+function webinarCard(){
+  if(plan==='basic') return lockedCard('Weekly live webinars','Join weekly technical, fundamental and mindset sessions with replays saved to your library.','col-4');
+  return `<div class="mod col-4">
+    <div class="mod-head"><h3>Upcoming webinar</h3><span class="chip chip-pos">Registered</span></div>
+    <div style="font-weight:700;">London Session Structure</div>
+    <p class="muted" style="font-size:13px;margin:5px 0 14px;">Thu · 18:00 GMT (your time) · Marcus Vale</p>
+    <div class="row gap2"><a href="webinars.html" class="btn btn-forest btn-sm">Add to calendar</a><a href="webinars.html?state=live" class="btn btn-ghost btn-sm">Join</a></div>
+  </div>`;
+}
+
+function journalCard(){
+  return `<div class="mod col-4">
+    <div class="mod-head"><h3>Journal snapshot</h3><a href="journal.html" class="muted" style="font-size:13px;font-weight:600;">View →</a></div>
+    <div class="mini" style="margin-bottom:12px;">
+      <div class="stat"><div class="muted" style="font-size:11px;">This week</div><div class="v">7</div></div>
+      <div class="stat"><div class="muted" style="font-size:11px;">Win rate</div><div class="v text-pos">58%</div></div>
+      <div class="stat"><div class="muted" style="font-size:11px;">Avg R:R</div><div class="v">1.9</div></div>
+    </div>
+    <a href="trade-new.html" class="btn btn-lime btn-sm btn-block">Log new trade</a>
+  </div>`;
+}
+
+function riskCard(){
+  return `<div class="mod col-4">
+    <div class="mod-head"><h3>Risk calculator</h3></div>
+    <div style="font-size:13px;color:var(--on-surface-var);line-height:2;">
+      <div class="between"><span>Account</span><strong class="num">$5,000</strong></div>
+      <div class="between"><span>Risk %</span><strong class="num">1.0%</strong></div>
+      <div class="between"><span>Position size</span><strong class="num text-pos">0.20 lots</strong></div>
+    </div>
+    <a href="risk-calculator.html" class="btn btn-ghost btn-sm btn-block" style="margin-top:12px;">Open calculator</a>
+  </div>`;
+}
+
+function aiCard(){
+  if(plan==='basic') return lockedCard('AI Tutor','Ask course-aware questions, get quizzed, and find your next lesson, included in Pro.','col-7');
+  return `<div class="mod col-7">
+    <div class="mod-head"><h3>AI Tutor</h3><span class="chip chip-lime">Course-aware</span></div>
+    <p class="muted" style="font-size:13.5px;margin:0 0 12px;">Ask a question about your current lesson:</p>
+    <div class="chip-row">
+      <a href="ai-tutor.html" class="ai-chip">Explain liquidity</a>
+      <a href="ai-tutor.html" class="ai-chip">Quiz me on order types</a>
+      <a href="ai-tutor.html" class="ai-chip">What should I study next?</a>
+    </div>
+  </div>`;
+}
+
+function communityCard(){
+  if(plan==='basic') return lockedCard('Community & pods','Join an accountability pod of 6-10 traders with weekly goals and check-ins.','col-5');
+  return `<div class="mod col-5">
+    <div class="mod-head"><h3>Your pod</h3><span class="chip chip-forest">3 unread</span></div>
+    <p style="font-size:13.5px;margin:0 0 10px;"><strong>Disciplined Eight</strong> · 8 traders</p>
+    <p class="muted" style="font-size:13px;margin:0 0 14px;">Priya checked in: “Stuck to 1% risk all week 💪”. 2 new replies in the check-in thread.</p>
+    <a href="community.html" class="btn btn-ghost btn-sm btn-block">Open pod</a>
+  </div>`;
+}
+
+function insightCard(){
+  if(plan==='basic') return lockedCard('Performance analytics','Turn your journal into a coaching dashboard, win rate by pair, session, setup & behavior.','col-12');
+  return `<div class="mod col-12" style="background:linear-gradient(135deg,#14241b,#0f1d16);color:var(--d-ink);border:none;position:relative;overflow:hidden;">
+    <div class="glow glow-lime" style="width:320px;height:200px;top:-120px;right:-80px;opacity:.14;"></div>
+    <div class="mod-head" style="position:relative;z-index:1;"><h3 style="color:#fff;">Performance insight</h3><span class="chip chip-lime-d">AI</span></div>
+    <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;position:relative;z-index:1;">
+      <div style="flex:1;min-width:260px;">
+        <p style="font-size:15px;line-height:1.55;color:var(--d-ink);margin:0;">“Your <strong style="color:var(--lime);">Friday trades</strong> have a 38% win rate, well below your 58% weekly average. Consider capping Friday trades at 2.”</p>
+        <a href="analytics.html" class="btn btn-lime btn-sm" style="margin-top:16px;">Review analytics</a>
+      </div>
+      <div style="display:flex;gap:22px;flex:none;">
+        <div><div style="font-size:11px;color:var(--d-ink-var);text-transform:uppercase;letter-spacing:.04em;">Net R · 30d</div><div style="font-family:var(--font-display);font-weight:700;font-size:24px;color:var(--lime);margin-top:4px;">+18.4R</div></div>
+        <div><div style="font-size:11px;color:var(--d-ink-var);text-transform:uppercase;letter-spacing:.04em;">Best day</div><div style="font-family:var(--font-display);font-weight:700;font-size:24px;color:#fff;margin-top:4px;">Tue</div></div>
+      </div>
+    </div>
+    <div style="position:relative;z-index:1;margin-top:18px;">
+      <div id="insChart" style="width:100%;height:130px;"></div>
+      <div class="between" style="margin-top:6px;font-size:11px;color:var(--d-ink-var);"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span></div>
+    </div>
+  </div>`;
+}
+
+function livePricesCard(){
+  return `<div class="mod col-5" style="background:linear-gradient(150deg,#0f1d16,#14241b);border:none;color:var(--d-ink);position:relative;overflow:hidden;">
+    <div class="glow glow-lime" style="width:240px;height:170px;top:-120px;left:-70px;opacity:.10;"></div>
+    <div class="mod-head" style="position:relative;z-index:1;">
+      <h3 style="color:#fff;">Live prices</h3>
+      <span class="chip" style="background:rgba(255,255,255,.08);color:var(--d-ink-var);border:1px solid var(--d-outline-strong);"><span class="dot dot-live"></span> Live</span>
+    </div>
+    <div id="pxList" style="position:relative;z-index:1;"></div>
+    <a href="trade-ideas.html" class="btn btn-glass btn-sm btn-block" style="margin-top:14px;position:relative;z-index:1;">See trade ideas →</a>
+  </div>`;
+}
+
+function newsCard(){
+  const news=[
+    {imp:'high', t:'8m',  head:'USD firms as Fed officials signal patience on the path to rate cuts', src:'Macro wire', tag:'USD'},
+    {imp:'high', t:'34m', head:'Gold extends record run past $2,340 on safe-haven demand', src:'Metals desk', tag:'XAU'},
+    {imp:'med',  t:'1h',  head:'GBP slips ahead of tomorrow’s UK inflation print', src:'FX daily', tag:'GBP'},
+    {imp:'med',  t:'2h',  head:'Intervention talk lifts yen off its multi-decade lows', src:'Asia open', tag:'JPY'},
+    {imp:'low',  t:'3h',  head:'Crude steadies as traders weigh OPEC+ supply signals', src:'Energy', tag:'OIL'},
+  ];
+  const impC={high:'imp-high',med:'imp-med',low:'imp-low'};
+  return `<div class="mod col-7">
+    <div class="mod-head"><h3>Market news</h3>
+      <div class="row gap3"><span class="news-legend"><span class="news-impact imp-high" style="margin:0;"></span>High impact</span><a href="trade-ideas.html" class="muted" style="font-size:13px;font-weight:600;">All news →</a></div>
+    </div>
+    ${news.map(n=>`<a href="trade-ideas.html" class="news-item">
+      <span class="news-impact ${impC[n.imp]}"></span>
+      <div style="flex:1;min-width:0;">
+        <div class="news-head">${n.head}</div>
+        <div class="news-meta"><span>${n.src}</span><span>·</span><span>${n.t} ago</span><span class="chip chip-outline" style="padding:1px 8px;font-size:11px;">${n.tag}</span></div>
+      </div>
+    </a>`).join('')}
+  </div>`;
+}
+
+function lockedCard(title, body, col){
+  return `<div class="mod lock-card ${col}" style="min-height:160px;">
+    <div class="lock-veil" style="position:relative;background:none;backdrop-filter:none;align-items:flex-start;text-align:left;padding:0;">
+      <div class="row gap1"><span style="width:30px;height:30px;border-radius:8px;background:var(--c);display:grid;place-items:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--on-surface-var)" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><h3>${title}</h3></div>
+      <p class="muted" style="font-size:13.5px;margin:10px 0 14px;">${body}</p>
+      <a href="../public/pricing.html" class="btn btn-forest btn-sm">Upgrade to Pro</a>
+    </div>
+  </div>`;
+}
+
+const bento = document.getElementById('bento');
+if(view==='new'){ bento.innerHTML = newUser(); }
+else {
+  bento.innerHTML = welcome() + continueCard() + focusCard() + livePricesCard() + newsCard() + webinarCard() + journalCard() + riskCard() + aiCard() + communityCard() + insightCard();
+  if(plan!=='basic') FX.areaChart(document.getElementById('insChart'), {data:[5,6.2,5.4,7.1,6.6,8,7.4,9.2,8.6,10.4,9.8,11.6,10.8,12.8,11.4,9.6,10.8,8.4,9.6,11.2], height:130, dark:true, color:'#a8d642'});
+}
+
+/* ---- Live prices ticker ---- */
+const PAIRS=[
+  {s:'EUR/USD', p:1.0842, dp:4, vol:0.0006, chg:0.18},
+  {s:'GBP/USD', p:1.2715, dp:4, vol:0.0007, chg:-0.12},
+  {s:'USD/JPY', p:156.38, dp:2, vol:0.06,   chg:0.34},
+  {s:'XAU/USD', p:2341.2, dp:2, vol:1.10,   chg:0.92},
+  {s:'BTC/USD', p:67420,  dp:0, vol:70,     chg:2.14},
+  {s:'AUD/USD', p:0.6648, dp:4, vol:0.0005, chg:-0.27},
+];
+const fmt=(v,dp)=>v.toLocaleString('en-US',{minimumFractionDigits:dp,maximumFractionDigits:dp});
+function renderPrices(){
+  const host=document.getElementById('pxList'); if(!host) return;
+  PAIRS.forEach(p=>{
+    p.open = p.p/(1+p.chg/100);
+    p.series = Array.from({length:22},(_,k)=>p.open*(1+(Math.sin(k/3.2)*0.4+(Math.random()-0.5))*(p.vol/p.p)*5));
+    p.series[p.series.length-1]=p.p;
+  });
+  host.innerHTML = PAIRS.map((p,i)=>{
+    const up=p.chg>=0;
+    return `<div class="px-row">
+      <span class="px-pair">${p.s}</span>
+      <div class="px-spark" id="spk${i}"></div>
+      <div class="px-val">
+        <div class="px-price" id="pp${i}">${fmt(p.p,p.dp)}</div>
+        <div class="px-chg" id="pc${i}" style="color:${up?'var(--lime)':'var(--neg-on-dark)'}">${up?'▲':'▼'} ${Math.abs(p.chg).toFixed(2)}%</div>
+      </div>
+    </div>`;
+  }).join('');
+  PAIRS.forEach((p,i)=>FX.spark(document.getElementById('spk'+i), p.series, p.chg>=0?'#a8d642':'#ff897d'));
+}
+function tickPrices(){
+  if(document.hidden || !document.getElementById('pxList')) return;
+  PAIRS.forEach((p,i)=>{
+    const prev=p.p;
+    p.p = Math.max(p.p + (Math.random()-0.48)*p.vol*2, p.vol);
+    p.chg = (p.p-p.open)/p.open*100;
+    p.series.push(p.p); if(p.series.length>22) p.series.shift();
+    const up=p.chg>=0, ppEl=document.getElementById('pp'+i), pcEl=document.getElementById('pc'+i);
+    ppEl.textContent=fmt(p.p,p.dp);
+    const cls=p.p>=prev?'flash-up':'flash-dn';
+    ppEl.classList.add(cls); setTimeout(()=>ppEl.classList.remove(cls),520);
+    pcEl.style.color=up?'var(--lime)':'var(--neg-on-dark)';
+    pcEl.textContent=(up?'▲':'▼')+' '+Math.abs(p.chg).toFixed(2)+'%';
+    FX.spark(document.getElementById('spk'+i), p.series, up?'#a8d642':'#ff897d');
+  });
+}
+renderPrices();
+if(document.getElementById('pxList')) setInterval(tickPrices, 2200);
+</script>
+<template id="__bundler_thumbnail" data-bg-color="#0f3218">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#0f3218"/>
+    <polyline points="180,520 320,470 460,500 600,400 740,440 880,300 1020,350"
+      fill="none" stroke="#a8d642" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="1020" cy="350" r="34" fill="#a8d642"/>
+  </svg>
+</template>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Curriculum</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .cur-hero{background:var(--d-bg);color:var(--d-ink);padding:60px 0 64px;position:relative;overflow:hidden;}
+  .path{position:relative;padding-left:0;}
+  .tier{display:grid;grid-template-columns:64px 1fr;gap:24px;position:relative;}
+  .tier:not(:last-child){padding-bottom:28px;}
+  .tier-rail{display:flex;flex-direction:column;align-items:center;}
+  .tier-num{width:52px;height:52px;border-radius:14px;background:var(--primary);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:20px;flex:none;z-index:1;}
+  .tier-line{width:2px;flex:1;background:var(--outline-var);margin:6px 0;}
+  .tier-card{border:1px solid var(--outline-var);border-radius:var(--r-xl);background:var(--c-lowest);padding:26px;box-shadow:var(--shadow-sm);}
+  .tier-card.locked .modlist{opacity:.55;}
+  .modlist{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;margin-top:16px;}
+  .mod{display:flex;gap:9px;align-items:center;font-size:14px;color:var(--on-surface-var);}
+  .mod .mk{width:6px;height:6px;border-radius:50%;background:var(--lime-dim);flex:none;}
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;}
+  @media(max-width:720px){.modlist{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="nav"></div>
+
+<section class="cur-hero">
+  <div class="glow glow-lime" style="width:480px;height:380px;top:-140px;right:-100px;opacity:.3;"></div>
+  <div class="wrap" style="position:relative;z-index:1;">
+    <span class="eyebrow" style="color:var(--lime);">The learning path</span>
+    <h1 class="h-lg" style="margin:14px 0 12px;max-width:680px;">A structured forex curriculum, from first principles to advanced execution.</h1>
+    <p class="body-lg" style="color:var(--d-ink-var);max-width:560px;">Five tiers that build on each other. Every tier ends with a certificate. The full curriculum, including Psychology, is included in Pro.</p>
+    <div class="row gap2" style="margin-top:24px;flex-wrap:wrap;">
+      <a href="pricing.html" class="btn btn-lime">Join Pro to unlock all tiers</a>
+      <a href="../member/learn.html" class="btn btn-glass">Preview in app</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap" style="max-width:920px;">
+    <div class="path" id="path"></div>
+  </div>
+</section>
+
+<section class="section dark-sec" style="text-align:center;">
+  <div class="wrap">
+    <h2 class="h-md">Finished a tier? Earn a verifiable certificate.</h2>
+    <p class="body-lg" style="color:var(--d-ink-var);max-width:520px;margin:14px auto 22px;">Each completed tier issues a shareable certificate with a verification ID.</p>
+    <a href="pricing.html" class="btn btn-lime btn-lg">View Pricing</a>
+  </div>
+</section>
+
+<div id="footer"></div>
+
+<script>
+document.getElementById('nav').innerHTML = FXShell.publicNav('Curriculum');
+document.getElementById('footer').innerHTML = FXShell.footer();
+
+// logged-in basic user sees locks beyond beginner; default visitor: all "Included in Pro"
+const plan = new URLSearchParams(location.search).get('plan'); // basic|pro|null
+
+const tiers = [
+  {t:'Entry', diff:'Foundations', time:'3.5 hrs', mods:['What is forex?','Currency pairs','How markets move','Brokers, spreads, pips','Risk basics'], access:'basic'},
+  {t:'Beginner', diff:'Beginner', time:'5 hrs', mods:['Candlesticks','Support & resistance','Chart reading','Order types','Basic trade planning'], access:'basic'},
+  {t:'Intermediate', diff:'Intermediate', time:'6.5 hrs', mods:['Strategy building','Confluence','Market sessions','Trade management','Risk-to-reward'], access:'pro'},
+  {t:'Advanced', diff:'Advanced', time:'8 hrs', mods:['Institutional concepts','Liquidity','Market structure','ICT-style concepts','Advanced execution'], access:'pro'},
+  {t:'Psychology', diff:'All levels', time:'4 hrs', mods:['Discipline','Bias','Revenge trading','Overtrading','Journaling mindset'], access:'pro'}
+];
+
+document.getElementById('path').innerHTML = tiers.map((tier,i)=>{
+  const locked = plan==='basic' && tier.access==='pro';
+  const inProgress = plan && i===1;
+  const done = plan && i===0;
+  return `
+  <div class="tier reveal">
+    <div class="tier-rail">
+      <div class="tier-num" style="${done?'background:var(--pos)':locked?'background:var(--c-high);color:var(--outline)':''}">${done?'✓':i+1}</div>
+      ${i<tiers.length-1?'<div class="tier-line"></div>':''}
+    </div>
+    <div class="tier-card ${locked?'locked':''}">
+      <div class="between" style="flex-wrap:wrap;gap:10px;">
+        <div><h3 class="h-sm">${tier.t}</h3><div class="muted" style="font-size:13px;margin-top:3px;white-space:nowrap;">${tier.diff} · ${tier.mods.length} modules · ~${tier.time}</div></div>
+        <div class="row gap1">
+          ${tier.access==='basic'?'<span class="chip chip-outline">Basic & Pro</span>':'<span class="chip chip-lime">Included in Pro</span>'}
+          ${locked?'<span class="chip chip-warn">🔒 Upgrade</span>':done?'<span class="chip chip-pos">Completed</span>':inProgress?'<span class="chip chip-forest">In progress</span>':''}
+        </div>
+      </div>
+      ${inProgress?'<div class="bar" style="margin-top:14px;"><i style="width:40%"></i></div>':''}
+      <div class="modlist">${tier.mods.map(m=>`<div class="mod"><span class="mk"></span>${m}</div>`).join('')}</div>
+      <div class="meta-row">
+        <span class="chip chip-outline">🎓 Certificate available</span>
+        ${locked
+          ? `<a href="pricing.html" class="btn btn-forest btn-sm">Upgrade to Pro to unlock</a>`
+          : done ? `<a href="../member/course-detail.html" class="btn btn-ghost btn-sm">Review · revisit anytime</a>`
+          : inProgress ? `<a href="../member/lesson.html" class="btn btn-lime btn-sm">Continue learning</a>`
+          : `<a href="${plan?'../member/course-detail.html':'pricing.html'}" class="btn btn-ghost btn-sm">${plan?'Start tier':'See pricing'}</a>`}
+      </div>
+    </div>
+  </div>`;
+}).join('');
+FX.rescanReveal && FX.rescanReveal();
+</script>
+</body>
+</html>

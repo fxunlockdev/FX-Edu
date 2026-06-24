@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Live Webinars</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .next{background:linear-gradient(150deg,#15271c,#0a1410);color:var(--d-ink);border-radius:var(--r-xl);padding:28px;position:relative;overflow:hidden;box-shadow:var(--shadow-dark);margin-bottom:26px;}
+  .next-grid{display:grid;grid-template-columns:1fr 300px;gap:30px;align-items:center;position:relative;z-index:1;}
+  .count{display:flex;gap:10px;}
+  .cu{background:var(--glass-dark);border:1px solid var(--d-outline-strong);border-radius:12px;padding:10px 14px;text-align:center;min-width:62px;}
+  .cu b{display:block;font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--lime);}
+  .cu span{font-size:11px;color:var(--d-ink-var);text-transform:uppercase;letter-spacing:.05em;}
+  .sched{display:grid;gap:12px;margin-bottom:30px;}
+  .srow{display:grid;grid-template-columns:64px 1fr auto;gap:16px;align-items:center;background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:14px 18px;box-shadow:var(--shadow-sm);transition:border-color .2s,transform .25s var(--ease),box-shadow .25s var(--ease);}
+  .srow:hover{border-color:var(--leaf);transform:translateY(-2px);box-shadow:var(--shadow);}
+  .date{text-align:center;border-right:1px solid var(--outline-var);padding-right:12px;}
+  .date b{display:block;font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1;}
+  .date span{font-size:11px;text-transform:uppercase;color:var(--on-surface-var);letter-spacing:.05em;}
+  .replays{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .rep{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .25s var(--ease),box-shadow .25s var(--ease);cursor:pointer;}
+  .rep:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+  .thumb{aspect-ratio:16/9;background:linear-gradient(135deg,#1b3024,#0f1d16);position:relative;display:grid;place-items:center;}
+  .play{width:44px;height:44px;border-radius:50%;background:rgba(195,243,92,.92);display:grid;place-items:center;color:#142000;}
+  @media(max-width:1000px){.next-grid{grid-template-columns:1fr;}.replays{grid-template-columns:1fr 1fr;}}
+  @media(max-width:640px){.replays{grid-template-columns:1fr;}.srow{grid-template-columns:54px 1fr;}.srow .btn{display:none;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <h1 class="h-md" style="margin:0 0 4px;">Live Webinars</h1>
+      <p class="muted" style="margin:0 0 22px;">Learn live with experienced educators. Every session is recorded to your replay library.</p>
+
+      <div class="next">
+        <div class="glow glow-lime glow-pulse" style="width:280px;height:280px;top:-140px;right:-70px;opacity:.22;"></div>
+        <div class="next-grid">
+          <div>
+            <span class="chip" style="background:var(--glass-dark);color:var(--lime);border:1px solid var(--d-outline-strong);"><span class="dot-live"></span>&nbsp;Next live session</span>
+            <h2 class="h-sm" style="color:#fff;margin:14px 0 6px;">London Session Structure &amp; Liquidity</h2>
+            <p style="color:var(--d-ink-var);font-size:14px;margin:0 0 18px;">Marcus Vale · 60 min · Technical analysis · 312 registered</p>
+            <div class="count" id="count"></div>
+          </div>
+          <div class="stack gap2">
+            <button class="btn btn-lime btn-block" onclick="FX.toast('Seat reserved. Calendar invite sent.')">Reserve your seat</button>
+            <button class="btn btn-glass btn-block">Add to calendar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="between" style="margin-bottom:14px;"><h3 style="font-size:16px;font-weight:700;">This week's schedule</h3><a href="../public/webinars-landing.html" class="muted" style="font-size:13px;font-weight:600;">View all →</a></div>
+      <div class="sched" id="sched"></div>
+
+      <div class="between" style="margin-bottom:14px;"><h3 style="font-size:16px;font-weight:700;">Replay library</h3><select class="input" style="width:auto;padding:8px 12px;font-size:13px;"><option>All topics</option><option>Technical</option><option>Fundamental</option><option>Psychology</option></select></div>
+      <div class="replays" id="replays"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Live Webinars',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Live Webinars', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+
+// countdown
+const target = Date.now() + (1000*60*60*51 + 1000*60*23);
+function tick(){ const d=Math.max(0,target-Date.now()); const D=Math.floor(d/864e5),H=Math.floor(d/36e5)%24,M=Math.floor(d/6e4)%60,S=Math.floor(d/1e3)%60;
+  document.getElementById('count').innerHTML=[[D,'days'],[H,'hrs'],[M,'min'],[S,'sec']].map(([v,l])=>`<div class="cu"><b>${String(v).padStart(2,'0')}</b><span>${l}</span></div>`).join(''); }
+tick(); setInterval(tick,1000);
+
+const sched=[
+  ['18','THU','London Session Structure & Liquidity','Marcus Vale · 18:00 GMT · Technical','live'],
+  ['20','SAT','Reading the Economic Calendar','Dana Cole · 14:00 GMT · Fundamental',''],
+  ['22','MON','Building a Pre-Trade Routine','Priya Anand · 17:00 GMT · Psychology',''],
+  ['24','WED','Risk-First Position Sizing','Marcus Vale · 18:00 GMT · Technical','']
+];
+document.getElementById('sched').innerHTML = sched.map(s=>`<div class="srow">
+  <div class="date"><b>${s[0]}</b><span>${s[1]}</span></div>
+  <div><div style="font-weight:700;font-size:14.5px;">${s[2]}</div><div class="muted" style="font-size:13px;margin-top:2px;">${s[3]}</div></div>
+  <a class="btn ${s[4]?'btn-lime':'btn-ghost'} btn-sm">${s[4]?'Join live':'Reserve'}</a></div>`).join('');
+
+const reps=[
+  ['Market Structure Masterclass','Marcus Vale · 58 min','Technical'],
+  ['NFP: Trading the News Safely','Dana Cole · 44 min','Fundamental'],
+  ['Discipline & The Losing Streak','Priya Anand · 51 min','Psychology'],
+  ['Liquidity Sweeps Explained','Marcus Vale · 39 min','Technical'],
+  ['Central Banks & Currency Flows','Dana Cole · 47 min','Fundamental'],
+  ['Journaling for Edge','Priya Anand · 33 min','Psychology']
+];
+document.getElementById('replays').innerHTML = reps.map(r=>`<div class="rep">
+  <div class="thumb"><div class="play"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><span class="chip chip-lime-d" style="position:absolute;top:10px;left:10px;font-size:11px;">${r[2]}</span></div>
+  <div style="padding:14px;"><div style="font-weight:700;font-size:14px;line-height:1.3;">${r[0]}</div><div class="muted" style="font-size:12.5px;margin-top:5px;">${r[1]}</div></div></div>`).join('');
+FX.rescanReveal && FX.rescanReveal();
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Trading Tools</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<style>
+  .th{background:var(--d-bg);color:var(--d-ink);padding:64px 0 70px;position:relative;overflow:hidden;}
+  .th-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;position:relative;z-index:1;}
+  .calc{background:linear-gradient(150deg,#14241b,#0f1d16);border:1px solid var(--d-outline-strong);border-radius:var(--r-xl);padding:24px;box-shadow:var(--shadow-dark);}
+  .calc-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--d-outline);font-size:14px;}
+  .calc-row b{font-family:var(--font-display);font-size:17px;}
+  .tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .tool{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:24px;box-shadow:var(--shadow-sm);transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .2s;}
+  .tool:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--leaf);}
+  .tic{width:46px;height:46px;border-radius:12px;background:var(--primary-container);color:var(--primary);display:grid;place-items:center;margin-bottom:14px;}
+  @media(max-width:900px){.th-grid{grid-template-columns:1fr;}.tools-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="nav"></div>
+
+<section class="th">
+  <div class="glow glow-lime glow-pulse" style="width:520px;height:420px;top:-160px;right:-120px;opacity:.3;"></div>
+  <div class="wrap">
+    <div class="th-grid">
+      <div class="fade-up">
+        <span class="chip" style="background:var(--glass-dark);color:var(--lime);border:1px solid var(--d-outline-strong);">Free trading tools</span>
+        <h1 class="display" style="margin:18px 0 14px;font-size:clamp(36px,4.6vw,56px);">Trade by the numbers, <span style="color:var(--lime);">not by emotion.</span></h1>
+        <p class="body-lg" style="color:var(--d-ink-var);max-width:480px;">A suite of free calculators that put risk first. Size every position, plan every stop, and know your exposure before you click buy.</p>
+        <div class="row gap2" style="margin-top:26px;flex-wrap:wrap;">
+          <a href="pricing.html" class="btn btn-lime btn-lg">Start learning free</a>
+          <a href="#tools" class="btn btn-glass btn-lg">Explore the tools</a>
+        </div>
+      </div>
+      <div class="calc floaty">
+        <span class="chip chip-lime-d">Position size calculator</span>
+        <h3 style="color:#fff;font-size:17px;font-weight:700;margin:14px 0 16px;">Risk-first sizing</h3>
+        <div class="field" style="margin-bottom:12px;"><label style="color:var(--d-ink-var);">Account balance</label><input class="input input-dark" id="bal" value="10000"></div>
+        <div class="row gap2" style="margin-bottom:18px;">
+          <div class="field" style="flex:1;"><label style="color:var(--d-ink-var);">Risk %</label><input class="input input-dark" id="risk" value="1"></div>
+          <div class="field" style="flex:1;"><label style="color:var(--d-ink-var);">Stop (pips)</label><input class="input input-dark" id="pips" value="30"></div>
+        </div>
+        <div class="calc-row"><span style="color:var(--d-ink-var);">Risk amount</span><b style="color:#fff;" id="rAmt">$100</b></div>
+        <div class="calc-row"><span style="color:var(--d-ink-var);">Position size</span><b style="color:var(--lime);" id="rLot">0.33 lots</b></div>
+        <div class="calc-row" style="border:none;"><span style="color:var(--d-ink-var);">Units</span><b style="color:#fff;" id="rUnits">33,333</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="tools">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div class="eyebrow">The toolkit</div>
+      <h2 class="h-md" style="margin:8px 0 0;">Everything you need to plan a disciplined trade</h2>
+    </div>
+    <div class="tools-grid" id="grid"></div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--c-low);">
+  <div class="wrap" style="text-align:center;max-width:640px;">
+    <h2 class="h-md" style="margin:0 0 12px;">Tools are the start. Discipline is the system.</h2>
+    <p class="body-lg" style="margin:0 0 24px;">Our calculators are free forever. The curriculum, webinars and AI tutor turn good numbers into a repeatable process.</p>
+    <a href="pricing.html" class="btn btn-forest btn-lg">See membership plans</a>
+  </div>
+</section>
+
+<div id="footer"></div>
+<script src="../assets/lumina.js"></script>
+<script>
+document.getElementById('nav').innerHTML = FXShell.publicNav('Tools');
+document.getElementById('footer').innerHTML = FXShell.footer();
+
+function num(id){return parseFloat(document.getElementById(id).value)||0;}
+function calc(){
+  const bal=num('bal'),risk=num('risk'),pips=num('pips');
+  const rAmt=bal*risk/100;
+  const perPip=10; // $/pip per standard lot (USD quote approximation)
+  const lots= pips? rAmt/(pips*perPip) : 0;
+  document.getElementById('rAmt').textContent='$'+rAmt.toFixed(0);
+  document.getElementById('rLot').textContent=lots.toFixed(2)+' lots';
+  document.getElementById('rUnits').textContent=Math.round(lots*100000).toLocaleString();
+}
+['bal','risk','pips'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+calc();
+
+const TI={
+  size:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 3v18h18M8 14l3-4 3 2 4-6"/></svg>',
+  risk:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>',
+  pip:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+  pnl:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg>',
+  corr:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="8" cy="8" r="5"/><circle cx="16" cy="16" r="5"/></svg>',
+  sess:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'
+};
+const tools=[
+  ['size','Position Size Calculator','Size every trade to a fixed risk percentage so one loss never breaks your account.'],
+  ['risk','Risk / Reward Planner','Map entry, stop and target to see your R multiple before you commit.'],
+  ['pip','Pip Value Calculator','Know exactly what each pip is worth across pairs and lot sizes.'],
+  ['pnl','Profit & Loss Simulator','Model outcomes across win rates and R multiples to test your edge.'],
+  ['corr','Correlation Checker','Avoid stacking correlated pairs and doubling your real exposure.'],
+  ['sess','Session Clock','Track London, New York and Asia opens in your local time.']
+];
+document.getElementById('grid').innerHTML = tools.map(t=>`<div class="tool">
+  <div class="tic">${TI[t[0]]}</div>
+  <h3 style="font-size:16.5px;font-weight:700;margin:0 0 8px;">${t[1]}</h3>
+  <p class="muted" style="font-size:14px;line-height:1.55;margin:0 0 14px;">${t[2]}</p>
+  <a href="pricing.html" style="font-size:13.5px;font-weight:700;color:var(--primary);">Open tool →</a>
+</div>`).join('');
+</script>
+</body>
+</html>

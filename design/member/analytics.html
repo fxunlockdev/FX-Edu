@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Performance Analytics</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .sum{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:22px;}
+  .sc{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:16px;box-shadow:var(--shadow-sm);}
+  .sc .l{font-size:11px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--on-surface-var);}
+  .sc .v{font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:-.02em;margin-top:6px;}
+  .sc .d{font-size:12px;font-weight:700;margin-top:3px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .panel{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow-sm);}
+  .ph{font-size:15px;font-weight:700;margin-bottom:2px;}
+  .insight{display:flex;gap:12px;padding:14px;border-radius:var(--r);background:var(--c-low);}
+  .insight .dot{width:8px;height:8px;border-radius:50%;background:var(--lime-dim);margin-top:6px;flex:none;}
+  @media(max-width:1100px){.sum{grid-template-columns:repeat(3,1fr);}.grid2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body" id="body"></div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Performance Analytics',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Performance Analytics', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+
+const body=document.getElementById('body');
+if(plan==='basic'){
+  body.innerHTML = `<div class="card" style="max-width:560px;margin:8vh auto;overflow:hidden;">
+    <div class="dark-sec" style="padding:32px;position:relative;overflow:hidden;">
+      <div class="glow glow-lime" style="width:260px;height:260px;top:-120px;right:-60px;opacity:.3;"></div>
+      <span class="chip chip-lime-d">Pro feature</span>
+      <h2 class="h-sm" style="color:#fff;margin:14px 0 8px;">Turn your journal into a coaching dashboard</h2>
+      <p style="color:var(--d-ink-var);font-size:14.5px;margin:0;">See win rate by pair, session, setup and trading behavior. Spot your edges and your leaks, then turn insight into rules.</p>
+    </div>
+    <div style="padding:24px;"><a href="../public/pricing.html" class="btn btn-lime btn-block btn-lg">Upgrade to Pro</a></div>
+  </div>`;
+} else {
+  body.innerHTML = `
+  <div class="between" style="flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+    <div><h1 class="h-md" style="margin:0;">Performance Analytics</h1><p class="muted" style="margin:4px 0 0;">42 trades analyzed · last 90 days</p></div>
+    <select class="input" style="width:auto;padding:9px 14px;"><option>Last 90 days</option><option>Last 30 days</option><option>This year</option></select>
+  </div>
+  <div class="sum">
+    ${[['Win rate','58%','+4%','delta-pos'],['Avg R','1.9R','+0.2','delta-pos'],['Net R','+74R','','' ],['Avg risk','1.1%','','' ],['Trades','42','','' ],['Consistency','B+','','text-pos']].map(([l,v,d,c])=>`<div class="sc"><div class="l">${l}</div><div class="v ${c==='text-pos'?'text-pos':''}">${v}</div>${d?`<div class="d ${c}">${d}</div>`:''}</div>`).join('')}
+  </div>
+  <div class="grid2" style="margin-bottom:20px;">
+    <div class="panel"><div class="ph">Net R over time</div><p class="muted" style="font-size:12.5px;margin:0 0 10px;">Cumulative R multiple</p><div id="equity" style="height:200px;"></div></div>
+    <div class="panel"><div class="ph">Win rate by session</div><p class="muted" style="font-size:12.5px;margin:0 0 10px;">London is your strongest window</p><div id="session"></div></div>
+  </div>
+  <div class="grid2" style="margin-bottom:20px;">
+    <div class="panel"><div class="ph">By day of week</div><p class="muted" style="font-size:12.5px;margin:0 0 10px;">Friday win rate sits well below your average</p><div id="dow"></div></div>
+    <div class="panel"><div class="ph">By setup</div><p class="muted" style="font-size:12.5px;margin:0 0 10px;">Average R per strategy</p><div id="setup"></div></div>
+  </div>
+  <div class="panel">
+    <div class="row gap2" style="margin-bottom:14px;"><span style="width:30px;height:30px;border-radius:8px;background:rgba(168,214,66,.15);display:grid;place-items:center;color:var(--lime-dim);flex:none;">✦</span><div class="ph" style="margin:0;">AI insights</div></div>
+    <div class="grid" style="grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      ${[['You perform best during the London session, with a 71% win rate and 2.1R average.'],['Your losses cluster when you take more than 3 trades in a day, often after a loss.'],['Best setup: Breakout Retest at 1.8R average across 14 trades. Lean into it.']].map(([t])=>`<div class="insight"><span class="dot"></span><p style="margin:0;font-size:13.5px;line-height:1.5;">${t}</p></div>`).join('')}
+    </div>
+  </div>`;
+  FX.areaChart(document.getElementById('equity'), {data:[0,2,1.4,3.8,3,5.6,5,8.2,7.6,11,10.2,14,16.4,15.6,19,22,21,26,30,28,34,38], height:200, color:'#a8d642'});
+  FX.barChart(document.getElementById('session'), {data:[{label:'Asia',value:44,color:'#6c9e75'},{label:'London',value:71},{label:'New York',value:61},{label:'Overlap',value:55}], height:170, max:100});
+  FX.barChart(document.getElementById('dow'), {data:[{label:'Mon',value:55},{label:'Tue',value:62},{label:'Wed',value:64},{label:'Thu',value:60},{label:'Fri',value:38,color:'#ba1a1a'}], height:170, max:100});
+  FX.barChart(document.getElementById('setup'), {data:[{label:'Breakout',value:1.8},{label:'Sweep',value:1.4},{label:'Trend',value:1.6},{label:'Range',value:0.6,color:'#e0a235'},{label:'Bounce',value:1.2}], height:170});
+}
+</script>
+</body>
+</html>

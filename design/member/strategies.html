@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Strategy Library</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:20px;}
+  .ft{font-size:13px;font-weight:600;padding:8px 14px;border-radius:9999px;background:var(--c-lowest);border:1px solid var(--outline-var);cursor:pointer;transition:.15s;}
+  .ft.on{background:var(--primary);color:#fff;border-color:transparent;}
+  .ft:not(.on):hover{background:var(--c-low);}
+  .sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .strat{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .25s var(--ease),box-shadow .25s var(--ease);display:flex;flex-direction:column;}
+  .strat:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+  .sbanner{height:96px;position:relative;display:flex;align-items:flex-end;padding:14px;}
+  .sbody{padding:16px 18px;flex:1;display:flex;flex-direction:column;}
+  .meta{display:flex;gap:14px;font-size:12px;color:var(--on-surface-var);margin:10px 0 14px;}
+  .meta b{color:var(--on-surface);font-weight:700;}
+  .lock-mini{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--on-surface-var);}
+  @media(max-width:1000px){.sgrid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:640px){.sgrid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <h1 class="h-md" style="margin:0 0 4px;">Strategy Library</h1>
+      <p class="muted" style="margin:0 0 20px;">Documented, rule-based playbooks. Each one teaches a repeatable process, not a promise.</p>
+      <div class="filters" id="filters"></div>
+      <div class="sgrid" id="grid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Strategy Library',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Strategy Library', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+
+['All','Technical','Smart Money','Trend','Range','Pro only'].forEach((f,i)=>{});
+document.getElementById('filters').innerHTML=['All','Technical','Smart Money','Trend','Range'].map((f,i)=>`<div class="ft ${i===0?'on':''}">${f}</div>`).join('');
+document.querySelectorAll('.ft').forEach(f=>f.onclick=()=>{document.querySelectorAll('.ft').forEach(x=>x.classList.remove('on'));f.classList.add('on');});
+
+const grad=['linear-gradient(135deg,#1b3024,#0f1d16)','linear-gradient(135deg,#23351c,#11200d)','linear-gradient(135deg,#142a2e,#0c1a1c)','linear-gradient(135deg,#2a2418,#171206)'];
+const strats=[
+  ['Breakout Retest','Technical','Intermediate','5 lessons','Enter on the retest of a broken level with confirmation. A patient, structure-based approach.',0],
+  ['Liquidity Sweep Reversal','Smart Money','Advanced','7 lessons','Identify stop pools, wait for the sweep, trade the reclaim. Context-heavy and rules-driven.',1],
+  ['Trend Pullback','Trend','Beginner','4 lessons','Trade with the higher-timeframe trend on controlled pullbacks to dynamic support.',1],
+  ['Range Rotation','Range','Intermediate','5 lessons','Fade range extremes with clear invalidation when the market lacks direction.',0],
+  ['Session Open Drive','Technical','Advanced','6 lessons','Use London / NY opens and session structure for momentum entries.',1],
+  ['Fair Value Gap Fill','Smart Money','Advanced','6 lessons','Map imbalances and trade their mitigation with strict invalidation.',1]
+];
+document.getElementById('grid').innerHTML = strats.map((s,i)=>{
+  const locked = plan==='basic' && s[5];
+  return `<div class="strat">
+    <div class="sbanner" style="background:${grad[i%4]};"><span class="chip chip-lime-d">${s[1]}</span></div>
+    <div class="sbody">
+      <h3 style="font-size:16px;font-weight:700;margin:0;">${s[0]}</h3>
+      <div class="meta"><span><b>${s[2]}</b></span><span><b>${s[3]}</b></span></div>
+      <p class="muted" style="font-size:13.5px;line-height:1.5;margin:0 0 16px;flex:1;">${s[4]}</p>
+      ${locked
+        ? `<a href="../public/pricing.html" class="btn btn-ghost btn-sm btn-block"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:5px;"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Unlock with Pro</a>`
+        : `<a href="lesson.html" class="btn btn-forest btn-sm btn-block">Open playbook</a>`}
+    </div></div>`;
+}).join('');
+</script>
+</body>
+</html>

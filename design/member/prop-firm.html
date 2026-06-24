@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Prop Firm Prep</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .hero-card{background:linear-gradient(150deg,#15271c,#0a1410);color:var(--d-ink);border-radius:var(--r-xl);padding:28px;position:relative;overflow:hidden;box-shadow:var(--shadow-dark);margin-bottom:24px;}
+  .hg{display:grid;grid-template-columns:1fr 280px;gap:30px;align-items:center;position:relative;z-index:1;}
+  .pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+  .pst{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:16px;box-shadow:var(--shadow-sm);}
+  .pst .l{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:var(--on-surface-var);}
+  .pst .v{font-family:var(--font-display);font-size:24px;font-weight:700;margin-top:6px;}
+  .steps{display:grid;gap:14px;}
+  .step{display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:center;background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:16px 18px;box-shadow:var(--shadow-sm);}
+  .snum{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:17px;}
+  .checklist{display:grid;gap:10px;margin-top:18px;}
+  .ck{display:flex;gap:11px;align-items:center;font-size:14px;padding:11px 14px;border-radius:10px;background:var(--c-low);}
+  .ckbox{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;flex:none;}
+  @media(max-width:980px){.hg{grid-template-columns:1fr;}.pstats{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body" id="body"></div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Prop Firm Prep',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Prop Firm Prep', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+
+const body=document.getElementById('body');
+if(plan==='basic'){
+  body.innerHTML = `<div class="card" style="max-width:560px;margin:8vh auto;overflow:hidden;">
+    <div class="dark-sec" style="padding:32px;position:relative;overflow:hidden;">
+      <div class="glow glow-lime glow-pulse" style="width:260px;height:260px;top:-120px;right:-60px;opacity:.3;"></div>
+      <span class="chip chip-lime-d">Pro feature</span>
+      <h2 class="h-sm" style="color:#fff;margin:14px 0 8px;">Get evaluation-ready, the disciplined way</h2>
+      <p style="color:var(--d-ink-var);font-size:14.5px;margin:0;">A structured path to pass funded-account evaluations: drawdown rules, position sizing, and the routine that keeps you within limits.</p>
+    </div>
+    <div style="padding:24px;"><a href="../public/pricing.html" class="btn btn-lime btn-block btn-lg">Upgrade to Pro</a></div>
+  </div>`;
+} else {
+  body.innerHTML = `
+  <div class="hero-card">
+    <div class="glow glow-lime glow-pulse" style="width:300px;height:300px;top:-150px;right:-80px;opacity:.2;"></div>
+    <div class="hg">
+      <div>
+        <span class="chip chip-lime-d">Funded account track</span>
+        <h1 class="h-sm" style="color:#fff;margin:14px 0 8px;">Pass the evaluation by mastering the rules, not chasing the target.</h1>
+        <p style="color:var(--d-ink-var);font-size:14.5px;margin:0;">Most evaluations are lost to risk violations, not bad analysis. This track drills the discipline that keeps you inside the limits.</p>
+      </div>
+      <div class="card-pad" style="background:var(--glass-dark);border:1px solid var(--d-outline-strong);border-radius:var(--r-lg);">
+        <div style="font-size:12px;color:var(--d-ink-var);margin-bottom:6px;">Your readiness</div>
+        <div style="font-family:var(--font-display);font-size:40px;font-weight:700;color:var(--lime);line-height:1;">72<span style="font-size:20px;">%</span></div>
+        <div class="bar bar-dark" style="margin:12px 0 6px;"><i style="width:72%;"></i></div>
+        <div style="font-size:12px;color:var(--d-ink-var);">3 of 4 modules complete</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pstats">
+    <div class="pst"><div class="l">Max daily drawdown</div><div class="v">5%</div></div>
+    <div class="pst"><div class="l">Max overall drawdown</div><div class="v">10%</div></div>
+    <div class="pst"><div class="l">Profit target</div><div class="v">8%</div></div>
+  </div>
+
+  <h3 style="font-size:16px;font-weight:700;margin:0 0 14px;">Your prep path</h3>
+  <div class="steps" style="margin-bottom:26px;">
+    ${[['1','Understand the rulebook','Daily loss, trailing drawdown, and consistency rules explained','done'],
+       ['2','Build a compliant routine','Pre-trade checklist and a sizing plan that respects limits','done'],
+       ['3','Simulate the evaluation','Run a mock evaluation in your journal with strict 1% risk','done'],
+       ['4','Manage the funded phase','Scaling, payout cycles, and protecting the account','now']].map(s=>{
+      const c = s[3]==='done' ? 'background:var(--primary-container);color:var(--on-primary-container);' : 'background:rgba(168,214,66,.18);color:var(--lime-ink);';
+      return `<div class="step"><div class="snum" style="${c}">${s[3]==='done'?'✓':s[0]}</div>
+        <div><div style="font-weight:700;font-size:14.5px;">${s[1]}</div><div class="muted" style="font-size:13px;margin-top:2px;">${s[2]}</div></div>
+        <a class="btn ${s[3]==='now'?'btn-lime':'btn-ghost'} btn-sm">${s[3]==='done'?'Review':'Continue'}</a></div>`;
+    }).join('')}
+  </div>
+
+  <div class="card card-pad">
+    <h3 style="font-size:15px;font-weight:700;margin:0 0 4px;">Evaluation-day checklist</h3>
+    <p class="muted" style="font-size:13px;margin:0;">Run this before every session during your evaluation.</p>
+    <div class="checklist">
+      ${[['Risk per trade fixed at 1% or less',1],['Daily loss limit set as a hard stop',1],['No trading during high-impact news',1],['Trade plan written before market open',0],['Journal updated after every trade',0]].map(c=>`
+        <div class="ck"><span class="ckbox" style="background:${c[1]?'var(--lime-dim)':'transparent'};border:${c[1]?'none':'2px solid var(--outline-var)'};color:#142000;">${c[1]?'✓':''}</span>${c[0]}</div>`).join('')}
+    </div>
+  </div>`;
+}
+</script>
+</body>
+</html>

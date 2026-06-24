@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, AI Tutor</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .ai-wrap{display:grid;grid-template-columns:240px 1fr;gap:20px;height:calc(100vh - 64px - 56px);min-height:560px;}
+  .rcard{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:14px;margin-bottom:14px;box-shadow:var(--shadow-sm);}
+  .rl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--on-surface-var);margin-bottom:8px;}
+  .mode{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--on-surface-var);transition:.15s;}
+  .mode.on{background:var(--primary-container);color:var(--on-primary-container);}
+  .mode:not(.on):hover{background:var(--c-low);}
+  .chat{display:flex;flex-direction:column;background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm);}
+  .chat-head{padding:14px 18px;border-bottom:1px solid var(--outline-var);display:flex;align-items:center;gap:10px;}
+  .stream{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:16px;}
+  .msg{max-width:74%;padding:13px 16px;border-radius:16px;font-size:14.5px;line-height:1.55;}
+  .msg.ai{background:var(--c-low);border:1px solid var(--outline-var);border-bottom-left-radius:5px;align-self:flex-start;}
+  .msg.me{background:var(--primary);color:#fff;border-bottom-right-radius:5px;align-self:flex-end;}
+  .mrow{display:flex;gap:10px;max-width:78%;}
+  .mrow.me{align-self:flex-end;flex-direction:row-reverse;max-width:74%;}
+  .ava{width:30px;height:30px;border-radius:8px;background:rgba(168,214,66,.18);display:grid;place-items:center;color:var(--lime-dim);flex:none;font-size:14px;}
+  .prompts{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 12px;}
+  .pchip{font-size:13px;font-weight:600;padding:8px 13px;border-radius:9999px;background:var(--c-low);border:1px solid var(--outline-var);cursor:pointer;transition:.15s;}
+  .pchip:hover{background:var(--primary-container);border-color:transparent;}
+  .composer{padding:14px 18px;border-top:1px solid var(--outline-var);display:flex;gap:10px;}
+  .disc{font-size:11.5px;color:var(--on-surface-var);text-align:center;padding:0 18px 12px;}
+  @media(max-width:900px){.ai-wrap{grid-template-columns:1fr;height:auto;}.ai-rail{display:none;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <div class="ai-wrap">
+        <div class="ai-rail">
+          <div class="rcard">
+            <div class="rl">Tutor mode</div>
+            <div class="mode on">✦ &nbsp;Explain</div>
+            <div class="mode">？&nbsp;Quiz me</div>
+            <div class="mode">↳ &nbsp;What's next</div>
+            <div class="mode">⚑ &nbsp;Review a trade</div>
+          </div>
+          <div class="rcard">
+            <div class="rl">Context</div>
+            <p style="font-size:13px;margin:0;color:var(--on-surface-var);line-height:1.5;">Tied to <strong style="color:var(--on-surface);">Tier 2 · Liquidity &amp; Market Structure</strong>. The tutor knows where you are in the course.</p>
+          </div>
+          <div class="rcard" style="background:linear-gradient(135deg,#14241b,#0f1d16);border:none;">
+            <div class="rl" style="color:var(--lime);">Guardrails</div>
+            <p style="font-size:12.5px;margin:0;color:var(--d-ink-var);line-height:1.5;">Educational only. The tutor will not promise profits or give personalized financial advice.</p>
+          </div>
+        </div>
+
+        <div class="chat">
+          <div class="chat-head">
+            <span class="ava">✦</span>
+            <div><div style="font-weight:700;font-size:14.5px;">Academy AI Tutor</div><div style="font-size:12px;color:var(--on-surface-var);">Course-aware · Explain mode</div></div>
+            <span class="chip chip-pos" style="margin-left:auto;"><span class="dot"></span>&nbsp;Online</span>
+          </div>
+          <div class="stream" id="stream">
+            <div class="mrow"><span class="ava">✦</span><div class="msg ai">Hi Alex. You're on <strong>Liquidity &amp; Market Structure</strong>. Want me to explain a concept, quiz you, or suggest what to study next?</div></div>
+            <div class="mrow me"><div class="msg me">Explain liquidity simply</div></div>
+            <div class="mrow"><span class="ava">✦</span><div class="msg ai">Liquidity is simply where lots of orders sit waiting to be filled, usually just above swing highs or below swing lows where stop-losses cluster. Price often moves toward those pools to fill orders before reversing. Want a chart example on EUR/USD?</div></div>
+          </div>
+          <div class="prompts" id="prompts"></div>
+          <div class="composer">
+            <input class="input" id="inp" placeholder="Ask about your current lesson…">
+            <button class="btn btn-forest" id="send">Send</button>
+          </div>
+          <div class="disc">Educational content only · Not financial advice</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','AI Tutor',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'AI Tutor', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+
+const prompts=['Quiz me on order types','What should I study next?','Explain a fair value gap','Review my last trade'];
+document.getElementById('prompts').innerHTML = prompts.map(p=>`<span class="pchip">${p}</span>`).join('');
+
+const stream=document.getElementById('stream'), inp=document.getElementById('inp');
+function push(text,who){ const r=document.createElement('div'); r.className='mrow '+(who==='me'?'me':''); r.innerHTML=(who==='me'?'':'<span class="ava">✦</span>')+`<div class="msg ${who}">${text}</div>`; stream.appendChild(r); stream.scrollTop=stream.scrollHeight; return r; }
+function ask(q){ if(!q.trim())return; push(q,'me'); inp.value='';
+  setTimeout(()=>{ const t=push('<span style="opacity:.6;">Thinking…</span>','ai');
+    setTimeout(()=>{ t.querySelector('.msg').innerHTML='Good question. Here\'s how I\'d think about it, step by step, tied to your current lesson. Remember this is for learning, not a trade signal.'; stream.scrollTop=stream.scrollHeight; }, 700);
+  }, 250);
+}
+document.getElementById('send').onclick=()=>ask(inp.value);
+inp.addEventListener('keydown',e=>{ if(e.key==='Enter') ask(inp.value); });
+document.getElementById('prompts').addEventListener('click',e=>{ if(e.target.classList.contains('pchip')) ask(e.target.textContent); });
+document.querySelectorAll('.mode').forEach(m=>m.onclick=()=>{ document.querySelectorAll('.mode').forEach(x=>x.classList.remove('on')); m.classList.add('on'); });
+</script>
+</body>
+</html>

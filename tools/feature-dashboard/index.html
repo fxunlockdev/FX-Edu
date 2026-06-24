@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FX Academy — Feature Tracker</title>
+<style>
+  :root{
+    --forest:#0f3218; --forest-deep:#001c07; --lime:#c3f35c; --lime-dim:#a8d642; --lime-ink:#4f6e0a;
+    --surface:#f7f9f4; --card:#ffffff; --ink:#161a17; --ink-var:#444b44; --outline:#cdd3c9;
+    --pos:#4ea863; --warn:#e0a235; --grey:#9aa39a;
+    --d-bg:#091310; --d-surface:#14241b; --d-ink:#f1f5ef; --d-ink-var:#b3c4b8;
+    --font:'Hanken Grotesk',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font);color:var(--ink);
+    background:radial-gradient(circle at top left,rgba(196,237,198,.45),transparent 30%),
+      radial-gradient(circle at top right,rgba(168,214,66,.16),transparent 24%),
+      linear-gradient(180deg,#fbfcf8,var(--surface) 26%,#f3f6ef);min-height:100vh}
+  .wrap{max-width:1120px;margin:0 auto;padding:32px 24px 80px}
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;
+    background:linear-gradient(150deg,var(--forest),var(--forest-deep));box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+  h1{font-size:20px;letter-spacing:-.02em;margin:0}
+  .sub{font-size:13px;color:var(--ink-var);margin-top:2px}
+  .pill{font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;border:1px solid var(--outline);background:#fff;color:var(--ink-var)}
+  .summary{display:flex;gap:14px;flex-wrap:wrap;margin:22px 0 8px}
+  .stat{flex:1;min-width:150px;background:var(--card);border:1px solid var(--outline);border-radius:16px;padding:16px 18px;box-shadow:0 6px 20px rgba(16,33,24,.05)}
+  .stat .n{font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .stat .l{font-size:12px;color:var(--ink-var);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+  .bar{height:8px;border-radius:999px;background:var(--outline);overflow:hidden;margin-top:10px}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--lime-dim),var(--lime))}
+  .group{margin-top:30px}
+  .group h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-var);margin:0 0 12px;font-weight:800}
+  .row{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--outline);border-radius:14px;
+    padding:12px 16px;margin-bottom:8px;box-shadow:0 4px 14px rgba(16,33,24,.04);transition:.15s}
+  .row:hover{box-shadow:0 10px 26px rgba(16,33,24,.08);transform:translateY(-1px)}
+  .id{font-weight:800;font-size:12px;width:38px;color:var(--lime-ink)}
+  .title{flex:1;font-weight:600;font-size:14.5px;min-width:0}
+  .status{font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em}
+  .s-done{background:rgba(78,168,99,.16);color:#1f6b38}
+  .s-in_progress{background:rgba(224,162,53,.18);color:#8a5a09}
+  .s-todo{background:#eef1ea;color:var(--grey)}
+  .stages{display:flex;gap:5px}
+  .stg{font-size:10px;font-weight:800;width:30px;text-align:center;padding:5px 0;border-radius:7px;border:1px solid var(--outline);color:var(--grey);background:#fafcf7}
+  .stg.done{background:var(--forest);color:var(--lime);border-color:var(--forest)}
+  .stg.in_progress{background:rgba(224,162,53,.18);color:#8a5a09;border-color:rgba(224,162,53,.4)}
+  .stg.na{opacity:.35}
+  footer{margin-top:40px;font-size:12px;color:var(--ink-var);text-align:center}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px;font-size:11.5px;color:var(--ink-var)}
+  @media(max-width:680px){.stages{display:none}.title{font-size:13.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 19 L8 11 L13 14 L21 4" stroke="#c3f35c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="4" r="2.1" fill="#c3f35c"/></svg></span>
+      <div>
+        <h1>FX Academy — Feature Tracker</h1>
+        <div class="sub" id="sub">loading…</div>
+      </div>
+    </div>
+    <span class="pill" id="clock">live</span>
+  </header>
+
+  <div class="summary" id="summary"></div>
+  <div id="groups"></div>
+
+  <footer>
+    Auto-refreshes every 3s from <code>status.json</code> · keep this tab open
+    <div class="legend">
+      <span><b>Loop:</b></span><span>Build</span><span>Review</span><span>Unit</span><span>E2E</span><span>Design</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+const STAGE_LABELS = { build:'B', review:'R', unit:'U', e2e:'E2E', design:'D' };
+function statusLabel(s){ return (s||'todo').replace('_',' '); }
+
+async function load(){
+  let data;
+  try { data = await (await fetch('/status.json?'+Date.now())).json(); }
+  catch(e){ document.getElementById('sub').textContent='could not load status.json'; return; }
+
+  document.getElementById('sub').textContent = data.project + ' · ' + (data.region||'') + ' · updated ' + (data.updated||'');
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString();
+
+  const all = data.groups.flatMap(g=>g.items);
+  const total = all.length;
+  const done = all.filter(i=>i.status==='done').length;
+  const prog = all.filter(i=>i.status==='in_progress').length;
+  const loop = data.loop||['build','review','unit','e2e','design'];
+  const stageDone = loop.map(st=>{
+    const rel = all.filter(i=>i.stages && i.stages[st] && i.stages[st]!=='na');
+    const d = rel.filter(i=>i.stages[st]==='done').length;
+    return { st, d, t: rel.length };
+  });
+
+  const pct = total? Math.round(done/total*100):0;
+  document.getElementById('summary').innerHTML =
+    cardStat(done+' / '+total, 'features done', pct) +
+    cardStat(prog, 'in progress') +
+    stageDone.map(s=>cardStat(s.d+'/'+s.t, s.st+' passed', s.t? Math.round(s.d/s.t*100):0)).join('');
+
+  document.getElementById('groups').innerHTML = data.groups.map(g=>`
+    <div class="group"><h2>${g.name}</h2>
+      ${g.items.map(it=>`
+        <div class="row">
+          <span class="id">${it.id}</span>
+          <span class="title">${it.title}</span>
+          <span class="stages">${loop.map(st=>`<span class="stg ${it.stages&&it.stages[st]||'todo'}" title="${st}">${STAGE_LABELS[st]||st}</span>`).join('')}</span>
+          <span class="status s-${it.status}">${statusLabel(it.status)}</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+function cardStat(n,l,pct){
+  return `<div class="stat"><div class="n">${n}</div><div class="l">${l}</div>${pct!==undefined?`<div class="bar"><i style="width:${pct}%"></i></div>`:''}</div>`;
+}
+load();
+setInterval(load, 3000);
+</script>
+</body>
+</html>

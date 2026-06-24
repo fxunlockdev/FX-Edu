@@ -1,0 +1,128 @@
+/* Trading Tools page styles — ported from design/public/trading-tools.html <style>. */
+
+/* Hero (dark) */
+.th {
+  background: var(--d-bg);
+  color: var(--d-ink);
+  padding: 64px 0 70px;
+  position: relative;
+  overflow: hidden;
+}
+.th-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 48px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.th-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 540px;
+}
+
+/* Calculator panel */
+.calc {
+  background: linear-gradient(150deg, #14241b, #0f1d16);
+  border: 1px solid var(--d-outline-strong);
+  border-radius: var(--r-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-dark);
+}
+.calc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--d-outline);
+  font-size: 14px;
+}
+.calc-row:last-of-type {
+  border-bottom: none;
+}
+.calc-row b {
+  font-family: var(--font-display);
+  font-size: 17px;
+}
+.calc-warn {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  margin-top: 16px;
+  padding: 11px 13px;
+  border-radius: var(--r-md, 0.75rem);
+  background: rgba(224, 162, 53, 0.14);
+  border: 1px solid rgba(224, 162, 53, 0.4);
+  color: #f0c673;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.calc-warn svg {
+  flex: none;
+  margin-top: 1px;
+}
+
+/* Tools grid */
+.tt-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 36px;
+}
+.tt-card {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.25s var(--ease),
+    box-shadow 0.25s var(--ease),
+    border-color 0.2s var(--ease);
+}
+.tt-card:hover,
+.tt-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--leaf);
+}
+.tt-ic {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--primary-container);
+  color: var(--primary);
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+}
+.tt-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--primary);
+  border-radius: 4px;
+}
+.tt-card-link:hover {
+  color: var(--primary-deep);
+}
+
+@media (max-width: 900px) {
+  .th-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+@media (max-width: 860px) {
+  .tt-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .tt-grid {
+    grid-template-columns: 1fr;
+  }
+}

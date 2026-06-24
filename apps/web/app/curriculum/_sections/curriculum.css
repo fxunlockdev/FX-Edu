@@ -1,0 +1,208 @@
+/* Curriculum page section styles — ported from design/public/curriculum.html.
+   Tokens only (no hardcoded palette). Motion stays compositor-friendly
+   (transform/opacity) and is disabled under prefers-reduced-motion. */
+
+/* ---- Hero ---- */
+.cur-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top right, rgba(168, 214, 66, 0.16), transparent 30%),
+    linear-gradient(135deg, #08120f 0%, #0b1813 40%, #132519 100%);
+  color: var(--d-ink);
+  padding: 72px 0 80px;
+}
+.cur-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(4, 10, 8, 0.32) 0%, rgba(4, 10, 8, 0.08) 44%, transparent 100%);
+  pointer-events: none;
+}
+.cur-hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-top: 34px;
+}
+.cur-stat .n {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--lime);
+}
+.cur-stat .l {
+  font-size: 13px;
+  color: var(--d-ink-var);
+  margin-top: 2px;
+}
+
+/* ---- Learning loop ---- */
+.loop-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 36px;
+}
+.loop-card {
+  position: relative;
+  padding: 22px 20px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--outline-var);
+  background: var(--c-lowest);
+  box-shadow: var(--shadow-sm);
+}
+.loop-n {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+.loop-card h3 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+}
+.loop-card p {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--on-surface-var);
+  line-height: 1.5;
+}
+
+/* ---- Tier path ---- */
+.path {
+  position: relative;
+  display: grid;
+  gap: 0;
+}
+.tier {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 24px;
+  position: relative;
+}
+.tier:not(:last-child) {
+  padding-bottom: 28px;
+}
+.tier-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tier-num {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--primary);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  flex: none;
+  z-index: 1;
+}
+.tier-num.locked {
+  background: var(--c-high);
+  color: var(--outline);
+}
+.tier-line {
+  width: 2px;
+  flex: 1;
+  background: var(--outline-var);
+  margin: 6px 0;
+}
+.tier-card {
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-xl);
+  background: var(--c-lowest);
+  padding: 26px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.tier-card.card-hover:hover {
+  border-color: var(--leaf);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+.tier-card.locked .modlist {
+  opacity: 0.6;
+}
+.tier-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.tier-sub {
+  font-size: 13px;
+  color: var(--on-surface-var);
+  margin-top: 4px;
+}
+.tier-summary {
+  margin: 12px 0 0;
+  font-size: 14.5px;
+  color: var(--on-surface-var);
+  line-height: 1.55;
+  max-width: 52ch;
+}
+.tier-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.modlist {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.mod {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-size: 14px;
+  color: var(--on-surface-var);
+}
+.mod .mk {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lime-dim);
+  flex: none;
+}
+.tier-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+@media (max-width: 920px) {
+  .loop-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 720px) {
+  .modlist { grid-template-columns: 1fr; }
+  .tier { grid-template-columns: 48px 1fr; gap: 16px; }
+  .tier-num { width: 44px; height: 44px; font-size: 17px; }
+  .tier-card { padding: 20px; }
+}
+@media (max-width: 560px) {
+  .loop-grid { grid-template-columns: 1fr; }
+  .cur-hero-stats { gap: 20px 28px; }
+}

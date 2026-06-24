@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Learn</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+  .cc{border:1px solid var(--outline-var);border-radius:var(--r-lg);background:var(--c-lowest);overflow:hidden;box-shadow:var(--shadow-sm);position:relative;}
+  .cc-thumb{height:130px;position:relative;display:flex;align-items:flex-end;padding:12px;}
+  .cc-body{padding:16px;}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0 24px;}
+  .lock-veil{border-radius:var(--r-lg);}
+  .upmodal-bg{position:fixed;inset:0;background:rgba(10,20,16,.6);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:90;padding:20px;}
+  .upmodal-bg.on{display:flex;}
+  .upmodal{background:var(--c-lowest);border-radius:var(--r-xl);max-width:460px;width:100%;overflow:hidden;box-shadow:var(--shadow-lg);}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <div class="between" style="flex-wrap:wrap;gap:12px;">
+        <div><h1 class="h-md" style="margin:0;">Learning Paths</h1><p class="muted" style="margin:4px 0 0;">5 tiers · 25 modules · certificate at every tier</p></div>
+        <div class="switch" style="display:inline-flex;background:var(--c);border-radius:9999px;padding:3px;">
+          <a href="?plan=pro" id="sp-pro" style="font-size:12px;font-weight:700;padding:6px 12px;border-radius:9999px;color:var(--on-surface-var);">Pro view</a>
+          <a href="?plan=basic" id="sp-basic" style="font-size:12px;font-weight:700;padding:6px 12px;border-radius:9999px;color:var(--on-surface-var);">Basic view</a>
+        </div>
+      </div>
+      <div class="tabs" id="tabs" style="margin-top:18px;"></div>
+      <div class="filters">
+        <div class="topsearch" style="min-width:220px;cursor:text;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input style="border:0;background:none;outline:none;font:inherit;color:inherit;flex:1;" placeholder="Search courses & lessons"></div>
+        <select class="input" style="width:auto;padding:9px 14px;"><option>All difficulty</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+        <select class="input" style="width:auto;padding:9px 14px;"><option>Any duration</option><option>Under 1 hr</option><option>1-4 hrs</option></select>
+        <label class="chip chip-outline" style="cursor:pointer;"><input type="checkbox" style="margin-right:6px;">Certificate available</label>
+      </div>
+      <div class="course-grid" id="grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Upgrade modal -->
+<div class="upmodal-bg" id="up">
+  <div class="upmodal">
+    <div class="dark-sec" style="padding:24px;position:relative;overflow:hidden;">
+      <div class="glow glow-lime" style="width:240px;height:240px;top:-120px;right:-60px;opacity:.3;"></div>
+      <span class="chip chip-lime">Pro feature</span>
+      <h3 class="h-sm" style="color:#fff;margin:12px 0 6px;" id="upTitle">Advanced Market Structure is included in Pro</h3>
+      <p style="color:var(--d-ink-var);font-size:14px;margin:0;" id="upBody">Upgrade to continue beyond Beginner and access the full FX Academy curriculum.</p>
+    </div>
+    <div style="padding:22px;">
+      <div class="row gap2" style="margin-bottom:16px;"><span class="chip chip-outline">Your plan: Basic</span></div>
+      <a href="../public/pricing.html" class="btn btn-lime btn-block">Upgrade to Pro, $97/mo</a>
+      <a href="../public/pricing.html" class="btn btn-ghost btn-block" style="margin-top:8px;">Compare plans</a>
+      <button class="btn btn-ghost btn-block" style="margin-top:8px;border:0;" onclick="document.getElementById('up').classList.remove('on')">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Learn',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Learn', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+document.getElementById('sp-'+plan).style.background='var(--c-lowest)'; document.getElementById('sp-'+plan).style.color='var(--primary)'; document.getElementById('sp-'+plan).style.boxShadow='var(--shadow-sm)';
+
+const tabs=['All','My Courses','Entry','Beginner','Intermediate','Advanced','Psychology','Completed'];
+document.getElementById('tabs').innerHTML=tabs.map((t,i)=>`<div class="tab ${i===0?'active':''}" onclick="document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));this.classList.add('active')">${t}</div>`).join('');
+
+const courses=[
+  {t:'What is Forex? Markets & Mechanics',lvl:'Entry',mods:5,dur:'35 min',access:'basic',prog:100},
+  {t:'Reading Price: Candlesticks & Structure',lvl:'Beginner',mods:6,dur:'1.2 hr',access:'basic',prog:45},
+  {t:'Order Types & Trade Planning',lvl:'Beginner',mods:5,dur:'55 min',access:'basic',prog:0},
+  {t:'Building a Strategy with Confluence',lvl:'Intermediate',mods:7,dur:'1.8 hr',access:'pro',prog:0},
+  {t:'Market Sessions & Trade Management',lvl:'Intermediate',mods:6,dur:'1.5 hr',access:'pro',prog:0},
+  {t:'Advanced Market Structure & Liquidity',lvl:'Advanced',mods:8,dur:'2.4 hr',access:'pro',prog:48},
+  {t:'Institutional Concepts & Execution',lvl:'Advanced',mods:6,dur:'2 hr',access:'pro',prog:0},
+  {t:'Trading Psychology: Discipline & Bias',lvl:'Psychology',mods:5,dur:'1.1 hr',access:'pro',prog:0}
+];
+const lvlColor={Entry:'#436648',Beginner:'#4b6700',Intermediate:'#0f3218',Advanced:'#001c07',Psychology:'#20502e'};
+
+document.getElementById('grid').innerHTML = courses.map((c,i)=>{
+  const locked = plan==='basic' && c.access==='pro';
+  const cta = locked?'Upgrade to Unlock':c.prog===100?'Review':c.prog>0?'Continue':'Start';
+  const cls = locked?'btn-forest':c.prog>0&&c.prog<100?'btn-lime':'btn-ghost';
+  return `<div class="cc card-hover">
+    <div class="cc-thumb" style="background:linear-gradient(135deg,${lvlColor[c.lvl]},#0a1410);">
+      <span class="chip chip-lime" style="font-size:11px;">${c.lvl}</span>
+      ${locked?'<span style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(0,0,0,.4);display:grid;place-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>':''}
+    </div>
+    <div class="cc-body">
+      <div style="font-weight:700;font-size:15px;line-height:1.3;min-height:40px;">${c.t}</div>
+      <div class="muted" style="font-size:12.5px;margin:8px 0;">${c.mods} lessons · ${c.dur} · <span class="chip ${c.access==='basic'?'chip-outline':'chip-lime'}" style="font-size:10.5px;padding:2px 7px;">${c.access==='basic'?'Basic':'Pro'}</span></div>
+      ${c.prog>0?`<div class="bar" style="margin-bottom:12px;"><i style="width:${c.prog}%"></i></div>`:'<div style="height:8px;margin-bottom:12px;"></div>'}
+      <button class="btn ${cls} btn-sm btn-block" onclick="${locked?`openUp('${c.t}')`:`location.href='${c.prog===100?'course-detail.html':'lesson.html'}'`}">${cta}</button>
+    </div>
+  </div>`;
+}).join('');
+
+function openUp(title){
+  document.getElementById('upTitle').textContent=title+' is included in Pro';
+  document.getElementById('up').classList.add('on');
+}
+document.getElementById('up').addEventListener('click',e=>{ if(e.target.id==='up') e.currentTarget.classList.remove('on'); });
+// auto-open upgrade if arriving from a locked link
+if(new URLSearchParams(location.search).get('upgrade')) openUp('Advanced Market Structure');
+</script>
+</body>
+</html>

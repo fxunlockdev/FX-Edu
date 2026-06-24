@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Trade Journal</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .stat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:22px;}
+  .sc{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:16px;box-shadow:var(--shadow-sm);}
+  .sc .l{font-size:11.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--on-surface-var);}
+  .sc .v{font-family:var(--font-display);font-weight:700;font-size:25px;letter-spacing:-.02em;margin-top:6px;}
+  .jgrid{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+  .dirpill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:9999px;}
+  .res{font-weight:700;font-variant-numeric:tabular-nums;}
+  @media(max-width:1100px){.stat-grid{grid-template-columns:repeat(3,1fr);}.jgrid{grid-template-columns:1fr;}}
+  @media(max-width:560px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <div class="between" style="flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+        <div><h1 class="h-md" style="margin:0;">Trade Journal</h1><p class="muted" style="margin:4px 0 0;">Every trade logged becomes reviewable data. Patterns become visible.</p></div>
+        <a href="trade-new.html" class="btn btn-lime">＋ Log new trade</a>
+      </div>
+
+      <div class="stat-grid" id="stats"></div>
+
+      <div class="jgrid">
+        <div class="card card-pad">
+          <div class="between" style="margin-bottom:14px;">
+            <h3 style="font-size:16px;font-weight:700;">Recent trades</h3>
+            <div class="filters" style="margin:0;">
+              <select class="input" style="width:auto;padding:8px 12px;font-size:13px;"><option>All pairs</option><option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>XAU/USD</option></select>
+              <select class="input" style="width:auto;padding:8px 12px;font-size:13px;"><option>All results</option><option>Wins</option><option>Losses</option><option>Breakeven</option></select>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="tbl" id="trades"></table>
+          </div>
+        </div>
+
+        <div class="stack gap3">
+          <div class="card card-pad">
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:4px;">Win / loss split</h3>
+            <p class="muted" style="font-size:12.5px;margin:0 0 10px;">Last 30 trades</p>
+            <div style="display:flex;align-items:center;gap:18px;">
+              <div id="donut"></div>
+              <div class="stack gap1" style="font-size:13px;">
+                <div class="row gap1"><span style="width:10px;height:10px;border-radius:3px;background:var(--lime-dim);"></span>Wins · 17</div>
+                <div class="row gap1"><span style="width:10px;height:10px;border-radius:3px;background:var(--neg);"></span>Losses · 11</div>
+                <div class="row gap1"><span style="width:10px;height:10px;border-radius:3px;background:var(--outline-var);"></span>Breakeven · 2</div>
+              </div>
+            </div>
+          </div>
+          <div class="card card-pad">
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:4px;">R multiple by pair</h3>
+            <p class="muted" style="font-size:12.5px;margin:0 0 8px;">Net R, last 30 days</p>
+            <div id="pairs"></div>
+          </div>
+          <div class="card card-pad" style="background:linear-gradient(135deg,#14241b,#0f1d16);color:var(--d-ink);border:none;">
+            <div class="row gap2" style="margin-bottom:8px;"><span style="width:30px;height:30px;border-radius:8px;background:rgba(168,214,66,.15);display:grid;place-items:center;color:var(--lime);flex:none;">✦</span><h3 style="font-size:15px;font-weight:700;color:#fff;">AI reflection</h3></div>
+            <p style="font-size:13.5px;line-height:1.5;color:var(--d-ink-var);margin:0 0 12px;">Your <strong style="color:var(--lime);">EUR/USD</strong> breakout-retest trades average 1.8R, but Friday trades drag your weekly win rate. Consider capping Friday entries at 2.</p>
+            <a href="analytics.html" class="btn btn-glass btn-sm btn-block">Open analytics</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Trade Journal',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Trade Journal', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+
+const stats=[['Trades · week','7'],['Win rate','58%','text-pos'],['Avg R:R','1.9'],['Net R · 30d','+18.4R','text-pos'],['Best pair','EUR/USD'],['Emotion','7.2 / 10']];
+document.getElementById('stats').innerHTML = stats.map(([l,v,c])=>`<div class="sc"><div class="l">${l}</div><div class="v ${c||''}">${v}</div></div>`).join('');
+
+const trades=[
+  ['EUR/USD','long','Breakout retest','NY','win','+2.1R','#'],
+  ['GBP/JPY','short','Liquidity sweep','London','loss','-1.0R','#'],
+  ['XAU/USD','long','Trend continuation','NY','win','+1.6R','#'],
+  ['USD/JPY','short','Range fade','Asia','breakeven','0.0R','#'],
+  ['GBP/USD','long','Support bounce','London','win','+2.4R','#'],
+  ['EUR/USD','short','Failed breakout','NY','loss','-1.0R','#'],
+  ['AUD/USD','long','Session open','Asia','win','+1.2R','#']
+];
+const dirC={long:'background:rgba(78,168,99,.16);color:#2c6b3d;',short:'background:var(--error-container);color:var(--on-error-container);'};
+const resC={win:'var(--pos)',loss:'var(--neg)',breakeven:'var(--outline)'};
+document.getElementById('trades').innerHTML =
+  `<thead><tr><th>Pair</th><th>Dir</th><th>Setup</th><th>Session</th><th>Result</th><th style="text-align:right;">R</th></tr></thead>
+   <tbody>${trades.map(t=>`<tr style="cursor:pointer;" onclick="location.href='trade-new.html'">
+     <td style="font-weight:700;">${t[0]}</td>
+     <td><span class="dirpill" style="${dirC[t[1]]}">${t[1]}</span></td>
+     <td class="muted">${t[2]}</td>
+     <td class="muted">${t[3]}</td>
+     <td style="text-transform:capitalize;color:${resC[t[4]]};font-weight:600;">${t[4]}</td>
+     <td class="res" style="text-align:right;color:${resC[t[4]]};">${t[5]}</td></tr>`).join('')}</tbody>`;
+
+FX.donut(document.getElementById('donut'), {segments:[{value:17,color:'#a8d642'},{value:11,color:'#ba1a1a'},{value:2,color:'#c2c8bf'}], size:110, thickness:18, center:'57%', centerSub:'win rate'});
+FX.barChart(document.getElementById('pairs'), {data:[{label:'EUR',value:7.2},{label:'GBP',value:4.1},{label:'XAU',value:5.6},{label:'JPY',value:-1.2,color:'#ba1a1a'},{label:'AUD',value:2.8}], height:150});
+</script>
+</body>
+</html>

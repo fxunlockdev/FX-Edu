@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Log Trade</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .form-grid{display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start;max-width:1000px;}
+  .panel{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:24px;box-shadow:var(--shadow-sm);margin-bottom:20px;}
+  .ph{font-size:15px;font-weight:700;margin:0 0 18px;}
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  .seg{display:flex;gap:6px;}
+  .segbtn{flex:1;padding:11px;border-radius:9px;border:1px solid var(--outline-var);background:var(--c-lowest);font-weight:600;font-size:14px;cursor:pointer;text-align:center;transition:.15s;}
+  .segbtn.on-long{background:rgba(78,168,99,.15);border-color:var(--pos);color:#2c6b3d;}
+  .segbtn.on-short{background:var(--error-container);border-color:var(--neg);color:var(--on-error-container);}
+  .calc-card{background:linear-gradient(150deg,#15271c,#0a1410);color:var(--d-ink);border-radius:var(--r-lg);padding:22px;position:sticky;top:80px;box-shadow:var(--shadow-dark);}
+  .calc-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--d-outline);font-size:14px;}
+  .calc-row b{font-family:var(--font-display);font-size:16px;}
+  @media(max-width:880px){.form-grid{grid-template-columns:1fr;}.frow{grid-template-columns:1fr;}.calc-card{position:static;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <div class="row gap2" style="margin-bottom:18px;"><a href="journal.html" class="muted" style="font-size:13px;font-weight:600;">← Journal</a></div>
+      <h1 class="h-md" style="margin:0 0 20px;">Log a trade</h1>
+      <div class="form-grid">
+        <div>
+          <div class="panel">
+            <h3 class="ph">Trade details</h3>
+            <div class="frow">
+              <div class="field"><label>Pair</label><select class="input" id="pair"><option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>XAU/USD</option><option>GBP/JPY</option></select></div>
+              <div class="field"><label>Direction</label><div class="seg" id="dir"><div class="segbtn on-long" data-d="long">Long</div><div class="segbtn" data-d="short">Short</div></div></div>
+            </div>
+            <div class="frow">
+              <div class="field"><label>Setup / strategy</label><select class="input"><option>Breakout retest</option><option>Liquidity sweep</option><option>Trend pullback</option><option>Range fade</option></select></div>
+              <div class="field"><label>Session</label><select class="input"><option>London</option><option>New York</option><option>Asia</option><option>Overlap</option></select></div>
+            </div>
+            <div class="frow" style="grid-template-columns:1fr 1fr 1fr;">
+              <div class="field"><label>Entry</label><input class="input" id="entry" value="1.0840"></div>
+              <div class="field"><label>Stop loss</label><input class="input" id="stop" value="1.0795"></div>
+              <div class="field"><label>Take profit</label><input class="input" id="tp" value="1.0930"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 class="ph">Review &amp; reflection</h3>
+            <div class="frow">
+              <div class="field"><label>Result</label><select class="input"><option>Open</option><option>Win</option><option>Loss</option><option>Breakeven</option></select></div>
+              <div class="field"><label>Emotional state (1–10)</label><input class="input" type="number" value="7" min="1" max="10"></div>
+            </div>
+            <div class="field" style="margin-bottom:14px;"><label>What was your thesis?</label><textarea class="input" rows="2" placeholder="Why did you take this trade?">Asian low swept and reclaimed, 4H structure shifted bullish.</textarea></div>
+            <div class="field"><label>What would you do differently?</label><textarea class="input" rows="2" placeholder="Lesson for next time…"></textarea></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="calc-card">
+            <span class="chip chip-lime-d">Live risk preview</span>
+            <h3 style="color:#fff;font-size:16px;font-weight:700;margin:14px 0 14px;">Position sizing</h3>
+            <div class="field" style="margin-bottom:14px;"><label style="color:var(--d-ink-var);">Account balance</label><input class="input input-dark" id="bal" value="10000"></div>
+            <div class="field" style="margin-bottom:18px;"><label style="color:var(--d-ink-var);">Risk per trade (%)</label><input class="input input-dark" id="risk" value="1"></div>
+            <div class="calc-row"><span style="color:var(--d-ink-var);">Risk amount</span><b style="color:#fff;" id="rAmt">$100</b></div>
+            <div class="calc-row"><span style="color:var(--d-ink-var);">Stop distance</span><b style="color:#fff;" id="rPips">45 pips</b></div>
+            <div class="calc-row" style="border:none;"><span style="color:var(--d-ink-var);">Reward : Risk</span><b style="color:var(--lime);" id="rRR">2.0R</b></div>
+            <button class="btn btn-lime btn-block" style="margin-top:18px;" onclick="FX.toast('Trade logged to journal');setTimeout(()=>location.href='journal.html',700)">Save trade</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Trade Journal',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Log Trade', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+
+document.getElementById('dir').addEventListener('click',e=>{
+  const b=e.target.closest('.segbtn'); if(!b)return;
+  document.querySelectorAll('#dir .segbtn').forEach(x=>x.className='segbtn');
+  b.classList.add(b.dataset.d==='long'?'on-long':'on-short');
+});
+function num(id){return parseFloat(document.getElementById(id).value)||0;}
+function calc(){
+  const bal=num('bal'),risk=num('risk'),e=num('entry'),s=num('stop'),t=num('tp');
+  const rAmt=bal*risk/100;
+  const dist=Math.abs(e-s), rew=Math.abs(t-e);
+  const pip = document.getElementById('pair').value.includes('JPY')?0.01:0.0001;
+  document.getElementById('rAmt').textContent='$'+rAmt.toFixed(0);
+  document.getElementById('rPips').textContent=(dist/pip).toFixed(0)+' pips';
+  document.getElementById('rRR').textContent=(dist?rew/dist:0).toFixed(1)+'R';
+}
+['bal','risk','entry','stop','tp'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+document.getElementById('pair').addEventListener('change',calc);
+calc();
+</script>
+</body>
+</html>

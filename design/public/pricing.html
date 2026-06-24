@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Pricing</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .price-hero{background:var(--d-bg);color:var(--d-ink);padding:56px 0 120px;position:relative;overflow:hidden;text-align:center;}
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1080px;margin:-90px auto 0;position:relative;z-index:2;align-items:start;}
+  .plan{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-xl);padding:30px;box-shadow:var(--shadow);}
+  .plan.hero{border:2px solid var(--lime-dim);box-shadow:var(--shadow-lg);}
+  .plan .price{font-family:var(--font-display);font-weight:800;font-size:48px;letter-spacing:-.02em;line-height:1;margin:14px 0 4px;}
+  .feat{display:flex;gap:10px;align-items:flex-start;font-size:14px;padding:7px 0;}
+  .feat svg{flex:none;color:var(--pos);margin-top:2px;}
+  .feat.off{color:var(--outline);} .feat.off svg{color:var(--outline-var);}
+  .toggle{display:inline-flex;background:var(--glass-dark);border:1px solid var(--d-outline-strong);border-radius:9999px;padding:4px;}
+  .toggle button{border:0;background:transparent;color:var(--d-ink-var);font-weight:700;font-size:13px;padding:8px 18px;border-radius:9999px;}
+  .toggle button.on{background:var(--lime);color:var(--on-lime);}
+  .faq{max-width:760px;margin:0 auto;}
+  .qa{border-bottom:1px solid var(--outline-var);}
+  .qa summary{padding:20px 4px;font-weight:700;font-size:16px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+  .qa summary::-webkit-details-marker{display:none;}
+  .qa[open] summary .ar{transform:rotate(45deg);}
+  .qa .ar{transition:.2s;font-size:22px;color:var(--primary-tint);font-weight:400;}
+  .qa p{padding:0 4px 20px;margin:0;color:var(--on-surface-var);}
+  @media(max-width:880px){.plans{grid-template-columns:1fr;max-width:440px;}}
+</style>
+</head>
+<body>
+<div id="nav"></div>
+
+<section class="price-hero">
+  <div class="glow glow-lime" style="width:520px;height:380px;top:-120px;left:50%;transform:translateX(-50%);opacity:.32;"></div>
+  <div class="wrap" style="position:relative;z-index:1;">
+    <span class="chip" style="background:var(--glass-dark);color:var(--lime);border:1px solid var(--d-outline-strong);">Transparent pricing · Cancel anytime</span>
+    <h1 class="h-lg" style="margin:18px 0 10px;">Choose the plan that matches your stage.</h1>
+    <p class="body-lg" style="color:var(--d-ink-var);max-width:520px;margin:0 auto 24px;">Start with the fundamentals or unlock the full system. Upgrade or downgrade anytime, and your progress is always preserved.</p>
+    <div class="toggle"><button class="on" id="tMonthly">Monthly</button><button id="tYearly">Yearly · save 20%</button></div>
+    <div id="banner"></div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="plans reveal-stagger" data-reveal-now id="plans"></div>
+</div>
+
+<section class="section">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:36px;"><div class="eyebrow">Questions</div><h2 class="h-lg" style="margin:10px 0 0;">Pricing FAQ</h2></div>
+    <div class="faq" id="faq"></div>
+  </div>
+</section>
+
+<section class="section dark-sec" style="text-align:center;">
+  <div class="wrap">
+    <h2 class="h-md">Running a coaching business or prop firm?</h2>
+    <p class="body-lg" style="color:var(--d-ink-var);max-width:480px;margin:14px auto 22px;">White-label FX Academy under your own brand and domain.</p>
+    <a href="whitelabel-landing.html" class="btn btn-lime btn-lg">Explore White Label</a>
+  </div>
+</section>
+
+<div id="footer"></div>
+
+<script>
+document.getElementById('nav').innerHTML = FXShell.publicNav('Pricing');
+document.getElementById('footer').innerHTML = FXShell.footer();
+
+// existing-member state via ?state=basic|pro|failed
+const state = new URLSearchParams(location.search).get('state');
+const ck = s => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6 9 17l-5-5"/></svg>`;
+const x = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6 6 18"/></svg>`;
+
+const plans = [
+  {name:'Basic', m:49, y:39, sub:'Entry-level hook', cta:'Start Basic', href:'checkout.html?plan=basic', feats:[
+    ['Entry + Beginner courses',1],['Custom trade journal',1],['Risk calculator',1],['Video library access',1],
+    ['Full curriculum + Trading Psychology',0],['Weekly live webinars + replays',0],['AI learning agents',0],['Performance analytics',0]]},
+  {name:'Pro', m:97, y:78, sub:'Most complete', hero:1, cta:'Start Pro', href:'checkout.html?plan=pro', feats:[
+    ['Full curriculum + Trading Psychology',1],['Weekly live webinars + replays',1],['AI learning agents',1],['Performance analytics',1],
+    ['Community + accountability pods',1],['Trade idea feed',1],['Journal + risk calculator',1],['Certificates at every tier',1]]},
+  {name:'Elite', m:147, y:118, sub:'Final pricing set at launch', soon:1, cta:'Join Elite Waitlist', href:'#', feats:[
+    ['Everything in Pro',1],['Prop firm prep track',1],['Educator Q&A',1],['Monthly live coaching call',1],
+    ['Early access to new content',1],['Smaller cohort / high-touch',1]]}
+];
+
+function ctaFor(p){
+  if(state==='basic') return p.name==='Basic'?'Current plan':p.name==='Pro'?'Upgrade to Pro':p.cta;
+  if(state==='pro') return p.name==='Pro'?'Manage plan':p.name==='Basic'?'Downgrade':p.cta;
+  if(state==='failed') return 'Update payment method';
+  return p.cta;
+}
+
+let yearly=false;
+function render(){
+  document.getElementById('plans').innerHTML = plans.map(p=>`
+    <div class="plan ${p.hero?'hero':''}">
+      ${p.hero?'<div style="text-align:center;margin:-30px -30px 22px;padding:9px;background:var(--lime);color:var(--on-lime);font-weight:800;font-size:13px;border-radius:22px 22px 0 0;letter-spacing:.03em;">★ MOST POPULAR</div>':''}
+      <div class="between"><div class="eyebrow" style="${p.hero?'color:var(--primary)':''}">${p.name}</div>${p.soon?'<span class="chip chip-warn">Coming soon</span>':''}</div>
+      <div class="price num">${p.soon
+        ? '<span style="font-size:20px;font-weight:600;color:var(--on-surface-var);vertical-align:middle;margin-right:4px;">From</span>$'+p.m+'<span style="font-size:16px;color:var(--on-surface-var);font-weight:500;">/mo</span>'
+        : '$'+(yearly?p.y:p.m)+'<span style="font-size:16px;color:var(--on-surface-var);font-weight:500;">/mo</span>'}</div>
+      <p class="muted" style="font-size:13.5px;margin:0 0 18px;">${p.sub}${yearly&&!p.soon?' · billed yearly':''}</p>
+      <a href="${p.href}" class="btn ${p.hero?'btn-lime':p.soon?'btn-ghost':'btn-forest'} btn-block">${ctaFor(p)}</a>
+      <div class="divider" style="margin:22px 0 14px;"></div>
+      ${p.feats.map(([t,on])=>`<div class="feat ${on?'':'off'}">${on?ck():x}${t}</div>`).join('')}
+    </div>`).join('');
+}
+render();
+FX.rescanReveal && FX.rescanReveal();
+document.getElementById('tMonthly').onclick=function(){yearly=false;this.classList.add('on');document.getElementById('tYearly').classList.remove('on');render();};
+document.getElementById('tYearly').onclick=function(){yearly=true;this.classList.add('on');document.getElementById('tMonthly').classList.remove('on');render();};
+
+if(state){
+  const msg={basic:'You’re on <strong>Basic</strong>. Upgrade to Pro to unlock the full curriculum, webinars and AI.',pro:'You’re on <strong>Pro</strong>, manage your plan anytime from Billing.',failed:'⚠ Your last payment failed. Update your payment method to keep access.'}[state];
+  if(msg) document.getElementById('banner').innerHTML=`<div class="chip" style="margin-top:18px;background:${state==='failed'?'var(--error-container)':'var(--glass-dark)'};color:${state==='failed'?'var(--on-error-container)':'var(--d-ink)'};border:1px solid var(--d-outline-strong);padding:9px 16px;">${msg}</div>`;
+}
+
+document.getElementById('faq').innerHTML = [
+  ['Can I cancel anytime?','Yes. Cancel from Billing in one click. You keep access until the end of your current billing cycle, and your journal and certificates remain available.'],
+  ['Is this financial advice?','No. FX Academy is an educational platform. Nothing here is financial advice, and we never guarantee trading outcomes. Forex trading involves substantial risk.'],
+  ['Do I need trading experience?','None at all. The Entry tier starts from first principles, what forex is, how markets move, brokers and risk basics.'],
+  ['Are webinars recorded?','Every live session is recorded and saved to your replay library (Pro). You also get transcripts and AI summaries.'],
+  ['Can I upgrade later?','Anytime. Upgrading unlocks locked content instantly and preserves all your progress. Downgrading keeps your raw journal data.'],
+  ['Do you offer white-label options?','Yes, coaches, prop firms and academies can run FX Academy under their own brand and domain. See our White Label page.'],
+  ['How do affiliate referrals work?','Affiliates earn recurring commission on referred subscribers, tracked transparently with Stripe Connect payouts. See the Affiliates page.']
+].map(([q,a])=>`<details class="qa"><summary>${q}<span class="ar">+</span></summary><p>${a}</p></details>`).join('');
+</script>
+</body>
+</html>

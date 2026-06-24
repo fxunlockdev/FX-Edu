@@ -1,0 +1,259 @@
+/* Pricing page styles — ported from design/public/pricing.html <style>. */
+
+/* ---------- Hero ---------- */
+.pp-hero {
+  background: var(--d-bg);
+  color: var(--d-ink);
+  padding: 56px 0 120px;
+  position: relative;
+  overflow: hidden;
+}
+.pp-hero h1 {
+  color: var(--d-ink);
+}
+
+/* ---------- Billing toggle ---------- */
+.pp-toggle {
+  display: inline-flex;
+  background: var(--glass-dark);
+  border: 1px solid var(--d-outline-strong);
+  border-radius: 9999px;
+  padding: 4px;
+  margin: 24px auto 0;
+}
+.pp-toggle button {
+  border: 0;
+  background: transparent;
+  color: var(--d-ink-var);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.pp-toggle button.on {
+  background: var(--lime);
+  color: var(--on-lime);
+}
+
+/* ---------- Plan grid ---------- */
+.pp-plans {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin: 56px auto 0;
+  position: relative;
+  z-index: 2;
+  align-items: start;
+}
+.pp-plan {
+  background: var(--c-lowest);
+  color: var(--on-surface);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-xl);
+  padding: 30px;
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+.pp-plan-hero {
+  border: 2px solid var(--lime-dim);
+  box-shadow: var(--shadow-lg);
+}
+.pp-ribbon {
+  text-align: center;
+  margin: -30px -30px 22px;
+  padding: 9px;
+  background: var(--lime);
+  color: var(--on-lime);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 13px;
+  border-radius: 22px 22px 0 0;
+  letter-spacing: 0.03em;
+}
+.pp-price {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 48px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin: 14px 0 4px;
+}
+.pp-price-from {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  vertical-align: middle;
+  margin-right: 4px;
+}
+.pp-price-period {
+  font-size: 16px;
+  color: var(--on-surface-var);
+  font-weight: 500;
+}
+.pp-sub {
+  font-size: 13.5px;
+  margin: 0 0 18px;
+}
+.pp-plan-divider {
+  margin: 22px 0 14px;
+}
+.pp-feats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pp-feat {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 14px;
+  padding: 7px 0;
+}
+.pp-feat svg {
+  flex: none;
+  color: var(--pos);
+  margin-top: 2px;
+}
+.pp-feat-off {
+  color: var(--outline);
+}
+.pp-feat-off svg {
+  color: var(--outline-var);
+}
+
+/* ---------- Feature comparison ---------- */
+.pp-cmp-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.pp-cmp {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 560px;
+}
+.pp-cmp th,
+.pp-cmp td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--outline-var);
+  text-align: center;
+}
+.pp-cmp thead th {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--on-surface-var);
+}
+.pp-cmp tbody th[scope='row'] {
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--on-surface);
+}
+.pp-cmp-pro {
+  color: var(--primary) !important;
+}
+.pp-cmp tbody tr:hover td,
+.pp-cmp tbody tr:hover th {
+  background: var(--c-low);
+}
+.pp-cmp-cell {
+  width: 96px;
+}
+.pp-cmp-yes,
+.pp-cmp-no {
+  display: inline-grid;
+  place-items: center;
+}
+.pp-cmp-yes {
+  color: var(--pos);
+}
+.pp-cmp-no {
+  color: var(--outline-var);
+}
+
+/* ---------- FAQ ---------- */
+.pp-faq {
+  max-width: 760px;
+  margin: 0 auto;
+}
+.pp-qa {
+  border-bottom: 1px solid var(--outline-var);
+}
+.pp-qa summary {
+  padding: 20px 4px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.pp-qa summary::-webkit-details-marker {
+  display: none;
+}
+.pp-qa-mark {
+  transition: transform 0.2s var(--ease);
+  font-size: 22px;
+  color: var(--primary-tint);
+  font-weight: 400;
+  flex: none;
+}
+.pp-qa[open] summary .pp-qa-mark {
+  transform: rotate(45deg);
+}
+.pp-qa p {
+  padding: 0 4px 20px;
+  margin: 0;
+  color: var(--on-surface-var);
+  max-width: 68ch;
+}
+
+/* ---------- Testimonials ---------- */
+.pp-testi {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s3);
+}
+
+/* ---------- Accessibility helper ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 880px) {
+  .pp-plans {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .pp-plan-hero {
+    transform: none;
+  }
+  .pp-testi {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-toggle button,
+  .pp-qa-mark {
+    transition: none;
+  }
+}

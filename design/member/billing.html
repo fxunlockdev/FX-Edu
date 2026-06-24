@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Billing</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  .bgrid{display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start;}
+  .panel{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:22px;box-shadow:var(--shadow-sm);margin-bottom:20px;}
+  .plan-now{background:linear-gradient(150deg,#15271c,#0a1410);color:var(--d-ink);border-radius:var(--r-lg);padding:24px;position:relative;overflow:hidden;box-shadow:var(--shadow-dark);margin-bottom:20px;}
+  .card-brand{width:46px;height:32px;border-radius:6px;background:linear-gradient(135deg,#3c5a41,#0f3218);display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700;}
+  .ph{font-size:15px;font-weight:700;margin:0 0 16px;}
+  @media(max-width:900px){.bgrid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="side"></div>
+  <div class="app-main">
+    <div id="top"></div>
+    <div class="app-body">
+      <h1 class="h-md" style="margin:0 0 20px;">Billing</h1>
+      <div class="bgrid">
+        <div>
+          <div class="plan-now">
+            <div class="glow glow-lime glow-pulse" style="width:240px;height:240px;top:-120px;right:-60px;opacity:.2;"></div>
+            <div class="between" style="position:relative;z-index:1;">
+              <div>
+                <span class="chip chip-lime-d">Current plan</span>
+                <h2 class="h-sm" style="color:#fff;margin:12px 0 4px;">Pro · Monthly</h2>
+                <p style="color:var(--d-ink-var);font-size:13.5px;margin:0;">Full curriculum, webinars, AI tutor and analytics</p>
+              </div>
+              <div style="text-align:right;"><div style="font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--lime);line-height:1;">$58<span style="font-size:16px;color:var(--d-ink-var);">/mo</span></div><div style="font-size:12px;color:var(--d-ink-var);margin-top:6px;">Renews May 18, 2025</div></div>
+            </div>
+            <div class="row gap2" style="margin-top:20px;position:relative;z-index:1;">
+              <button class="btn btn-lime btn-sm" onclick="FX.toast('Switched to yearly. You save 19%.')">Switch to yearly · save 19%</button>
+              <button class="btn btn-glass btn-sm">Manage plan</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3 class="ph">Billing history</h3>
+            <table class="tbl">
+              <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th style="text-align:right;">Receipt</th></tr></thead>
+              <tbody id="histRows"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <h3 class="ph">Payment method</h3>
+            <div class="row gap2" style="padding:12px;background:var(--c-low);border-radius:10px;">
+              <span class="card-brand">VISA</span>
+              <div><div style="font-weight:600;font-size:14px;">•••• 4242</div><div class="muted" style="font-size:12.5px;">Expires 08/27</div></div>
+            </div>
+            <button class="btn btn-ghost btn-sm btn-block" style="margin-top:12px;">Update card</button>
+          </div>
+          <div class="panel">
+            <h3 class="ph">Plan includes</h3>
+            <div class="stack gap2" id="planFeats"></div>
+          </div>
+          <div class="panel" style="border-color:rgba(186,26,26,.25);">
+            <h3 class="ph" style="color:var(--neg);">Cancel plan</h3>
+            <p class="muted" style="font-size:13px;margin:0 0 12px;">Keep access until the end of your billing period. Your progress is always saved.</p>
+            <button class="btn btn-ghost btn-sm btn-block" style="color:var(--neg);border-color:rgba(186,26,26,.3);">Cancel subscription</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const plan = new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('side').outerHTML = FXShell.surfaceSidebar('member','Billing',{plan});
+document.head.insertAdjacentHTML('beforeend', FXShell.appStyles());
+document.getElementById('top').outerHTML = FXShell.appTop({title:'Billing', right:`<span class="chip ${plan==='basic'?'chip-outline':'chip-lime'}">${plan==='basic'?'Basic':'Pro'}</span>`});
+
+document.getElementById('histRows').innerHTML = [['Apr 18, 2025','Pro Monthly','$58.00'],['Mar 18, 2025','Pro Monthly','$58.00'],['Feb 18, 2025','Pro Monthly','$58.00'],['Jan 18, 2025','Pro Monthly','$58.00']].map(r=>`<tr><td>${r[0]}</td><td class="muted">${r[1]}</td><td style="font-weight:600;">${r[2]}</td><td style="text-align:right;"><a class="muted" style="font-weight:600;cursor:pointer;">PDF ↓</a></td></tr>`).join('');
+
+document.getElementById('planFeats').innerHTML = ['Full 5-tier curriculum','Weekly live webinars','AI learning agents','Performance analytics','Community access'].map(f=>`<div class="row gap1" style="font-size:13.5px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--lime-dim)" stroke-width="2.6"><path d="M20 6 9 17l-5-5"/></svg>${f}</div>`).join('');
+</script>
+</body>
+</html>

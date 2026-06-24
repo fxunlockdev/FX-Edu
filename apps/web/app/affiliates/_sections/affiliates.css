@@ -1,0 +1,177 @@
+/* Affiliates landing page section styles — ported + extended from
+   design/public/affiliate-landing.html <style>. Light/dark Lumina rhythm. */
+
+/* ---------- Hero ---------- */
+.af-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top right, rgba(168, 214, 66, 0.16), transparent 30%),
+    linear-gradient(135deg, #08120f 0%, #0b1813 38%, #132519 100%);
+  color: var(--d-ink);
+  padding: 64px 0 72px;
+}
+.af-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(4, 10, 8, 0.34) 0%, rgba(4, 10, 8, 0.08) 44%, transparent 100%);
+  pointer-events: none;
+}
+.af-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 48px;
+  align-items: center;
+}
+.af-payout-card {
+  padding: 22px;
+  border-radius: var(--r-xl);
+}
+
+/* ---------- How it works ---------- */
+.af-step3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.af-step-card {
+  position: relative;
+}
+.af-step-n {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* ---------- Commission triptych ---------- */
+.af-comm {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--c-lowest);
+}
+.af-comm-cell {
+  padding: 24px;
+  border-right: 1px solid var(--outline-var);
+}
+.af-comm-cell:last-child {
+  border-right: 0;
+}
+
+/* ---------- Payouts (dark) ---------- */
+.af-payout-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s3);
+  margin-top: 36px;
+}
+
+/* ---------- Promo assets ---------- */
+.af-assets-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s3);
+  margin-top: 40px;
+}
+.af-asset-ic {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(168, 214, 66, 0.15);
+  display: grid;
+  place-items: center;
+  color: var(--lime-ink);
+  margin-bottom: 14px;
+}
+
+/* ---------- FAQ (native details) ---------- */
+.af-faq {
+  display: grid;
+  gap: 12px;
+}
+.af-faq-item {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 4px 18px;
+  transition: border-color 0.2s var(--ease);
+}
+.af-faq-item[open] {
+  border-color: var(--leaf);
+}
+.af-faq-q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-weight: 600;
+  font-size: 15.5px;
+  cursor: pointer;
+  padding: 14px 0;
+  list-style: none;
+}
+.af-faq-q::-webkit-details-marker {
+  display: none;
+}
+.af-faq-chevron {
+  flex: none;
+  color: var(--on-surface-var);
+  transition: transform 0.25s var(--ease);
+}
+.af-faq-item[open] .af-faq-chevron {
+  transform: rotate(180deg);
+}
+.af-faq-a {
+  font-size: 14.5px;
+  line-height: 1.66;
+  margin: 0 0 16px;
+  max-width: 64ch;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 920px) {
+  .af-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .af-payout-grid {
+    grid-template-columns: 1fr;
+  }
+  .af-assets-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 820px) {
+  .af-step3,
+  .af-comm {
+    grid-template-columns: 1fr;
+  }
+  .af-comm-cell {
+    border-right: 0;
+    border-bottom: 1px solid var(--outline-var);
+  }
+  .af-comm-cell:last-child {
+    border-bottom: 0;
+  }
+}
+@media (max-width: 560px) {
+  .af-assets-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .af-faq-chevron {
+    transition: none;
+  }
+}

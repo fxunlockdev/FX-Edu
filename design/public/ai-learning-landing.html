@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, AI Learning</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<style>
+  .ah{background:var(--d-bg);color:var(--d-ink);padding:64px 0 70px;position:relative;overflow:hidden;}
+  .ah-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;position:relative;z-index:1;}
+  .chatcard{background:linear-gradient(150deg,#14241b,#0f1d16);border:1px solid var(--d-outline-strong);border-radius:var(--r-xl);padding:20px;box-shadow:var(--shadow-dark);}
+  .cmsg{padding:12px 15px;border-radius:14px;font-size:14px;line-height:1.5;margin-bottom:12px;max-width:88%;}
+  .cmsg.ai{background:var(--glass-dark);border:1px solid var(--d-outline);color:var(--d-ink);border-bottom-left-radius:4px;}
+  .cmsg.me{background:var(--lime);color:var(--on-lime);margin-left:auto;border-bottom-right-radius:4px;font-weight:600;}
+  .agents{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .agent{background:var(--c-lowest);border:1px solid var(--outline-var);border-radius:var(--r-lg);padding:24px;box-shadow:var(--shadow-sm);transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .2s;}
+  .agent:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--leaf);}
+  .aic{width:46px;height:46px;border-radius:12px;background:rgba(168,214,66,.16);color:var(--lime-ink);display:grid;place-items:center;margin-bottom:14px;}
+  .guard{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .gd{display:flex;gap:12px;align-items:flex-start;}
+  @media(max-width:900px){.ah-grid{grid-template-columns:1fr;}.agents{grid-template-columns:1fr;}.guard{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="nav"></div>
+
+<section class="ah">
+  <div class="glow glow-lime glow-pulse" style="width:520px;height:420px;top:-160px;left:-120px;opacity:.28;"></div>
+  <div class="wrap">
+    <div class="ah-grid">
+      <div class="fade-up">
+        <span class="chip" style="background:var(--glass-dark);color:var(--lime);border:1px solid var(--d-outline-strong);">✦ AI learning agents</span>
+        <h1 class="display" style="margin:18px 0 14px;font-size:clamp(36px,4.6vw,56px);">A tutor that knows <span style="color:var(--lime);">your lesson</span>, not just the market.</h1>
+        <p class="body-lg" style="color:var(--d-ink-var);max-width:480px;">Course-aware AI that quizzes you, explains concepts simply, and points to what to study next. It teaches the process. It never promises profits.</p>
+        <div class="row gap2" style="margin-top:26px;flex-wrap:wrap;">
+          <a href="pricing.html" class="btn btn-lime btn-lg">Try the AI tutor</a>
+          <a href="#agents" class="btn btn-glass btn-lg">See the agents</a>
+        </div>
+      </div>
+      <div class="chatcard floaty">
+        <div class="row gap2" style="margin-bottom:16px;"><span style="width:34px;height:34px;border-radius:9px;background:rgba(168,214,66,.18);display:grid;place-items:center;color:var(--lime);flex:none;">✦</span><div><div style="font-weight:700;font-size:14px;color:#fff;">Academy AI Tutor</div><div style="font-size:12px;color:var(--d-ink-var);">Tier 2 · Liquidity</div></div><span class="chip chip-pos" style="margin-left:auto;"><span class="dot"></span>&nbsp;Online</span></div>
+        <div class="cmsg me">Explain liquidity simply</div>
+        <div class="cmsg ai">Liquidity is where lots of orders sit waiting, usually above swing highs or below swing lows. Price often moves to fill them before reversing. Want a chart example?</div>
+        <div class="cmsg me">Quiz me on it</div>
+        <div class="cmsg ai">Sure. Where would resting buy-stops most likely sit relative to a recent swing high? Take your time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="agents">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div class="eyebrow">Three agents, one curriculum</div>
+      <h2 class="h-md" style="margin:8px 0 0;">AI that adapts to where you are</h2>
+    </div>
+    <div class="agents" id="agentgrid"></div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--c-low);">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div class="eyebrow">Responsible by design</div>
+      <h2 class="h-md" style="margin:8px 0 0;">Guardrails you can trust</h2>
+    </div>
+    <div class="guard" id="guard"></div>
+  </div>
+</section>
+
+<div id="footer"></div>
+<script src="../assets/lumina.js"></script>
+<script>
+document.getElementById('nav').innerHTML = FXShell.publicNav('AI Learning');
+document.getElementById('footer').innerHTML = FXShell.footer();
+
+const AI={
+  explain:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3a7 7 0 0 1 4 12.7c-.7.5-1 .9-1 1.8H9c0-.9-.3-1.3-1-1.8A7 7 0 0 1 12 3ZM9 21h6"/></svg>',
+  quiz:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M9 11a3 3 0 1 1 4 2.8c-.8.4-1 .8-1 1.7M12 18h.01"/></svg>',
+  guide:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
+};
+document.getElementById('agentgrid').innerHTML=[
+  ['explain','The Explainer','Stuck on a concept? It breaks down liquidity, structure, or risk in plain language, tuned to your current tier.'],
+  ['quiz','The Quizmaster','Active recall on demand. It quizzes you on what you just learned and flags the gaps to revisit.'],
+  ['guide','The Path Guide','Not sure what is next? It looks at your progress and suggests the most useful lesson to take now.']
+].map(a=>`<div class="agent"><div class="aic">${AI[a[0]]}</div><h3 style="font-size:16.5px;font-weight:700;margin:0 0 8px;">${a[1]}</h3><p class="muted" style="font-size:14px;line-height:1.55;margin:0;">${a[2]}</p></div>`).join('');
+
+document.getElementById('guard').innerHTML=[
+  ['No profit promises','The tutor will never guarantee returns or imply trading is easy money.'],
+  ['Not financial advice','It teaches concepts and process. It does not give personalized trade recommendations.'],
+  ['Grounded in the course','Answers are tied to the curriculum, so guidance stays consistent and accurate.']
+].map(g=>`<div class="gd"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--lime-dim)" stroke-width="2.4" style="flex:none;margin-top:2px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg><div><div style="font-weight:700;font-size:14.5px;margin-bottom:4px;">${g[0]}</div><p class="muted" style="font-size:13.5px;margin:0;line-height:1.5;">${g[1]}</p></div></div>`).join('');
+</script>
+</body>
+</html>

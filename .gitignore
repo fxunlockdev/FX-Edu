@@ -1,0 +1,21 @@
+node_modules/
+.pnpm-store/
+dist/
+build/
+.next/
+out/
+.turbo/
+coverage/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+.vercel
+.railway
+
+# Test artifacts
+**/playwright-report/
+**/test-results/
+apps/web/e2e/__screens__/

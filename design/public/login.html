@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Log in</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<script src="../assets/lumina.js"></script>
+<style>
+  body{min-height:100vh;}
+  .auth{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+  .auth-brand{background:var(--d-bg);color:var(--d-ink);position:relative;overflow:hidden;padding:48px;display:flex;flex-direction:column;justify-content:space-between;}
+  .auth-form{display:flex;align-items:center;justify-content:center;padding:48px;}
+  .form-inner{width:100%;max-width:380px;}
+  .quote{font-family:var(--font-display);font-size:26px;font-weight:600;line-height:1.3;letter-spacing:-.01em;}
+  .stat-row{display:flex;gap:28px;margin-top:28px;}
+  .oauth{display:flex;gap:10px;}
+  .oauth .btn{flex:1;}
+  @media(max-width:860px){.auth{grid-template-columns:1fr;}.auth-brand{display:none;}}
+</style>
+</head>
+<body>
+<div class="auth">
+  <div class="auth-brand">
+    <div class="glow glow-lime" style="width:420px;height:420px;top:-160px;right:-120px;opacity:.3;"></div>
+    <a href="home.html" style="position:relative;z-index:1;"><span id="logo"></span></a>
+    <div style="position:relative;z-index:1;">
+      <p class="quote">“Master risk before chasing returns. Build consistency through structured learning, journaling, and guided feedback.”</p>
+      <div class="stat-row">
+        <div><div style="font-family:var(--font-display);font-weight:700;font-size:30px;color:var(--lime);">5</div><div class="muted" style="color:var(--d-ink-var);font-size:13px;">Course tiers</div></div>
+        <div><div style="font-family:var(--font-display);font-weight:700;font-size:30px;color:var(--lime);">Weekly</div><div class="muted" style="color:var(--d-ink-var);font-size:13px;">Live webinars</div></div>
+        <div><div style="font-family:var(--font-display);font-weight:700;font-size:30px;color:var(--lime);">AI</div><div class="muted" style="color:var(--d-ink-var);font-size:13px;">Course tutor</div></div>
+      </div>
+    </div>
+    <p style="position:relative;z-index:1;font-size:12px;color:var(--d-ink-var);">Educational platform only. Forex trading involves risk.</p>
+  </div>
+
+  <div class="auth-form">
+    <div class="form-inner">
+      <h1 class="h-md">Welcome back</h1>
+      <p class="muted" style="margin:6px 0 26px;">Log in to continue your learning path.</p>
+      <div class="oauth" style="margin-bottom:18px;">
+        <button class="btn btn-ghost" onclick="go()">Continue with Google</button>
+        <button class="btn btn-ghost" onclick="go()">Apple</button>
+      </div>
+      <div class="row gap2" style="margin:18px 0;"><hr class="divider" style="flex:1;"><span class="muted" style="font-size:12px;">or</span><hr class="divider" style="flex:1;"></div>
+      <form onsubmit="go();return false;" class="stack gap3">
+        <div class="field"><label>Email</label><input class="input" type="email" placeholder="you@email.com" required></div>
+        <div class="field"><label>Password</label><input class="input" type="password" placeholder="••••••••" required></div>
+        <div class="between"><label class="row gap1" style="font-size:13px;color:var(--on-surface-var);"><input type="checkbox" checked> Remember me</label><a href="#" style="font-size:13px;font-weight:600;color:var(--primary);">Forgot password?</a></div>
+        <button class="btn btn-lime btn-block btn-lg" type="submit">Log in</button>
+      </form>
+      <p class="muted" style="text-align:center;margin-top:22px;font-size:14px;">New to FX Academy? <a href="signup.html" style="font-weight:700;color:var(--primary);">Create an account</a></p>
+    </div>
+  </div>
+</div>
+<script>
+document.getElementById('logo').innerHTML = FXShell.logo('light',28);
+function go(){ FX.toast('Signed in, taking you to your dashboard'); setTimeout(()=>location.href='../member/dashboard.html',700); }
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FX Academy, Welcome</title>
+<link rel="stylesheet" href="../assets/lumina.css">
+<script src="../assets/shell.js"></script>
+<style>
+  body{min-height:100vh;background:var(--d-bg);color:var(--d-ink);}
+  .succ{max-width:640px;margin:0 auto;padding:64px 24px;text-align:center;position:relative;z-index:1;}
+  .check{width:84px;height:84px;border-radius:50%;background:var(--lime);color:var(--on-lime);display:grid;place-items:center;margin:0 auto 24px;animation:pop .5s cubic-bezier(.2,1.3,.4,1) both;}
+  @keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+  .action{display:flex;gap:14px;align-items:center;text-align:left;padding:16px;border-radius:var(--r-lg);background:var(--glass-dark);border:1px solid var(--d-outline-strong);transition:.15s;}
+  .action:hover{background:rgba(255,255,255,.1);transform:translateX(3px);}
+  .action .ic{width:42px;height:42px;border-radius:11px;background:rgba(168,214,66,.16);color:var(--lime);display:grid;place-items:center;flex:none;}
+  .confetti{position:fixed;top:0;width:8px;height:14px;opacity:.9;animation:fall linear forwards;z-index:0;}
+  @keyframes fall{to{transform:translateY(105vh) rotate(540deg);opacity:0}}
+</style>
+</head>
+<body>
+<div class="glow glow-lime" style="width:520px;height:380px;top:-120px;left:50%;transform:translateX(-50%);opacity:.3;"></div>
+<div class="succ">
+  <div class="check"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div>
+  <span class="chip chip-lime" id="planChip">Pro activated</span>
+  <h1 class="display" style="margin:16px 0 10px;">Welcome to FX Academy</h1>
+  <p class="body-lg" style="color:var(--d-ink-var);max-width:440px;margin:0 auto 36px;">Your account is ready. Here’s the fastest way to get value in your first session.</p>
+
+  <div class="stack gap2" style="text-align:left;">
+    <a href="../member/lesson.html" class="action"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 5v14l11-7z"/></svg></span><div><div style="font-weight:700;">Start the Entry course</div><div class="muted" style="color:var(--d-ink-var);font-size:13.5px;">What is forex, pairs, and how markets move · ~35 min</div></div></a>
+    <a href="../member/risk-calculator.html" class="action"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18H6z M9 7h6 M8 11h.01 M12 11h.01"/></svg></span><div><div style="font-weight:700;">Set your account size</div><div class="muted" style="color:var(--d-ink-var);font-size:13.5px;">Pre-fill the risk calculator with your $5,000 profile</div></div></a>
+    <a href="../member/dashboard.html" class="action"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 5v14l11-7z"/></svg></span><div><div style="font-weight:700;">Watch the platform walkthrough</div><div class="muted" style="color:var(--d-ink-var);font-size:13.5px;">A 4-minute tour of the dashboard, journal and tools</div></div></a>
+    <a href="../member/webinars.html" class="action"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v8 M8 6v12 M16 6v12"/></svg></span><div><div style="font-weight:700;">Join the next live webinar</div><div class="muted" style="color:var(--d-ink-var);font-size:13.5px;">London Session Structure · Thursday 18:00 GMT</div></div></a>
+  </div>
+
+  <a href="../member/dashboard.html" class="btn btn-lime btn-lg" style="margin-top:32px;">Go to my dashboard →</a>
+  <p class="muted" style="color:var(--d-ink-var);font-size:12px;margin-top:24px;">A receipt has been emailed to you. Manage your subscription anytime in Billing.</p>
+</div>
+<script>
+const plan=new URLSearchParams(location.search).get('plan')||'pro';
+document.getElementById('planChip').textContent=(plan.charAt(0).toUpperCase()+plan.slice(1))+' activated';
+// confetti
+const colors=['#c3f35c','#a8d642','#6c9e75','#ffffff'];
+for(let i=0;i<60;i++){ const c=document.createElement('div'); c.className='confetti'; c.style.left=Math.random()*100+'vw'; c.style.background=colors[i%4]; c.style.animationDuration=(2+Math.random()*2.5)+'s'; c.style.animationDelay=(Math.random()*1.2)+'s'; c.style.borderRadius=Math.random()>.5?'50%':'2px'; document.body.appendChild(c); }
+</script>
+</body>
+</html>
