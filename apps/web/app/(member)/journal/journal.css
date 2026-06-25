@@ -1,0 +1,305 @@
+/* Trade Journal (M5) — ported from design/member/journal.html + trade-new.html.
+   Lumina tokens only; compositor-friendly transitions; responsive. */
+
+.jrnl {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(168, 214, 66, 0.08), transparent 36%),
+    var(--surface);
+}
+
+.jrnl-top {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--outline-var);
+  background: var(--surface-bright);
+}
+
+.jrnl-main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+
+.jrnl-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.jrnl-head h1 {
+  margin: 0;
+}
+.jrnl-head .muted {
+  margin: 4px 0 0;
+  max-width: 52ch;
+}
+
+/* Summary stat cards */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.sc {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.sc .l {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--on-surface-var);
+}
+.sc .v {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 25px;
+  letter-spacing: -0.02em;
+  margin-top: 6px;
+}
+
+/* Recent-trades table block */
+.jrnl-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.jrnl-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.jrnl-filters .input {
+  width: auto;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+.jrnl-scroll {
+  overflow-x: auto;
+}
+
+.dirpill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  text-transform: capitalize;
+}
+.dirpill.long {
+  background: rgba(78, 168, 99, 0.16);
+  color: #2c6b3d;
+}
+.dirpill.short {
+  background: var(--error-container);
+  color: var(--on-error-container);
+}
+
+.res {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.cell-strong {
+  font-weight: 700;
+}
+
+/* Empty state */
+.jrnl-empty {
+  text-align: center;
+  padding: 44px 24px;
+}
+.jrnl-empty h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+.jrnl-empty p {
+  margin: 0 auto 18px;
+  max-width: 42ch;
+}
+
+/* ── Log Trade form ─────────────────────────────────────────────────── */
+
+.tn-back {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+}
+.tn-back:hover {
+  color: var(--on-surface);
+}
+
+.tn-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 22px;
+  align-items: start;
+  max-width: 1000px;
+}
+.panel {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+.ph {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 18px;
+}
+.frow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.frow-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.field-mb {
+  margin-bottom: 14px;
+}
+
+/* Direction segmented control */
+.seg {
+  display: flex;
+  gap: 6px;
+}
+.segbtn {
+  flex: 1;
+  padding: 11px;
+  border-radius: 9px;
+  border: 1px solid var(--outline-var);
+  background: var(--c-lowest);
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  color: var(--on-surface);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.segbtn.on-long {
+  background: rgba(78, 168, 99, 0.15);
+  border-color: var(--pos);
+  color: #2c6b3d;
+}
+.segbtn.on-short {
+  background: var(--error-container);
+  border-color: var(--neg);
+  color: var(--on-error-container);
+}
+
+/* Live risk preview (dark sticky card) */
+.calc-card {
+  background: linear-gradient(150deg, #15271c, #0a1410);
+  color: var(--d-ink);
+  border-radius: var(--r-lg);
+  padding: 22px;
+  position: sticky;
+  top: 24px;
+  box-shadow: var(--shadow-dark);
+}
+.calc-card label {
+  color: var(--d-ink-var);
+}
+.calc-card h3 {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 14px 0;
+}
+.calc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--d-outline);
+  font-size: 14px;
+}
+.calc-row span {
+  color: var(--d-ink-var);
+}
+.calc-row b {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: #fff;
+}
+.calc-row.accent b {
+  color: var(--lime);
+}
+.calc-row.last {
+  border-bottom: 0;
+}
+.calc-warn {
+  margin: 12px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--warn-on-dark);
+}
+
+.tn-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* Chart upload (stub) */
+.tn-upload {
+  border: 1.5px dashed var(--outline-var);
+  border-radius: var(--r);
+  padding: 18px;
+  text-align: center;
+  color: var(--on-surface-var);
+  font-size: 13px;
+  background: var(--c-low);
+}
+.tn-upload strong {
+  color: var(--on-surface);
+}
+
+.tn-status {
+  margin: 14px 0 0;
+}
+
+@media (max-width: 1100px) {
+  .stat-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 880px) {
+  .tn-grid {
+    grid-template-columns: 1fr;
+  }
+  .frow,
+  .frow-3 {
+    grid-template-columns: 1fr;
+  }
+  .calc-card {
+    position: static;
+  }
+}
+@media (max-width: 560px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .jrnl-top {
+    padding: 0 16px;
+  }
+}

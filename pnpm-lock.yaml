@@ -90,6 +90,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@fxunlock/trading':
+        specifier: workspace:*
+        version: link:../../packages/trading
       '@fxunlock/ui':
         specifier: workspace:*
         version: link:../../packages/ui

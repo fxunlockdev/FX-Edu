@@ -5,7 +5,7 @@ import {
   isKnownInstrument,
   lookupInstrument,
   normalizeSymbol,
-} from './instruments.js';
+} from './instruments';
 
 describe('CLASS_DEFAULTS', () => {
   it('uses pip 0.0001 and 100k contract for FX majors', () => {

@@ -1,17 +1,17 @@
-import { lookupInstrument } from './instruments.js';
-import { isPositiveFinite, priceToPips } from './math.js';
-import { pipValuePerLot } from './pip-value.js';
+import { lookupInstrument } from './instruments';
+import { isPositiveFinite, priceToPips } from './math';
+import { pipValuePerLot } from './pip-value';
 import {
   collectWarnings,
   highRiskWarning,
   tightStopWarning,
-} from './warnings.js';
+} from './warnings';
 import type {
   Instrument,
   PositionSizeInput,
   PositionSizeResult,
   Result,
-} from './types.js';
+} from './types';
 
 /** Standard retail convention: one standard FX lot is $10 per pip for a USD
  *  account, regardless of pair (this is what the client `/tools` calculator does). */

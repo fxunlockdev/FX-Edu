@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { profitLoss } from './profit-loss.js';
+import { profitLoss } from './profit-loss';
 
 describe('profitLoss — sign correctness', () => {
   it('long that moves up is a profit', () => {

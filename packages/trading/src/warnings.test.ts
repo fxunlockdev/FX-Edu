@@ -3,7 +3,7 @@ import {
   collectWarnings,
   highRiskWarning,
   tightStopWarning,
-} from './warnings.js';
+} from './warnings';
 
 describe('tightStopWarning', () => {
   it('warns below 10 pips', () => {

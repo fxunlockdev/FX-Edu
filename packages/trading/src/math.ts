@@ -1,4 +1,4 @@
-import type { Instrument, Result } from './types.js';
+import type { Instrument, Result } from './types';
 
 /**
  * Low-level, instrument-aware price math shared across the calculators. Pure

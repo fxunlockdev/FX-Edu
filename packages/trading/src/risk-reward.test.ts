@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { riskReward } from './risk-reward.js';
+import { riskReward } from './risk-reward';
 
 describe('riskReward — ratio math', () => {
   it('computes 2:1 for a long with 20 risk / 40 reward', () => {

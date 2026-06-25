@@ -1,5 +1,5 @@
-import { lookupInstrument } from './instruments.js';
-import type { Instrument, Result } from './types.js';
+import { lookupInstrument } from './instruments';
+import type { Instrument, Result } from './types';
 
 /**
  * Pip-value math.

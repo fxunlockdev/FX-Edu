@@ -1,5 +1,5 @@
-import { isPositiveFinite } from './math.js';
-import type { RiskRewardInput, RiskRewardResult, Result } from './types.js';
+import { isPositiveFinite } from './math';
+import type { RiskRewardInput, RiskRewardResult, Result } from './types';
 
 /**
  * Reward-to-risk planning (PRD §8.7 Risk/Reward Planner).

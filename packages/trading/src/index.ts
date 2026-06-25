@@ -16,7 +16,7 @@ export {
   isKnownInstrument,
   lookupInstrument,
   normalizeSymbol,
-} from './instruments.js';
+} from './instruments';
 
 // Constants (exported for callers that want to display thresholds in copy).
 export {
@@ -24,22 +24,22 @@ export {
   PIP_VALUE_PER_STANDARD_LOT_USD,
   TIGHT_STOP_PIPS_THRESHOLD,
   UNITS_PER_STANDARD_LOT,
-} from './constants.js';
+} from './constants';
 
 // Calculators.
-export { positionSize } from './position-size.js';
-export { pipValue, pipValuePerLot } from './pip-value.js';
-export { riskReward } from './risk-reward.js';
-export { profitLoss } from './profit-loss.js';
-export { rMultiple } from './r-multiple.js';
-export { propFirmCheck } from './prop-firm.js';
+export { positionSize } from './position-size';
+export { pipValue, pipValuePerLot } from './pip-value';
+export { riskReward } from './risk-reward';
+export { profitLoss } from './profit-loss';
+export { rMultiple } from './r-multiple';
+export { propFirmCheck } from './prop-firm';
 
 // Warning builders (for callers composing their own advisories).
 export {
   collectWarnings,
   highRiskWarning,
   tightStopWarning,
-} from './warnings.js';
+} from './warnings';
 
 // Low-level math helpers (instrument-aware, reusable).
 export {
@@ -48,7 +48,7 @@ export {
   pipsToPrice,
   priceToPips,
   roundTo,
-} from './math.js';
+} from './math';
 
 // Types.
 export type {
@@ -68,4 +68,4 @@ export type {
   TradingOk,
   Warning,
   WarningCode,
-} from './types.js';
+} from './types';

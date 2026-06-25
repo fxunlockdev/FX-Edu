@@ -1,5 +1,5 @@
-import { directionalMove, isPositiveFinite } from './math.js';
-import type { RMultipleInput, Result } from './types.js';
+import { directionalMove, isPositiveFinite } from './math';
+import type { RMultipleInput, Result } from './types';
 
 /**
  * R-multiple — the journal's core performance unit (PRD §8.8 / §4: R-multiple

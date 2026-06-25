@@ -1,6 +1,6 @@
-import { lookupInstrument } from './instruments.js';
-import { directionalMove, isPositiveFinite } from './math.js';
-import type { ProfitLossInput, Result } from './types.js';
+import { lookupInstrument } from './instruments';
+import { directionalMove, isPositiveFinite } from './math';
+import type { ProfitLossInput, Result } from './types';
 
 /**
  * Profit & Loss simulation (PRD §8.7 Profit & Loss Simulator).

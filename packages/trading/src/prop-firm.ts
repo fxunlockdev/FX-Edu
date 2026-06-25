@@ -1,4 +1,4 @@
-import type { PropFirmInput, Warning } from './types.js';
+import type { PropFirmInput, Warning } from './types';
 
 /**
  * Prop-firm risk checks (PRD §8.7 Prop Firm Risk mode; §13 Prop Firm Prep).

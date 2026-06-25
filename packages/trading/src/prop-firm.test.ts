@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { propFirmCheck } from './prop-firm.js';
-import type { PropFirmInput } from './types.js';
+import { propFirmCheck } from './prop-firm';
+import type { PropFirmInput } from './types';
 
 function input(overrides: Partial<PropFirmInput> = {}): PropFirmInput {
   return {

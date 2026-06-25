@@ -53,8 +53,9 @@ const nextConfig = {
   outputFileTracingRoot: path.join(import.meta.dirname, '../..'),
   reactStrictMode: true,
   poweredByHeader: false,
-  // @fxunlock/ui ships TypeScript source; let Next transpile it in the app build.
-  transpilePackages: ['@fxunlock/ui'],
+  // @fxunlock/ui and @fxunlock/trading ship TypeScript source; let Next transpile
+  // them in the app build (no separate compile step in the workspace packages).
+  transpilePackages: ['@fxunlock/ui', '@fxunlock/trading'],
   // Linting runs as its own workspace task (`pnpm lint`), not inside the
   // production build, so a missing/locked ESLint config never blocks builds.
   eslint: {

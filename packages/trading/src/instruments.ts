@@ -1,5 +1,5 @@
-import { UNITS_PER_STANDARD_LOT } from './constants.js';
-import type { Instrument, InstrumentClass, Result } from './types.js';
+import { UNITS_PER_STANDARD_LOT } from './constants';
+import type { Instrument, InstrumentClass, Result } from './types';
 
 /**
  * The instrument model: pip size + contract size per class, with a typed

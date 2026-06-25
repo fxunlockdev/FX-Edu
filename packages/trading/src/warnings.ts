@@ -1,8 +1,8 @@
 import {
   HIGH_RISK_PERCENT_THRESHOLD,
   TIGHT_STOP_PIPS_THRESHOLD,
-} from './constants.js';
-import type { Warning } from './types.js';
+} from './constants';
+import type { Warning } from './types';
 
 /**
  * Advisory builders. Warnings are non-blocking risk flags (PRD §8.7) — they are

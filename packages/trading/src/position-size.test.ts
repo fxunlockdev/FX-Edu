@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { positionSize } from './position-size.js';
-import type { PositionSizeInput } from './types.js';
+import { positionSize } from './position-size';
+import type { PositionSizeInput } from './types';
 
 /** EUR/USD with a 30-pip stop (1.1000 → 1.0970). */
 function majorInput(overrides: Partial<PositionSizeInput> = {}): PositionSizeInput {

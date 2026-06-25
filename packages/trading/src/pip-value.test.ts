@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { lookupInstrument } from './instruments.js';
-import { pipValue, pipValuePerLot } from './pip-value.js';
+import { lookupInstrument } from './instruments';
+import { pipValue, pipValuePerLot } from './pip-value';
 
 describe('pipValuePerLot', () => {
   it('is $10 for a standard lot of a USD-quoted major (0.0001 × 100k)', () => {

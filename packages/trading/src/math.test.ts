@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { lookupInstrument } from './instruments.js';
+import { lookupInstrument } from './instruments';
 import {
   directionalMove,
   isPositiveFinite,
   pipsToPrice,
   priceToPips,
   roundTo,
-} from './math.js';
+} from './math';
 
 const eur = lookupInstrument('EUR/USD');
 const jpy = lookupInstrument('USD/JPY');

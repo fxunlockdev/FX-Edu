@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { rMultiple } from './r-multiple.js';
+import { rMultiple } from './r-multiple';
 
 describe('rMultiple — long sign correctness', () => {
   const base = { entry: 1.1, stopLoss: 1.09, direction: 'long' as const }; // 1R = 0.01
