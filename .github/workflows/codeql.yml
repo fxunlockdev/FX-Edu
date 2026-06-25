@@ -1,0 +1,49 @@
+# CodeQL — SAST for the JS/TS monorepo (PROJECT.md §6.6).
+# Runs on push to main, on PRs, and weekly so newly disclosed query packs
+# catch issues even when the code is quiet. Any CRITICAL finding should
+# block merge via branch protection / required status checks.
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly, Mondays 06:17 UTC (off-peak, off the hour to avoid runner spikes).
+    - cron: "17 6 * * 1"
+
+concurrency:
+  group: codeql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (javascript-typescript)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Least privilege for code scanning: read code, write scanning results.
+    permissions:
+      contents: read
+      security-events: write
+      # Needed for CodeQL to read PR metadata on pull_request runs.
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          language: ${{ matrix.language }}
+          # Adds the broader security-and-quality query suite on top of defaults.
+          queries: security-and-quality
+
+      # JS/TS needs no compilation; CodeQL extracts directly from source.
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"

@@ -23,7 +23,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import { baseColumns, primaryKey, timestamps } from "./_shared.js";
+import { baseColumns, primaryKey, timestamps } from "./_shared";
 import {
   membershipRoleEnum,
   membershipStatusEnum,
@@ -31,7 +31,7 @@ import {
   orgTypeEnum,
   tradingSessionEnum,
   userStatusEnum,
-} from "./enums.js";
+} from "./enums";
 
 /* ── organizations (tenant root) ───────────────────────────────────── */
 

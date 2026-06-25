@@ -22,14 +22,14 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import { baseColumns } from "./_shared.js";
+import { baseColumns } from "./_shared";
 import {
   accessLevelEnum,
   recordingStatusEnum,
   webinarRegistrationStatusEnum,
   webinarStatusEnum,
-} from "./enums.js";
-import { organizations, users } from "./auth.js";
+} from "./enums";
+import { organizations, users } from "./auth";
 
 /* ── webinars ──────────────────────────────────────────────────────── */
 

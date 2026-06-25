@@ -20,7 +20,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import { baseColumns, softDelete } from "./_shared.js";
+import { baseColumns, softDelete } from "./_shared";
 import {
   accessLevelEnum,
   moderationStatusEnum,
@@ -28,8 +28,8 @@ import {
   reactionTargetTypeEnum,
   reportStatusEnum,
   reportTargetTypeEnum,
-} from "./enums.js";
-import { organizations, users } from "./auth.js";
+} from "./enums";
+import { organizations, users } from "./auth";
 
 /* ── community_channels ────────────────────────────────────────────── */
 

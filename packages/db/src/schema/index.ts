@@ -21,16 +21,16 @@
  * `_shared` (column helpers + the pgvector `vector` type) is exported too so
  * downstream packages can reuse the building blocks.
  */
-export * from "./_shared.js";
-export * from "./enums.js";
-export * from "./auth.js";
-export * from "./billing.js";
-export * from "./learning.js";
-export * from "./webinars.js";
-export * from "./ai.js";
-export * from "./journal.js";
-export * from "./strategies.js";
-export * from "./community.js";
-export * from "./engagement.js";
-export * from "./affiliates.js";
-export * from "./ops.js";
+export * from "./_shared";
+export * from "./enums";
+export * from "./auth";
+export * from "./billing";
+export * from "./learning";
+export * from "./webinars";
+export * from "./ai";
+export * from "./journal";
+export * from "./strategies";
+export * from "./community";
+export * from "./engagement";
+export * from "./affiliates";
+export * from "./ops";

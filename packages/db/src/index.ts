@@ -10,7 +10,7 @@
  * RLS policies and the extension bootstrap live as versioned SQL in
  * `src/policies/` and are applied during migration (see README).
  */
-export * from "./schema/index.js";
+export * from "./schema/index";
 export {
   createDb,
   withTenant,
@@ -18,4 +18,4 @@ export {
   type Database,
   type DbConfig,
   type TenantContext,
-} from "./client.js";
+} from "./client";

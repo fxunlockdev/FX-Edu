@@ -1,18 +1,32 @@
 import type Stripe from 'stripe';
-import type { EntitlementUpdate } from './entitlement-writer.types';
-import type { Plan, SubscriptionStatus } from '../entitlements/entitlement.types';
+import type { SubscriptionStatus } from '@fxunlock/entitlements';
 
 /**
- * Pure mapper: Stripe subscription event → EntitlementUpdate (or null if the
- * event is not entitlement-relevant). No I/O, so it is trivially unit-testable.
+ * Pure mapper: Stripe subscription event → a normalized, plan-agnostic shape
+ * (or null if the event is not entitlement-relevant). No I/O, so it is trivially
+ * unit-testable.
+ *
+ * Plan resolution is intentionally NOT done here: mapping a Stripe price to our
+ * plan must consult the `plans` table (DB) with an allowlist (resolves review
+ * HIGH-4 — no silent metadata default), which is I/O. The mapper surfaces the
+ * `stripePriceId`; BillingService resolves the plan and decides whether to act.
  *
  * Covers the lifecycle the PRD calls out (§10 key events): subscription
- * created/updated/past_due/cancelled. `past_due` and `canceled` flip access to a
+ * created/updated/deleted. `past_due`/`canceled`/`paused` flip access to a
  * non-active status; the pure decider then locks gated features.
  */
-export function mapStripeEventToUpdate(
+export interface MappedSubscriptionEvent {
+  readonly stripeCustomerId: string;
+  /** Stripe Price id; resolved to a plan against the `plans` table downstream. */
+  readonly stripePriceId: string | null;
+  readonly status: SubscriptionStatus;
+  /** Stripe event id, for idempotent persistence + audit traceability. */
+  readonly sourceEventId: string;
+}
+
+export function mapStripeEvent(
   event: Stripe.Event,
-): EntitlementUpdate | null {
+): MappedSubscriptionEvent | null {
   switch (event.type) {
     case 'customer.subscription.created':
     case 'customer.subscription.updated':
@@ -20,7 +34,7 @@ export function mapStripeEventToUpdate(
       const subscription = event.data.object as Stripe.Subscription;
       return {
         stripeCustomerId: customerId(subscription.customer),
-        plan: planFromSubscription(subscription),
+        stripePriceId: priceId(subscription),
         status: mapStatus(subscription.status),
         sourceEventId: event.id,
       };
@@ -30,27 +44,18 @@ export function mapStripeEventToUpdate(
   }
 }
 
-function customerId(customer: string | Stripe.Customer | Stripe.DeletedCustomer): string {
+function customerId(
+  customer: string | Stripe.Customer | Stripe.DeletedCustomer,
+): string {
   return typeof customer === 'string' ? customer : customer.id;
 }
 
-/**
- * Derive our internal plan from the subscription's price metadata.
- *
- * TODO: wire @fxunlock/db — map Stripe price ids to plans via the `plans` table
- * rather than reading a metadata convention. Until then we read a `plan` key off
- * the price metadata and default conservatively to Basic.
- */
-function planFromSubscription(subscription: Stripe.Subscription): Plan {
-  const price = subscription.items.data[0]?.price;
-  const metaPlan = price?.metadata?.['plan'];
-  if (metaPlan === 'pro' || metaPlan === 'elite' || metaPlan === 'basic') {
-    return metaPlan;
-  }
-  return 'basic';
+/** The Stripe Price id on the subscription's first line item, if present. */
+function priceId(subscription: Stripe.Subscription): string | null {
+  return subscription.items.data[0]?.price?.id ?? null;
 }
 
-/** Map Stripe's subscription status to our internal status vocabulary. */
+/** Map Stripe's subscription status to the package's status vocabulary. */
 function mapStatus(status: Stripe.Subscription.Status): SubscriptionStatus {
   switch (status) {
     case 'active':
@@ -58,15 +63,17 @@ function mapStatus(status: Stripe.Subscription.Status): SubscriptionStatus {
     case 'trialing':
       return 'trialing';
     case 'past_due':
-    case 'unpaid':
       return 'past_due';
+    case 'unpaid':
+      return 'unpaid';
     case 'canceled':
       return 'canceled';
+    case 'paused':
+      return 'paused';
     case 'incomplete':
     case 'incomplete_expired':
-    case 'paused':
       return 'incomplete';
     default:
-      return 'none';
+      return 'incomplete';
   }
 }

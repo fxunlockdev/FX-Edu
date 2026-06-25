@@ -1,0 +1,230 @@
+/* Auth surfaces (login / signup) — ported from design/public/login.html and
+   design/public/signup.html. Split-screen: dark brand panel + light form.
+   Lumina tokens only; no hardcoded palette. */
+
+.auth {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+.auth-brand {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--s6);
+  background: var(--d-bg);
+  color: var(--d-ink);
+}
+
+.auth-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s6);
+}
+
+.auth-form-inner {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-quote {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.auth-stat-row {
+  display: flex;
+  gap: 28px;
+  margin-top: 28px;
+}
+.auth-stat-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  color: var(--lime);
+}
+.auth-stat-label {
+  font-size: 13px;
+  color: var(--d-ink-var);
+}
+
+.auth-perk {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  font-size: 14.5px;
+  padding: 8px 0;
+  color: var(--d-ink);
+}
+.auth-perk svg {
+  color: var(--lime);
+  flex: none;
+}
+
+.auth-fineprint {
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+  color: var(--d-ink-var);
+}
+
+.auth-brand-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* OAuth row (Google "coming soon") */
+.auth-oauth {
+  display: flex;
+  gap: 10px;
+}
+.auth-oauth .btn {
+  flex: 1;
+}
+.auth-oauth-hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--on-surface-var);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+}
+.auth-divider hr {
+  flex: 1;
+  border: 0;
+  border-top: 1px solid var(--outline-var);
+}
+.auth-divider span {
+  font-size: 12px;
+  color: var(--on-surface-var);
+}
+
+/* Field error + status text (mirrors the webinar form convention) */
+.auth-input-error {
+  border-color: var(--neg);
+  box-shadow: 0 0 0 3px rgba(186, 26, 26, 0.16);
+}
+.auth-field-error {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--neg);
+}
+.auth-field-error a {
+  font-weight: 700;
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* Form-level error banner (e.g. invalid credentials) */
+.auth-form-error {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: var(--r);
+  background: var(--error-container);
+  color: var(--on-error-container);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.auth-checkbox {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+  color: var(--on-surface-var);
+  line-height: 1.5;
+}
+.auth-checkbox input {
+  margin-top: 3px;
+  flex: none;
+}
+
+.auth-meta {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 14px;
+  color: var(--on-surface-var);
+}
+.auth-meta a {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.auth-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.auth-link-strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Password strength meter */
+.pw-meter {
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--c-high);
+  overflow: hidden;
+  margin-top: 8px;
+}
+.pw-meter i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 9999px;
+  background: var(--lime-dim);
+  transition: width var(--duration, 250ms) var(--ease-out, ease), background-color 250ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pw-meter i {
+    transition: none;
+  }
+}
+.pw-meter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+}
+.pw-meter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+}
+
+.auth-glow {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 214, 66, 0.3), transparent 65%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+@media (max-width: 860px) {
+  .auth {
+    grid-template-columns: 1fr;
+  }
+  .auth-brand {
+    display: none;
+  }
+  .auth-form {
+    padding: var(--s4) var(--s3);
+    min-height: 100vh;
+  }
+}

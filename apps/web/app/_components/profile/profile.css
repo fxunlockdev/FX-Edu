@@ -1,0 +1,133 @@
+/* Shared trading-profile UI (stepper + option grid) used by /onboarding and
+   /checkout. Ported from design/public/checkout.html. Lumina tokens only. */
+
+/* Progress stepper */
+.stepper {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 30px;
+  padding: 0;
+  list-style: none;
+}
+.stp {
+  flex: 1;
+  min-width: 0;
+}
+.stp-lbl {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--outline);
+  margin-bottom: 7px;
+}
+.stp-n {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--c-high);
+  color: var(--outline);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  flex: none;
+}
+.stp-ln {
+  display: block;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--c-high);
+}
+.stp.done .stp-lbl,
+.stp.active .stp-lbl {
+  color: var(--primary);
+}
+.stp.done .stp-n,
+.stp.active .stp-n {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+.stp.done .stp-ln,
+.stp.active .stp-ln {
+  background: var(--lime-dim);
+}
+
+/* Step block */
+.profile-step {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.profile-step-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  color: var(--on-surface);
+  padding: 0;
+}
+.profile-step-hint {
+  margin: 6px 0 16px;
+}
+
+/* Single-select option grid */
+.opt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.opt {
+  border: 1.5px solid var(--outline-var);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  color: var(--on-surface);
+  background: var(--c-lowest);
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease,
+    color 120ms ease;
+}
+.opt:hover {
+  border-color: var(--lime-dim);
+}
+.opt:focus-visible {
+  outline: 2px solid var(--lime-dim);
+  outline-offset: 2px;
+}
+.opt.sel {
+  border-color: var(--lime-dim);
+  background: rgba(168, 214, 66, 0.08);
+  color: var(--primary);
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+/* Inline field/validation error (shared with the auth forms' convention). */
+.auth-field-error {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--neg);
+}
+.auth-field-error a {
+  font-weight: 700;
+  color: inherit;
+  text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+  .opt-grid {
+    grid-template-columns: 1fr;
+  }
+}

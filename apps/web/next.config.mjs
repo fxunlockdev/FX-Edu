@@ -1,5 +1,20 @@
 import path from 'node:path';
 
+// Supabase origin for CSP connect-src. The browser auth/realtime client calls
+// the project URL directly (HTTPS + WSS), so it must be allow-listed or the
+// session/login requests are blocked. Derived from the public env at build time
+// (falls back to the *.supabase.co wildcard if the URL is absent during build).
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+let supabaseConnect = 'https://*.supabase.co wss://*.supabase.co';
+try {
+  if (supabaseUrl) {
+    const { host } = new URL(supabaseUrl);
+    supabaseConnect = `https://${host} wss://${host}`;
+  }
+} catch {
+  // Keep the wildcard fallback on a malformed URL.
+}
+
 // Security headers (review MEDIUM-7). CSP intentionally allows 'unsafe-inline'
 // for script/style today because the Next.js App Router injects inline bootstrap
 // scripts; TODO(security): harden to a nonce-based CSP via middleware. Cloudflare
@@ -16,7 +31,7 @@ const securityHeaders = [
       "font-src 'self' data:",
       "style-src 'self' 'unsafe-inline'",
       "script-src 'self' 'unsafe-inline'",
-      "connect-src 'self'",
+      `connect-src 'self' ${supabaseConnect}`,
       "form-action 'self' https://checkout.stripe.com",
     ].join('; '),
   },

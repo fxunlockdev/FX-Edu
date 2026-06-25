@@ -1,4 +1,4 @@
-import type { Plan, SubscriptionStatus } from '../entitlements/entitlement.types';
+import type { Plan, SubscriptionStatus } from '@fxunlock/entitlements';
 
 /**
  * Command to update a customer's subscription/entitlement state from a verified

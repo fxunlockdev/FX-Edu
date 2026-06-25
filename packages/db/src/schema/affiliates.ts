@@ -20,16 +20,16 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import { baseColumns } from "./_shared.js";
+import { baseColumns } from "./_shared";
 import {
   affiliateStatusEnum,
   commissionStatusEnum,
   payoutStatusEnum,
   planTierEnum,
   referralConversionStateEnum,
-} from "./enums.js";
-import { organizations, users } from "./auth.js";
-import { subscriptions } from "./billing.js";
+} from "./enums";
+import { organizations, users } from "./auth";
+import { subscriptions } from "./billing";
 
 /* ── affiliates ────────────────────────────────────────────────────── */
 

@@ -2,19 +2,21 @@ import { Module } from '@nestjs/common';
 import { EntitlementsController } from './entitlements.controller';
 import { EntitlementsService } from './entitlements.service';
 import { EntitlementGuard } from './entitlement.guard';
-import { LocalEntitlementDecider } from './local-entitlement-decider';
+import { PackageEntitlementDecider } from './package-entitlement-decider';
 import { ENTITLEMENT_DECIDER } from './entitlement.types';
 
 /**
- * Entitlements module. Binds the pure decider behind its DI token, exposes the
- * orchestrating service + route guard, and serves GET /entitlements.
+ * Entitlements module. Binds the package-backed decider behind its DI token,
+ * exposes the orchestrating service + route guard, and serves GET /entitlements.
  *
- * The decider provider is the single swap point for @fxunlock/entitlements.
+ * The decider provider is the single DI seam over `@fxunlock/entitlements` — the
+ * package owns the policy; this binding is just the adapter. `TenantDbService`
+ * is provided globally by DbModule and injected by EntitlementsService.
  */
 @Module({
   controllers: [EntitlementsController],
   providers: [
-    { provide: ENTITLEMENT_DECIDER, useClass: LocalEntitlementDecider },
+    { provide: ENTITLEMENT_DECIDER, useClass: PackageEntitlementDecider },
     EntitlementsService,
     EntitlementGuard,
   ],

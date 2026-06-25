@@ -26,9 +26,9 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import { baseColumns } from "./_shared.js";
-import { featureFlagStatusEnum, outboxStatusEnum } from "./enums.js";
-import { organizations } from "./auth.js";
+import { baseColumns } from "./_shared";
+import { featureFlagStatusEnum, outboxStatusEnum } from "./enums";
+import { organizations } from "./auth";
 
 /* ── audit_logs ────────────────────────────────────────────────────── */
 

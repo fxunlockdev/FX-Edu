@@ -20,7 +20,7 @@ import { sql } from "drizzle-orm";
 import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
-import * as schema from "./schema/index.js";
+import * as schema from "./schema/index";
 
 /** The Drizzle database bound to the full FX Academy schema. */
 export type Database = PostgresJsDatabase<typeof schema>;

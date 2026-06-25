@@ -2,14 +2,13 @@ import { Injectable } from '@nestjs/common';
 import type { IdempotencyStore } from './idempotency.types';
 
 /**
- * Temporary in-process idempotency store.
+ * In-process idempotency store — DEV/TEST ONLY.
  *
  * Correct for a single instance, but NOT durable and NOT shared across the
- * Railway replica set — so it is a stand-in only.
- *
- * TODO: wire @fxunlock/db / Upstash Redis — persist processed event ids in the
- * `idempotency_keys` table (or Redis with a TTL) so replays are no-ops across
- * restarts and across all instances.
+ * Railway replica set. The durable {@link PostgresIdempotencyStore} is the
+ * production binding (resolves review CRITICAL-2); the billing idempotency
+ * provider only selects this fallback when `USE_IN_MEMORY_IDEMPOTENCY=true`,
+ * and rejects it outright under `NODE_ENV=production`.
  */
 @Injectable()
 export class InMemoryIdempotencyStore implements IdempotencyStore {

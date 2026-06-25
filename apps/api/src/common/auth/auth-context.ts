@@ -29,9 +29,25 @@ export interface AuthContext {
   readonly orgId: string;
   readonly role: Role;
   readonly email?: string;
+  /**
+   * Authenticator Assurance Level from the session JWT (`aal` claim). Supabase
+   * issues `aal1` for a single factor and `aal2` after an MFA step-up
+   * (PROJECT.md §6.1). Step-up-gated flows (billing/portal changes) require
+   * `aal2`. Undefined when the token carries no `aal` claim.
+   */
+  readonly aal?: AuthAssuranceLevel;
+  /**
+   * Authentication methods reference (`amr`) — the factors used this session
+   * (e.g. `mfa`, `totp`, `password`). Kept so step-up checks can fall back to
+   * `amr` when an explicit `aal2` claim is absent.
+   */
+  readonly amr?: readonly string[];
   /** Raw bearer token, kept for downstream calls that must forward the JWT. */
   readonly token: string;
 }
+
+/** Supabase Authenticator Assurance Levels. `aal2` means a fresh MFA step-up. */
+export type AuthAssuranceLevel = 'aal1' | 'aal2';
 
 /** Property name under which the AuthContext is stashed on the request. */
 export const AUTH_CONTEXT_KEY = 'fxAuth' as const;

@@ -52,6 +52,14 @@ export class ConfigService {
     return this.env.REDIS_URL;
   }
 
+  /**
+   * Whether to use the non-durable in-memory idempotency store. Dev/test only;
+   * the billing idempotency provider rejects it in production.
+   */
+  get useInMemoryIdempotency(): boolean {
+    return this.env.USE_IN_MEMORY_IDEMPOTENCY === true;
+  }
+
   get muxSigningKeyId(): string {
     return this.env.MUX_SIGNING_KEY_ID;
   }

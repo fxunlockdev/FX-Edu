@@ -1,64 +1,50 @@
 /**
- * Local entitlement contract.
+ * Entitlement contract for the API.
  *
- * The real decision logic lives in the pure, unit-tested `@fxunlock/entitlements`
- * package (PROJECT.md §6.2 — "no I/O"). Until that package is built we define the
- * interface here and ship a temporary in-module implementation behind it, so call
- * sites (guards, media token minting) are stable.
- *
- * TODO: wire @fxunlock/entitlements — replace LocalEntitlementDecider with the
- * package's pure decide() and delete these local types in favour of its exports.
+ * The single source of truth for entitlement *vocabulary* and *policy* is the
+ * pure, unit-tested `@fxunlock/entitlements` package (PROJECT.md §6.2 — "no
+ * I/O"). This module re-exports the package's types so the rest of the API
+ * speaks one vocabulary (resolves review CRITICAL-4 + HIGH-2 — the local
+ * duplicate enums are gone) and defines a thin DI seam (`EntitlementDecider`)
+ * that is *backed by* the package, keeping the swap point the module advertises.
  */
+export type {
+  CourseTier,
+  Decision,
+  EntitlementContext,
+  EntitlementMap,
+  FeatureKey,
+  MediaTokenState,
+  Plan,
+  SubscriptionStatus,
+  WebinarAccess,
+} from '@fxunlock/entitlements';
 
-export type EntitlementOutcome = 'allow' | 'deny' | 'locked';
-
-export type Plan = 'basic' | 'pro' | 'elite';
-
-export type SubscriptionStatus =
-  | 'active'
-  | 'trialing'
-  | 'past_due'
-  | 'canceled'
-  | 'incomplete'
-  | 'none';
+import type {
+  Decision,
+  EntitlementContext,
+  FeatureKey,
+} from '@fxunlock/entitlements';
 
 /**
- * A feature key the product gates on. Mirrors the PRD's plan matrix (§5) and the
- * entitlements feature_key column (§9 data model).
+ * The resolved outcome the API returns to callers for a single feature.
+ *
+ * Wraps the package's pure {@link Decision} with the feature it was decided for
+ * and a short machine-readable reason, so guards can build a 403 body and the
+ * GET /entitlements response can be rendered without re-deriving anything.
  */
-export type FeatureKey =
-  | 'course.entry'
-  | 'course.beginner'
-  | 'course.intermediate'
-  | 'course.advanced'
-  | 'course.psychology'
-  | 'webinars.live'
-  | 'webinars.replays'
-  | 'ai.tutor'
-  | 'analytics'
-  | 'community'
-  | 'trade_ideas'
-  | 'prop_firm'
-  | 'lesson.playback';
-
-/** Everything the decision needs — pure inputs, no I/O. */
-export interface EntitlementContext {
-  readonly userId: string;
-  readonly orgId: string;
-  readonly plan: Plan;
-  readonly subscriptionStatus: SubscriptionStatus;
-  readonly feature: FeatureKey;
-  /** Optional resource the feature is scoped to (e.g. a lesson's required tier). */
-  readonly resourceTier?: Plan;
-}
-
 export interface EntitlementDecision {
-  readonly outcome: EntitlementOutcome;
+  readonly outcome: Decision;
   readonly feature: FeatureKey;
   readonly reason: string;
 }
 
-/** Decision boundary the guard and services depend on. */
+/**
+ * Decision boundary the guard and services depend on. The DI seam is preserved
+ * (so tests can substitute a fake), but the production binding delegates to the
+ * package's pure `canAccessFeature` — the package is the policy, this is the
+ * adapter.
+ */
 export interface EntitlementDecider {
   decide(context: EntitlementContext): EntitlementDecision;
 }

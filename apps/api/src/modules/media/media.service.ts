@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { EntitlementsService } from '../entitlements/entitlements.service';
-import type { Plan } from '../entitlements/entitlement.types';
+import type { CourseTier } from '../entitlements/entitlement.types';
 import {
   DEFAULT_TOKEN_TTL_SECONDS,
   MEDIA_TOKEN_SIGNER,
@@ -14,10 +14,10 @@ import {
 } from './media-token.types';
 import type { AuthContext } from '../../common/auth/auth-context';
 
-/** A lesson's playable asset + the plan tier required to watch it. */
+/** A lesson's playable asset + the course tier required to watch it. */
 interface LessonMedia {
   readonly playbackId: string;
-  readonly requiredTier: Plan;
+  readonly requiredTier: CourseTier;
 }
 
 /**
@@ -41,9 +41,8 @@ export class MediaService {
   ): Promise<PlaybackToken> {
     const media = await this.resolveLessonMedia(lessonId);
 
-    const decision = await this.entitlements.decideFor(
+    const decision = await this.entitlements.decideCourseTier(
       auth,
-      'lesson.playback',
       media.requiredTier,
     );
 

@@ -11,6 +11,7 @@ import { JwtAuthGuard } from './common/auth/jwt-auth.guard';
 import { RolesGuard } from './common/auth/roles.guard';
 import { AuditInterceptor } from './common/audit/audit.interceptor';
 
+import { DbModule } from './modules/db/db.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
 import { EntitlementsModule } from './modules/entitlements/entitlements.module';
@@ -38,6 +39,7 @@ import { BillingModule } from './modules/billing/billing.module';
     }),
     AuthSecurityModule,
     AuditModule,
+    DbModule,
     AuthModule,
     HealthModule,
     EntitlementsModule,

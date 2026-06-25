@@ -34,6 +34,13 @@ export const envSchema = z
     // Upstash Redis — entitlement cache, rate limits, webhook idempotency.
     REDIS_URL: z.string().url(),
 
+    // Dev/test escape hatch: use the non-durable in-memory idempotency store.
+    // Rejected at runtime when NODE_ENV=production (see idempotency.provider.ts).
+    USE_IN_MEMORY_IDEMPOTENCY: z
+      .enum(['true', 'false'])
+      .optional()
+      .transform((value) => value === 'true'),
+
     // Mux — short-TTL signed media playback tokens.
     MUX_SIGNING_KEY_ID: z.string().min(1),
     MUX_SIGNING_PRIVATE_KEY: z.string().min(1),

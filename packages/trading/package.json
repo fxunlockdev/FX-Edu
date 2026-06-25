@@ -1,0 +1,28 @@
+{
+  "name": "@fxunlock/trading",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Pure, deterministic forex/trading math — instrument-aware position sizing, R:R, P&L, R-multiple, and prop-firm checks (PRD §8.7). The calculation foundation for the Risk Calculator (M4), Journal R-multiple (M5), and Performance Analytics (M6).",
+  "type": "module",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "lint": "echo \"(trading) no lint configured\" && exit 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

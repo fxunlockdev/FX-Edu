@@ -1,0 +1,64 @@
+# Security — secret scanning + dependency review (PROJECT.md §6.6).
+#
+#   * Gitleaks: scans the repo/history for committed secrets. A planted
+#     secret must fail this job (and therefore block merge via required checks).
+#   * dependency-review: PR-only diff of dependency changes; fails on a
+#     vulnerable or disallowed-license dependency being introduced.
+#
+# No inline secrets: both actions run on the default GITHUB_TOKEN only.
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Default to read-only; jobs widen only what they need.
+permissions:
+  contents: read
+
+jobs:
+  secret-scan:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history so secrets in prior commits are caught, not just the tip.
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          # Only the default token — gitleaks needs no paid/org licence for OSS.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dependency-review:
+    name: Dependency review (PR only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Diff-based action: only meaningful on pull_request.
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      # Lets the action post a summary comment on the PR.
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dependency review
+        uses: actions/dependency-review-action@v4
+        with:
+          # Block PRs that introduce a high+ severity advisory.
+          fail-on-severity: high
+          # Surface findings as a comment on the PR for reviewer visibility.
+          comment-summary-in-pr: always

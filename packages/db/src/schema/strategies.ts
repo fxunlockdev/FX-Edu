@@ -24,7 +24,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import { baseColumns } from "./_shared.js";
+import { baseColumns } from "./_shared";
 import {
   accessLevelEnum,
   difficultyEnum,
@@ -32,9 +32,9 @@ import {
   publishStatusEnum,
   strategyCategoryEnum,
   tradeBiasEnum,
-} from "./enums.js";
-import { lessons } from "./learning.js";
-import { organizations, users } from "./auth.js";
+} from "./enums";
+import { lessons } from "./learning";
+import { organizations, users } from "./auth";
 
 /* ── strategies (playbooks, tenant-scoped) ─────────────────────────── */
 

@@ -20,15 +20,15 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import { baseColumns, vector } from "./_shared.js";
+import { baseColumns, vector } from "./_shared";
 import {
   aiConversationStatusEnum,
   aiMessageRoleEnum,
   aiModeEnum,
   chunkSourceTypeEnum,
-} from "./enums.js";
-import { lessons } from "./learning.js";
-import { organizations, users } from "./auth.js";
+} from "./enums";
+import { lessons } from "./learning";
+import { organizations, users } from "./auth";
 
 /** Embedding dimension for the retrieval index (matches the embed model). */
 export const EMBEDDING_DIMENSIONS = 1536;

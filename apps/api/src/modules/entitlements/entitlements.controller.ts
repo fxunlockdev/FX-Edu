@@ -1,24 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
+import { ALL_FEATURE_KEYS } from '@fxunlock/entitlements';
 import { EntitlementsService } from './entitlements.service';
-import type { EntitlementDecision, FeatureKey } from './entitlement.types';
+import type { EntitlementDecision } from './entitlement.types';
 import { CurrentUser } from '../../common/auth/current-user.decorator';
 import type { AuthContext } from '../../common/auth/auth-context';
-
-/** The full feature set surfaced to clients so the UI can render lock states. */
-const ALL_FEATURES: readonly FeatureKey[] = [
-  'course.entry',
-  'course.beginner',
-  'course.intermediate',
-  'course.advanced',
-  'course.psychology',
-  'webinars.live',
-  'webinars.replays',
-  'ai.tutor',
-  'analytics',
-  'community',
-  'trade_ideas',
-  'prop_firm',
-];
 
 interface EntitlementsResponse {
   readonly userId: string;
@@ -29,9 +14,11 @@ interface EntitlementsResponse {
 /**
  * GET /entitlements — the caller's per-feature decisions.
  *
- * Authenticated (global JwtAuthGuard). The client uses these only to render
- * locked vs unlocked UI; every protected resource is re-checked server-side, so
- * a tampered response grants nothing.
+ * The feature surface comes from `@fxunlock/entitlements` (`ALL_FEATURE_KEYS`),
+ * the single source of truth — there is no second list to drift (resolves review
+ * CRITICAL-4 + HIGH-2). Authenticated (global JwtAuthGuard). The client uses
+ * these only to render locked vs unlocked UI; every protected resource is
+ * re-checked server-side, so a tampered response grants nothing.
  */
 @Controller('entitlements')
 export class EntitlementsController {
@@ -39,7 +26,10 @@ export class EntitlementsController {
 
   @Get()
   async list(@CurrentUser() user: AuthContext): Promise<EntitlementsResponse> {
-    const entitlements = await this.entitlements.decideMany(user, ALL_FEATURES);
+    const entitlements = await this.entitlements.decideMany(
+      user,
+      ALL_FEATURE_KEYS,
+    );
     return { userId: user.sub, orgId: user.orgId, entitlements };
   }
 }

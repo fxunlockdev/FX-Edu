@@ -6,7 +6,11 @@ import {
   type JWTVerifyGetKey,
 } from 'jose';
 import { ConfigService } from '../../config/config.service';
-import { isRole, type AuthContext } from './auth-context';
+import {
+  isRole,
+  type AuthAssuranceLevel,
+  type AuthContext,
+} from './auth-context';
 
 /**
  * Verifies Supabase Auth session JWTs and maps validated claims to an
@@ -92,7 +96,41 @@ export class JwtVerifier {
       orgId,
       role,
       email: typeof email === 'string' ? email : undefined,
+      aal: JwtVerifier.parseAal(payload['aal']),
+      amr: JwtVerifier.parseAmr(payload['amr']),
       token,
     });
+  }
+
+  /** Narrow the `aal` claim to a known level, or undefined if absent/unknown. */
+  private static parseAal(value: unknown): AuthAssuranceLevel | undefined {
+    return value === 'aal1' || value === 'aal2' ? value : undefined;
+  }
+
+  /**
+   * Normalise the `amr` claim to a string array. Supabase emits `amr` as an
+   * array of `{ method, timestamp }` objects; older/standard tokens use a flat
+   * string array. We accept both and surface the method names.
+   */
+  private static parseAmr(value: unknown): readonly string[] | undefined {
+    if (!Array.isArray(value)) {
+      return undefined;
+    }
+    const methods = value
+      .map((entry): string | undefined => {
+        if (typeof entry === 'string') {
+          return entry;
+        }
+        if (
+          entry !== null &&
+          typeof entry === 'object' &&
+          typeof (entry as { method?: unknown }).method === 'string'
+        ) {
+          return (entry as { method: string }).method;
+        }
+        return undefined;
+      })
+      .filter((method): method is string => method !== undefined);
+    return methods.length > 0 ? Object.freeze(methods) : undefined;
   }
 }

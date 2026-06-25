@@ -1,0 +1,62 @@
+# CI — typecheck, test, build (the real merge gates) + non-blocking lint.
+#
+# Real gates today: typecheck + test + build (all via Turborepo).
+# `pnpm lint` is included but NON-BLOCKING because ESLint config is still
+# pending in some packages (turbo `lint` is a no-op there). Once the real
+# ESLint config lands, drop `continue-on-error` from the lint step to gate it.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least privilege: this job only needs to read the repo.
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: typecheck · test · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # pnpm must be set up BEFORE setup-node so `cache: pnpm` can find it.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # NON-BLOCKING: lint is a no-op in packages whose ESLint config is
+      # still pending. Surfaced for visibility; not a merge gate yet.
+      # TODO(F6): remove continue-on-error once real ESLint config lands.
+      - name: Lint (non-blocking — ESLint config pending)
+        run: pnpm lint
+        continue-on-error: true
+
+      # --- Real merge gates below ---
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
