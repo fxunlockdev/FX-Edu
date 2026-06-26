@@ -1,0 +1,380 @@
+/* Strategy Library (M10) — ported from design/member/strategies.html.
+   Lumina tokens only; compositor-friendly transitions (transform/opacity/shadow);
+   responsive grid. Banner gradients mirror the design's four dark-forest blends. */
+
+.strat-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(168, 214, 66, 0.08), transparent 36%),
+    var(--surface);
+}
+
+.strat-top {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--outline-var);
+  background: var(--surface-bright);
+}
+
+.strat-main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+
+.strat-lead {
+  margin: 4px 0 22px;
+  max-width: 60ch;
+}
+
+/* ── Filter tabs (URL state) ─────────────────────────────────────────── */
+.strat-filters {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.strat-ft {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--r-full);
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  color: var(--on-surface);
+  cursor: pointer;
+  transition: background-color 0.15s var(--ease), color 0.15s var(--ease),
+    border-color 0.15s var(--ease);
+}
+.strat-ft:not(.on):hover {
+  background: var(--c-low);
+}
+.strat-ft.on {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: transparent;
+}
+.strat-ft:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ── Library grid ────────────────────────────────────────────────────── */
+.sgrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.strat-card {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.strat-card:hover,
+.strat-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.sbanner {
+  height: 96px;
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+}
+.sbanner-0 {
+  background: linear-gradient(135deg, #1b3024, #0f1d16);
+}
+.sbanner-1 {
+  background: linear-gradient(135deg, #23351c, #11200d);
+}
+.sbanner-2 {
+  background: linear-gradient(135deg, #142a2e, #0c1a1c);
+}
+.sbanner-3 {
+  background: linear-gradient(135deg, #2a2418, #171206);
+}
+
+.sbody {
+  padding: 16px 18px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.sbody h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.smeta {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--on-surface-var);
+  margin: 10px 0 12px;
+}
+.smeta b {
+  color: var(--on-surface);
+  font-weight: 700;
+}
+.sdesc {
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin: 0 0 16px;
+  flex: 1;
+}
+.slock-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  margin-bottom: 10px;
+}
+.slock-row svg {
+  flex: none;
+}
+
+/* ── Detail page ─────────────────────────────────────────────────────── */
+.strat-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  margin-bottom: 16px;
+}
+.strat-back:hover {
+  color: var(--on-surface);
+}
+
+.strat-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.strat-detail-head h1 {
+  margin: 0;
+  width: 100%;
+}
+.strat-detail-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--on-surface-var);
+  margin: 6px 0 26px;
+}
+.strat-detail-meta b {
+  color: var(--on-surface);
+  font-weight: 700;
+}
+
+.strat-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 22px;
+  align-items: start;
+}
+
+.strat-section {
+  margin-bottom: 18px;
+}
+.strat-section h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  letter-spacing: -0.01em;
+}
+.strat-section p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.strat-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.strat-list li {
+  position: relative;
+  padding-left: 24px;
+  line-height: 1.5;
+  font-size: 14px;
+}
+.strat-list li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-full);
+  background: var(--lime-dim);
+}
+.strat-list.warn li::before {
+  background: var(--warn);
+}
+
+.strat-example {
+  border-left: 2px solid var(--outline-var);
+  padding-left: 14px;
+  margin-bottom: 14px;
+}
+.strat-example h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.strat-example p {
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* Checklist / quiz */
+.strat-check {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.strat-check-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: var(--c-low);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-md);
+}
+.strat-check-box {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--r-sm);
+  border: 2px solid var(--outline);
+  margin-top: 2px;
+}
+.strat-check-item h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 3px;
+}
+.strat-check-item p {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Aside: related lessons */
+.strat-aside {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.strat-related {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.strat-related li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 13px;
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-md);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--on-surface);
+  transition: background-color 0.15s var(--ease);
+}
+.strat-related li:hover {
+  background: var(--c-low);
+}
+
+/* ── Locked / gated preview ──────────────────────────────────────────── */
+.strat-gate {
+  text-align: center;
+  padding: 40px 24px;
+  background: var(--c-low);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  margin-top: 18px;
+}
+.strat-gate-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-full);
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  margin-bottom: 14px;
+}
+.strat-gate h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+.strat-gate p {
+  margin: 0 auto 18px;
+  max-width: 46ch;
+}
+
+.strat-locked-preview {
+  position: relative;
+}
+.strat-locked-preview .strat-section {
+  filter: blur(3px);
+  opacity: 0.55;
+  user-select: none;
+  pointer-events: none;
+}
+
+@media (max-width: 1000px) {
+  .sgrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 900px) {
+  .strat-grid {
+    grid-template-columns: 1fr;
+  }
+  .strat-aside {
+    position: static;
+  }
+}
+@media (max-width: 640px) {
+  .sgrid {
+    grid-template-columns: 1fr;
+  }
+  .strat-top {
+    padding: 0 16px;
+  }
+}
