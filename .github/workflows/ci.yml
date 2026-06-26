@@ -60,3 +60,10 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          # NEXT_PUBLIC_* are inlined at build time, so the build needs them.
+          # These are publishable, client-safe (RLS-protected) values sourced
+          # from repo variables — not secrets.
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_GOOGLE_OAUTH_ENABLED: 'false'
