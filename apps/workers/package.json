@@ -1,0 +1,27 @@
+{
+  "name": "@fxunlock/workers",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "FX Academy background workers — lifecycle messaging (transactional-outbox consumer → email + in-app notifications, preference-aware) (M15).",
+  "main": "./dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "node --watch --experimental-strip-types src/main.ts",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@fxunlock/db": "workspace:*",
+    "drizzle-orm": "^0.38.3",
+    "pino": "^9.6.0",
+    "resend": "^4.0.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

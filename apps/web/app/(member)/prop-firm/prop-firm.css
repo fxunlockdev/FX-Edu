@@ -1,0 +1,550 @@
+/* Prop Firm Prep (M13) — ported from design/member/prop-firm.html.
+   Lumina tokens only; motion stays on transform/opacity/width; responsive. */
+
+.pf {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(168, 214, 66, 0.08), transparent 36%),
+    var(--surface);
+}
+
+.pf-top {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--outline-var);
+  background: var(--surface-bright);
+}
+
+.pf-main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+
+.pf-head {
+  margin-bottom: 22px;
+}
+.pf-head h1 {
+  margin: 0;
+}
+.pf-head .muted {
+  margin: 6px 0 0;
+  max-width: 64ch;
+}
+
+.pf-section-h {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 14px;
+}
+
+/* ── Readiness hero (dark) ──────────────────────────────────────────── */
+.pf-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-xl);
+  padding: 28px;
+  margin-bottom: 26px;
+  color: var(--d-ink);
+  background: linear-gradient(150deg, #15271c, #0a1410);
+  box-shadow: var(--shadow-dark);
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 28px 30px;
+  align-items: start;
+}
+.pf-hero-glow {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  top: -150px;
+  right: -80px;
+  opacity: 0.2;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 214, 66, 0.7), transparent 70%);
+  pointer-events: none;
+}
+.pf-hero-copy {
+  position: relative;
+  z-index: 1;
+}
+.pf-hero-copy h2 {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 14px 0 8px;
+  letter-spacing: -0.01em;
+}
+.pf-hero-copy p {
+  color: var(--d-ink-var);
+  font-size: 14.5px;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 56ch;
+}
+
+.pf-score {
+  position: relative;
+  z-index: 1;
+  border-radius: var(--r-lg);
+  padding: 20px;
+  background: var(--glass-dark);
+  border: 1px solid var(--d-outline-strong);
+}
+.pf-score-label {
+  font-size: 12px;
+  color: var(--d-ink-var);
+  margin-bottom: 6px;
+}
+.pf-score-value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--lime);
+  line-height: 1;
+}
+.pf-score-pct {
+  font-size: 20px;
+}
+.pf-score-band {
+  margin-left: auto;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.pf-bar {
+  margin: 14px 0 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.pf-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--lime);
+  transition: width var(--duration-normal, 300ms) cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pf-score-summary {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--d-ink-var);
+  margin: 0;
+}
+.pf-score-empty-label {
+  font-size: 12px;
+  color: var(--d-ink-var);
+  margin-bottom: 6px;
+}
+.pf-score-empty {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+.pf-score-empty-hint {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--d-ink-var);
+  margin: 8px 0 0;
+}
+
+/* Signal breakdown (full-width row under hero copy + score) */
+.pf-signals {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+.pf-signal {
+  background: var(--glass-dark);
+  border: 1px solid var(--d-outline);
+  border-radius: var(--r-lg);
+  padding: 14px;
+}
+.pf-signal-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.pf-signal-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #fff;
+}
+.pf-signal-score {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--lime);
+}
+.pf-signal-bar {
+  margin: 9px 0;
+  height: 5px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.pf-signal-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--lime-dim);
+  transition: width var(--duration-normal, 300ms) cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pf-signal-detail {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--d-ink-var);
+  margin: 0;
+}
+
+/* ── Prep path ──────────────────────────────────────────────────────── */
+.pf-steps {
+  list-style: none;
+  margin: 0 0 26px;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.pf-step {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.pf-step:hover {
+  border-color: var(--lime-dim);
+  transform: translateY(-1px);
+}
+.pf-step-num {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  background: rgba(168, 214, 66, 0.18);
+  color: var(--lime-ink);
+}
+.pf-step-body h3 {
+  font-weight: 700;
+  font-size: 14.5px;
+  margin: 0;
+}
+.pf-step-body p {
+  font-size: 13px;
+  margin: 3px 0 0;
+  max-width: 60ch;
+}
+
+/* ── Section blocks (constraints, checklist) ────────────────────────── */
+.pf-block {
+  margin-bottom: 22px;
+}
+.pf-block-head {
+  margin-bottom: 18px;
+}
+.pf-block-head .muted {
+  margin: 6px 0 0;
+  max-width: 70ch;
+}
+.pf-link {
+  color: var(--lime-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.pf-link:hover {
+  color: var(--on-surface);
+}
+
+/* ── Constraints config (client leaf) ───────────────────────────────── */
+.pf-config-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 22px;
+  align-items: start;
+}
+.pf-field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.pf-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--on-surface);
+}
+.pf-input-affix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.pf-input-affix .input {
+  width: 100%;
+  padding-right: 30px;
+}
+.pf-input-affix > span {
+  position: absolute;
+  right: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  pointer-events: none;
+}
+.pf-hint {
+  font-size: 11.5px;
+  margin: 5px 0 0;
+}
+.pf-config-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 0;
+  flex-wrap: wrap;
+}
+.pf-saved {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--pos);
+}
+.pf-unofficial {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 14px 0 0;
+  max-width: 64ch;
+}
+
+/* Live pass/violation read */
+.pf-check {
+  border-radius: var(--r-lg);
+  padding: 18px;
+  border: 1px solid var(--outline-var);
+  background: var(--c-lowest);
+}
+.pf-check-pass {
+  border-color: var(--pos);
+  background: rgba(78, 168, 99, 0.08);
+}
+.pf-check-fail {
+  border-color: var(--neg);
+  background: var(--error-container);
+}
+.pf-check-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.pf-check-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  flex: none;
+  color: #fff;
+}
+.pf-check-pass .pf-check-badge {
+  background: var(--pos);
+}
+.pf-check-fail .pf-check-badge {
+  background: var(--neg);
+}
+.pf-check-head h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+.pf-check-sample {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--on-surface-var);
+  margin: 0 0 10px;
+}
+.pf-check-msg {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--on-surface);
+}
+.pf-violations {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.pf-violations li {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--on-error-container);
+  padding-left: 16px;
+  position: relative;
+}
+.pf-violations li::before {
+  content: '•';
+  position: absolute;
+  left: 2px;
+}
+
+/* ── Evaluation-day checklist ───────────────────────────────────────── */
+.pf-checklist-lead {
+  margin: 0 0 16px;
+  max-width: 68ch;
+}
+.pf-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.pf-check-item {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  font-size: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--c-low);
+}
+.pf-check-tick {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--lime-dim);
+  color: #142000;
+}
+.pf-checklist-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+/* ── Pro-gate locked state ──────────────────────────────────────────── */
+.pf-lock {
+  max-width: 560px;
+  margin: 8vh auto;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--outline-var);
+  background: var(--c-lowest);
+  box-shadow: var(--shadow-sm);
+}
+.pf-lock-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 32px;
+  background: linear-gradient(150deg, #15271c, #0a1410);
+}
+.pf-lock-hero h2 {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 14px 0 8px;
+}
+.pf-lock-hero p {
+  color: var(--d-ink-var);
+  font-size: 14.5px;
+  margin: 0;
+}
+.pf-lock-glow {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  top: -120px;
+  right: -60px;
+  opacity: 0.3;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 214, 66, 0.7), transparent 70%);
+  pointer-events: none;
+}
+.pf-lock-body {
+  padding: 24px;
+}
+.pf-lock-list {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.pf-lock-list li {
+  display: flex;
+  gap: 9px;
+  font-size: 13.5px;
+  color: var(--on-surface-var);
+}
+.pf-lock-list li::before {
+  content: '✓';
+  color: var(--lime-dim);
+  font-weight: 700;
+}
+.pf-lock-note {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 14px 0 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 980px) {
+  .pf-hero {
+    grid-template-columns: 1fr;
+  }
+  .pf-signals {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pf-config-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 620px) {
+  .pf-signals {
+    grid-template-columns: 1fr;
+  }
+  .pf-field-grid {
+    grid-template-columns: 1fr;
+  }
+  .pf-step {
+    grid-template-columns: 38px 1fr;
+  }
+  .pf-step .btn {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .pf-top {
+    padding: 0 16px;
+  }
+}

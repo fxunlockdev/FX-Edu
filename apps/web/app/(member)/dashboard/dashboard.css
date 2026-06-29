@@ -1,4 +1,6 @@
-/* Minimal authenticated landing — placeholder dashboard shell. Lumina tokens. */
+/* Member Dashboard (M18) — ported from design/member/dashboard.html.
+   Lumina tokens only; compositor-friendly motion (transform/opacity); responsive
+   12-col bento. Dark cards reuse the design's terminal/forest surfaces. */
 
 .dash {
   min-height: 100vh;
@@ -18,42 +20,474 @@
 }
 
 .dash-main {
-  max-width: 980px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 48px 24px 80px;
+  padding: 32px 24px 80px;
 }
 
-.dash-greeting {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin: 0 0 6px;
-}
-
-.dash-grid {
+/* ── 12-col bento ────────────────────────────────────────────────────────── */
+.dash-bento {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-  margin-top: 28px;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 18px;
+}
+.col-4 {
+  grid-column: span 4;
+}
+.col-5 {
+  grid-column: span 5;
+}
+.col-7 {
+  grid-column: span 7;
+}
+.col-12 {
+  grid-column: span 12;
 }
 
-.dash-stat-label {
-  font-size: 12px;
+/* ── Base card (mod) ─────────────────────────────────────────────────────── */
+.mod {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+.mod h3 {
+  font-size: 15px;
   font-weight: 700;
-  text-transform: uppercase;
+  white-space: nowrap;
+}
+.mod-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.mod-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  transition: color 0.15s ease;
+}
+.mod-link:hover {
+  color: var(--primary);
+}
+
+/* Dark / soft surfaces */
+.mod-dark {
+  background: linear-gradient(150deg, #0f1d16, #14241b);
+  border: none;
+  color: var(--d-ink);
+  position: relative;
+  overflow: hidden;
+}
+.mod-soft {
+  background: linear-gradient(135deg, #1b3024, #14241b);
+  border: none;
+  color: var(--d-ink);
+  position: relative;
+  overflow: hidden;
+}
+.mod-title-on-dark {
+  color: #fff;
+}
+
+.dash-glow {
+  position: absolute;
+  width: 240px;
+  height: 170px;
+  top: -120px;
+  right: -70px;
+  opacity: 0.12;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 214, 66, 0.7), transparent 70%);
+  pointer-events: none;
+}
+.dash-glow-lg {
+  width: 320px;
+  height: 320px;
+  top: -170px;
+  opacity: 0.22;
+}
+
+.dash-card-cta {
+  margin-top: auto;
+}
+.dash-card-empty {
+  font-size: 13.5px;
+  margin: 0 0 12px;
+}
+
+/* ── Welcome banner ──────────────────────────────────────────────────────── */
+.dash-welcome {
+  background: linear-gradient(135deg, #0f3218, #0a1410);
+  border: none;
+  color: var(--d-ink);
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+}
+.dash-welcome-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.dash-welcome-chips {
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.dash-chip-on-dark {
+  border-color: var(--d-outline-strong);
+}
+.dash-chip-stub {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--d-ink);
+  border: 1px solid var(--d-outline-strong);
+}
+.dash-chip-muted {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--d-ink-var);
+  border: 1px solid var(--d-outline-strong);
+}
+.dash-greeting {
+  color: #fff;
+  margin: 0;
+}
+.dash-welcome-sub {
+  color: var(--d-ink-var);
+  margin: 6px 0 0;
+  font-size: 14.5px;
+  max-width: 52ch;
+}
+
+/* ── Onboarding checklist ────────────────────────────────────────────────── */
+.dash-checklist-bar {
+  margin-bottom: 14px;
+}
+.dash-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dash-checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--c-high);
+}
+.dash-checklist-item:last-child {
+  border-bottom: none;
+}
+.dash-cl-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 2px solid var(--outline-var);
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+.dash-cl-box.done {
+  background: var(--lime);
+  border-color: var(--lime);
+}
+.dash-cl-label {
+  flex: 1;
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.dash-cl-label.is-done {
+  color: var(--outline);
+  text-decoration: line-through;
+  font-weight: 500;
+}
+.dash-cl-soon {
+  font-size: 10.5px;
+  font-weight: 700;
   letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--on-surface-var);
+  background: var(--c);
+  padding: 2px 7px;
+  border-radius: 9999px;
+}
+
+/* ── First course ────────────────────────────────────────────────────────── */
+.dash-course-thumb {
+  height: 120px;
+  border-radius: var(--r);
+  background: linear-gradient(135deg, #0f3218, #14241b);
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.dash-course-title {
+  font-weight: 700;
+  margin: 0;
+}
+.dash-course-sub {
+  font-size: 13.5px;
+  margin: 6px 0 14px;
+}
+
+/* ── Journal snapshot mini-stats ─────────────────────────────────────────── */
+.dash-mini {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.dash-stat {
+  flex: 1;
+  background: var(--c-low);
+  border-radius: var(--r);
+  padding: 12px;
+}
+.dash-stat-l {
+  font-size: 11px;
+  font-weight: 600;
   color: var(--on-surface-var);
 }
-.dash-stat-value {
+.dash-stat-v {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 20px;
-  margin-top: 6px;
+  font-size: 22px;
+  margin-top: 2px;
+}
+
+/* ── Risk calculator key-values ──────────────────────────────────────────── */
+.dash-kv {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--on-surface-var);
+}
+.dash-kv-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+}
+.dash-kv-row dt {
+  margin: 0;
+}
+.dash-kv-row dd {
+  margin: 0;
+  font-weight: 700;
   color: var(--on-surface);
 }
 
+/* ── Performance insight (dark) ──────────────────────────────────────────── */
+.dash-insight-body {
+  position: relative;
+  z-index: 1;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--d-ink);
+  margin: 0 0 16px;
+}
+.dash-insight-body strong {
+  color: var(--lime);
+}
+
+/* ── Today's focus (soft dark) ───────────────────────────────────────────── */
+.dash-focus-body {
+  position: relative;
+  z-index: 1;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--d-ink);
+  margin: 0 0 16px;
+}
+.dash-soon-tag {
+  font-size: 12px;
+  color: var(--d-ink-var);
+  margin: 12px 0 0;
+}
+
+/* ── Continue learning (placeholder) ─────────────────────────────────────── */
+.dash-soon {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.dash-soon-thumb {
+  width: 110px;
+  height: 96px;
+  flex: none;
+  border-radius: var(--r);
+  background: linear-gradient(135deg, #0f3218, #14241b);
+}
+.dash-soon-title {
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 4px;
+}
+.dash-soon-sub {
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+/* ── Live prices (degraded) ──────────────────────────────────────────────── */
+.dash-px-list {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+}
+.dash-px-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--d-outline);
+}
+.dash-px-row:last-child {
+  border-bottom: none;
+}
+.dash-px-pair {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.dash-px-val {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--d-ink-var);
+  letter-spacing: 0.06em;
+}
+.dash-px-note {
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--d-ink-var);
+  margin: 0;
+}
+
+/* ── Unavailable / pending states ────────────────────────────────────────── */
+.dash-unavailable {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  border: 1.5px dashed var(--outline-var);
+  border-radius: var(--r);
+  background: var(--c-low);
+  padding: 18px;
+}
+.dash-unavailable-icon {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 9px;
+  background: var(--c);
+  position: relative;
+}
+.dash-unavailable-icon::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 2px solid var(--outline);
+  border-radius: 50%;
+  opacity: 0.5;
+}
+.dash-unavailable-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin: 0 0 2px;
+}
+.dash-unavailable-sub {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── AI tutor chips ──────────────────────────────────────────────────────── */
+.dash-chip-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.dash-ai-chip {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: 9999px;
+  background: var(--c-low);
+  border: 1px solid var(--outline-var);
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+.dash-ai-chip:hover {
+  background: var(--primary-container);
+  border-color: var(--leaf);
+}
+
+/* ── Locked Pro card ─────────────────────────────────────────────────────── */
+.dash-locked {
+  min-height: 168px;
+}
+.dash-locked-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.dash-lock-icon {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 8px;
+  background: var(--c);
+  display: grid;
+  place-items: center;
+  color: var(--on-surface-var);
+}
+.dash-lock-badge {
+  margin-left: auto;
+}
+.dash-locked-body {
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .col-4,
+  .col-5,
+  .col-7 {
+    grid-column: span 12;
+  }
+}
 @media (max-width: 560px) {
   .dash-top {
     padding: 0 16px;
+  }
+  .dash-main {
+    padding: 24px 16px 64px;
+  }
+  .dash-mini {
+    flex-wrap: wrap;
+  }
+  .dash-soon {
+    flex-direction: column;
+  }
+  .dash-soon-thumb {
+    width: 100%;
+    height: 80px;
   }
 }

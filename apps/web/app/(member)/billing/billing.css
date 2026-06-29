@@ -1,0 +1,346 @@
+/* Billing (M16) — ported from design/member/billing.html.
+   Lumina tokens only; compositor-friendly (transform/opacity/width); responsive. */
+
+.bill {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(168, 214, 66, 0.08), transparent 36%),
+    var(--surface);
+}
+
+.bill-top {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--outline-var);
+  background: var(--surface-bright);
+}
+
+.bill-main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+
+.bill-h1 {
+  margin: 0 0 20px;
+}
+
+/* Two-column layout: main rail + details sidebar. */
+.bill-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 22px;
+  align-items: start;
+}
+.bill-col-main,
+.bill-col-side {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* Shared panel surface. */
+.bill-panel {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+.bill-panel-danger {
+  border-color: rgba(186, 26, 26, 0.25);
+}
+.bill-ph {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+.bill-ph-danger {
+  color: var(--neg);
+}
+.bill-empty {
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Current-plan hero ──────────────────────────────────────────────────── */
+.bill-plan-now {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  padding: 24px;
+  color: var(--d-ink);
+  background: linear-gradient(150deg, #15271c, #0a1410);
+  box-shadow: var(--shadow-dark);
+}
+.bill-glow {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  top: -120px;
+  right: -60px;
+  opacity: 0.2;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 214, 66, 0.7), transparent 70%);
+  pointer-events: none;
+}
+.bill-plan-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.bill-plan-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin: 12px 0 4px;
+}
+.bill-plan-sub {
+  color: var(--d-ink-var);
+  font-size: 13.5px;
+  margin: 0;
+  max-width: 44ch;
+}
+.bill-plan-price {
+  text-align: right;
+}
+.bill-price-figure {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--lime);
+  line-height: 1;
+}
+.bill-price-per {
+  font-size: 16px;
+  color: var(--d-ink-var);
+}
+.bill-renews {
+  font-size: 12px;
+  color: var(--d-ink-var);
+  margin-top: 6px;
+}
+.bill-plan-cta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* ── Stub note (Stripe portal / manage) ─────────────────────────────────── */
+.bill-stub-note {
+  flex-basis: 100%;
+  margin: 6px 0 0;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  border-radius: var(--r);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--d-ink-var);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+/* On the light side panels the same note sits on a light surface. */
+.bill-panel .bill-stub-note {
+  background: var(--c-low);
+  color: var(--on-surface-var);
+  border-color: var(--outline-var);
+}
+
+/* ── Failed-payment banner ──────────────────────────────────────────────── */
+.bill-failed {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  border-radius: var(--r-lg);
+  background: var(--error-container);
+  border: 1px solid rgba(186, 26, 26, 0.3);
+}
+.bill-failed-icon {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--neg);
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+}
+.bill-failed-body {
+  min-width: 0;
+  flex: 1;
+}
+.bill-failed-title {
+  font-weight: 700;
+  font-size: 14.5px;
+  margin: 0 0 4px;
+  color: var(--on-error-container);
+}
+.bill-failed-text {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--on-error-container);
+}
+.bill-failed-action {
+  flex: none;
+}
+
+/* ── Billing history table ──────────────────────────────────────────────── */
+.bill-sample-note {
+  font-size: 12px;
+  margin: -4px 0 12px;
+}
+.bill-th-right,
+.bill-td-right {
+  text-align: right;
+}
+.bill-amount {
+  font-weight: 600;
+}
+.bill-receipt-link {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--on-surface-var);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* ── Payment method ─────────────────────────────────────────────────────── */
+.bill-card-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  background: var(--c-low);
+  border-radius: 10px;
+}
+.bill-card-brand {
+  flex: none;
+  width: 46px;
+  height: 32px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #3c5a41, #0f3218);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.bill-card-num {
+  font-weight: 600;
+  font-size: 14px;
+}
+.bill-card-exp {
+  font-size: 12.5px;
+}
+.bill-pm-note {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+.bill-pm-action {
+  margin-top: 12px;
+}
+
+/* ── Plan includes list ─────────────────────────────────────────────────── */
+.bill-feats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.bill-feat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--on-surface);
+}
+.bill-feat svg {
+  flex: none;
+}
+
+/* ── Cancel panel ───────────────────────────────────────────────────────── */
+.bill-cancel-lead {
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+.bill-danger-btn {
+  color: var(--neg);
+  border-color: rgba(186, 26, 26, 0.3);
+}
+.bill-confirm {
+  border: 1px solid rgba(186, 26, 26, 0.25);
+  border-radius: var(--r);
+  background: var(--c-low);
+  padding: 14px;
+}
+.bill-confirm-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin: 0 0 6px;
+}
+.bill-confirm-text {
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 0 0 14px;
+}
+.bill-confirm-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.bill-cancel-scheduled {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+  padding: 12px;
+  border-radius: var(--r);
+  background: var(--c-low);
+  color: var(--on-surface-var);
+}
+
+.bill-foot-note {
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 24px 0 0;
+  max-width: 64ch;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .bill-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .bill-top {
+    padding: 0 16px;
+  }
+  .bill-plan-price {
+    text-align: left;
+  }
+  .bill-failed {
+    flex-wrap: wrap;
+  }
+}

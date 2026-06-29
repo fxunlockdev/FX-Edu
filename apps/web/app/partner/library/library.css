@@ -1,0 +1,72 @@
+/* Course library (M20) — catalog table + visibility toggles. Lumina tokens. */
+
+.lib-table .lib-title {
+  font-weight: 600;
+}
+
+/* iOS-style switch built from a checkbox (compositor-friendly). */
+.lib-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  user-select: none;
+}
+.lib-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.lib-switch {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  border-radius: 9999px;
+  background: var(--c-high);
+  transition: background 0.18s ease;
+  flex: none;
+}
+.lib-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--c-lowest);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.18s var(--ease);
+}
+.lib-toggle input:checked + .lib-switch {
+  background: var(--lime-dim);
+}
+.lib-toggle input:checked + .lib-switch::after {
+  transform: translateX(16px);
+}
+.lib-toggle input:focus-visible + .lib-switch {
+  outline: 2px solid var(--lime-dim);
+  outline-offset: 2px;
+}
+.lib-toggle-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  min-width: 48px;
+}
+
+.lib-add {
+  margin-top: 20px;
+}
+.lib-add .pt-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.lib-add p {
+  margin: 0;
+  max-width: 52ch;
+}

@@ -1,0 +1,211 @@
+/* Notifications (M17) — ported from design/member/notifications.html.
+   Lumina tokens only; compositor-friendly transitions; responsive. */
+
+.ntf {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(168, 214, 66, 0.08), transparent 36%),
+    var(--surface);
+}
+
+.ntf-top {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--outline-var);
+  background: var(--surface-bright);
+}
+
+.ntf-main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+
+.ntf-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.ntf-count {
+  margin: 4px 0 0;
+}
+
+/* ── Tabs (URL state) ──────────────────────────────────────────────────── */
+.ntf-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--outline-var);
+  margin-bottom: 18px;
+  overflow-x: auto;
+}
+.ntf-tab {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.ntf-tab:hover {
+  color: var(--on-surface);
+}
+.ntf-tab.on {
+  color: var(--primary);
+  border-bottom-color: var(--lime-dim);
+}
+.ntf-tab:focus-visible {
+  outline: 2px solid var(--lime-dim);
+  outline-offset: -2px;
+}
+
+/* ── Rows ──────────────────────────────────────────────────────────────── */
+.ntf-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ntf-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 15px 17px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 11px;
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.12s ease;
+}
+.ntf-row:hover {
+  transform: translateY(-1px);
+}
+.ntf-row:focus-visible {
+  outline: 2px solid var(--lime-dim);
+  outline-offset: 2px;
+}
+.ntf-row.unread {
+  border-color: rgba(168, 214, 66, 0.5);
+  background: linear-gradient(90deg, rgba(168, 214, 66, 0.05), var(--c-lowest) 60%);
+}
+.ntf-row.unread::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  right: 16px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lime-dim);
+}
+
+.ntf-ic {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+}
+.ntf-ic-live {
+  background: rgba(255, 90, 90, 0.14);
+  color: #d23;
+}
+.ntf-ic-idea {
+  background: rgba(168, 214, 66, 0.18);
+  color: #4f6e0a;
+}
+.ntf-ic-community {
+  background: rgba(31, 107, 138, 0.14);
+  color: #1f6b8a;
+}
+.ntf-ic-cert {
+  background: rgba(15, 50, 24, 0.12);
+  color: #0f3218;
+}
+
+.ntf-body {
+  flex: 1;
+  min-width: 0;
+  padding-right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ntf-title {
+  font-weight: 700;
+  font-size: 14.5px;
+  color: var(--on-surface);
+}
+.ntf-text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--on-surface-var);
+}
+.ntf-time {
+  font-size: 12px;
+  color: var(--on-surface-var);
+  white-space: nowrap;
+  flex: none;
+}
+
+/* ── Empty state ───────────────────────────────────────────────────────── */
+.ntf-empty {
+  text-align: center;
+  padding: 48px 24px;
+}
+.ntf-empty-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--c-low);
+  color: var(--on-surface-var);
+}
+.ntf-empty h2 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+.ntf-empty p {
+  margin: 0 auto;
+  max-width: 44ch;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .ntf-top {
+    padding: 0 16px;
+  }
+  .ntf-main {
+    padding: 24px 16px 64px;
+  }
+  .ntf-head {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ntf-row,
+  .ntf-tab {
+    transition: none;
+  }
+  .ntf-row:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,131 @@
+/* Public certificate verification (M9). Public chrome (PublicNav + Footer);
+   Lumina tokens only; minimal-disclosure layout. */
+
+.verify {
+  min-height: 64vh;
+  padding: clamp(48px, 6vw, 96px) 0;
+  background:
+    radial-gradient(circle at top, rgba(168, 214, 66, 0.07), transparent 42%),
+    var(--surface);
+}
+
+.verify-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.verify-card {
+  width: 100%;
+  max-width: 560px;
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(24px, 4vw, 38px);
+  text-align: center;
+}
+.verify-card-valid {
+  border-top: 3px solid var(--pos);
+}
+.verify-card-invalid {
+  border-top: 3px solid var(--neg);
+}
+
+/* Status badge */
+.verify-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  margin-bottom: 16px;
+}
+.verify-badge-valid {
+  color: var(--pos);
+  background: rgba(78, 168, 99, 0.12);
+  border: 1px solid rgba(78, 168, 99, 0.32);
+}
+.verify-badge-invalid {
+  color: var(--neg);
+  background: rgba(186, 26, 26, 0.1);
+  border: 1px solid rgba(186, 26, 26, 0.28);
+}
+
+.verify-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 20px;
+  color: var(--on-surface);
+}
+
+/* Minimal facts list — only the four allowed fields. */
+.verify-facts {
+  margin: 0 0 20px;
+  display: grid;
+  gap: 12px;
+  text-align: left;
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r);
+  background: var(--c-low);
+  padding: 16px 18px;
+}
+.verify-fact {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.verify-fact dt {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--on-surface-var);
+  margin: 0;
+  flex: none;
+}
+.verify-fact dd {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--on-surface);
+  margin: 0;
+  text-align: right;
+  word-break: break-word;
+}
+.verify-mono {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.verify-note {
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 0 auto;
+  max-width: 46ch;
+}
+
+.verify-home {
+  margin-top: 20px;
+}
+
+.verify-disclaimer {
+  max-width: 560px;
+}
+
+@media (max-width: 560px) {
+  .verify-fact {
+    flex-direction: column;
+    gap: 2px;
+  }
+  .verify-fact dd {
+    text-align: left;
+  }
+}

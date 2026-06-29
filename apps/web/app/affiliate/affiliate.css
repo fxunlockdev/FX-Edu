@@ -1,0 +1,540 @@
+/* Affiliate Portal (M14) — ported from design/assets/shell.js (appStyles/appSidebar/appTop)
+   + portal-specific surfaces. Lumina tokens only; compositor-friendly motion
+   (transform/opacity); responsive. */
+
+/* ── Shell grid (ported appStyles .app) ─────────────────────────────────────── */
+.aff {
+  display: grid;
+  grid-template-columns: 248px 1fr;
+  min-height: 100vh;
+  background: var(--surface);
+}
+
+/* Sidebar (ported .app-side) */
+.aff-side {
+  background: var(--d-bg);
+  color: var(--d-ink);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid var(--d-outline);
+}
+.aff-side-top {
+  padding: 20px 18px;
+  border-bottom: 1px solid var(--d-outline);
+}
+.aff-nav {
+  padding: 12px 12px 24px;
+  flex: 1;
+}
+.aff-nav-sec {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--d-ink-var);
+  opacity: 0.7;
+  padding: 16px 12px 7px;
+}
+.aff-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 12px;
+  border-radius: 9px;
+  color: var(--d-ink);
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.82;
+  transition: background 0.15s var(--ease), opacity 0.15s var(--ease);
+  margin-bottom: 1px;
+}
+.aff-nav-item .aff-nav-ic {
+  display: inline-flex;
+  opacity: 0.8;
+}
+.aff-nav-item:hover {
+  background: var(--glass-dark);
+  opacity: 1;
+}
+.aff-nav-item.active {
+  background: linear-gradient(90deg, rgba(168, 214, 66, 0.18), rgba(168, 214, 66, 0.04));
+  color: #fff;
+  opacity: 1;
+  box-shadow: inset 2px 0 0 var(--lime);
+}
+.aff-nav-item.active .aff-nav-ic {
+  color: var(--lime);
+  opacity: 1;
+}
+.aff-side-foot {
+  padding: 16px 18px 22px;
+  border-top: 1px solid var(--d-outline);
+}
+
+/* Content column + topbar (ported .app-main / .app-top) */
+.aff-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.aff-top {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 28px;
+  background: rgba(248, 250, 245, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--outline-var);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+.aff-top-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--on-surface);
+}
+.aff-body {
+  padding: 28px;
+  flex: 1;
+  max-width: 1180px;
+  width: 100%;
+}
+
+/* Mobile: collapse sidebar (ported breakpoint) */
+@media (max-width: 980px) {
+  .aff {
+    grid-template-columns: 1fr;
+  }
+  .aff-side {
+    display: none;
+  }
+}
+
+/* ── Page primitives shared across affiliate routes ─────────────────────────── */
+.aff-lead {
+  margin: 6px 0 24px;
+  max-width: 60ch;
+}
+.aff-section {
+  margin: 28px 0 0;
+}
+.aff-section > h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.aff-section > .sub {
+  font-size: 13.5px;
+  margin: 0 0 16px;
+}
+
+/* Metric cards (overview) */
+.aff-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.aff-metric {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.aff-metric .l {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--on-surface-var);
+}
+.aff-metric .v {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  margin-top: 6px;
+}
+.aff-metric .d {
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.aff-metric .d.pos {
+  color: #2c6b3d;
+}
+.aff-metric .d.neg {
+  color: var(--neg);
+}
+.aff-metric .d.neutral {
+  color: var(--on-surface-var);
+  font-weight: 600;
+}
+
+/* Projected-payout hero strip */
+.aff-payout-hero {
+  position: relative;
+  overflow: hidden;
+  margin-top: 18px;
+  padding: 24px;
+  border-radius: var(--r-xl);
+  background: linear-gradient(150deg, #15271c, #0a1410);
+  color: var(--d-ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+.aff-payout-hero .glow {
+  width: 240px;
+  height: 240px;
+  top: -120px;
+  right: -40px;
+  opacity: 0.32;
+}
+.aff-payout-hero .amount {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 40px;
+  color: var(--lime);
+  letter-spacing: -0.03em;
+}
+.aff-payout-hero .lbl {
+  font-size: 13px;
+  color: var(--d-ink-var);
+}
+.aff-payout-hero .note {
+  max-width: 42ch;
+  font-size: 12.5px;
+  color: var(--d-ink-var);
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Mini sparkline trend */
+.aff-trend {
+  margin-top: 18px;
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+.aff-trend .ph {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 2px;
+}
+.aff-trend .sub {
+  font-size: 12.5px;
+  margin: 0 0 14px;
+  color: var(--on-surface-var);
+}
+.aff-spark {
+  width: 100%;
+  height: 96px;
+  display: block;
+}
+
+/* Commission term cards */
+.aff-terms {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--c-lowest);
+}
+.aff-terms > div {
+  padding: 22px;
+  border-right: 1px solid var(--outline-var);
+}
+.aff-terms > div:last-child {
+  border-right: 0;
+}
+.aff-terms .rate {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 32px;
+  margin: 8px 0;
+  letter-spacing: -0.02em;
+}
+.aff-terms .rate.pro {
+  color: var(--primary);
+}
+.aff-terms p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Referral / UTM builder */
+.aff-grid2 {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 20px;
+  align-items: start;
+}
+.aff-panel {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+.aff-panel .ph {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.aff-panel .sub {
+  font-size: 12.5px;
+  color: var(--on-surface-var);
+  margin: 0 0 16px;
+}
+
+/* Code chip + copy row */
+.aff-code-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.aff-code {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  background: var(--c-low);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r);
+  padding: 10px 16px;
+  color: var(--on-surface);
+}
+.aff-link-box {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+.aff-link-box .input {
+  flex: 1;
+  min-width: 200px;
+  font-family: var(--font-display);
+  font-size: 13.5px;
+}
+.aff-share {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.aff-qr {
+  width: 132px;
+  height: 132px;
+  border-radius: var(--r);
+  border: 1px dashed var(--outline-var);
+  background: var(--c-low);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 12px;
+  color: var(--on-surface-var);
+  padding: 12px;
+}
+
+/* Asset cards */
+.aff-asset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.aff-asset {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.aff-asset .thumb {
+  height: 92px;
+  border-radius: var(--r);
+  background: linear-gradient(135deg, var(--c-low), var(--c-high));
+  border: 1px solid var(--outline-var);
+  display: grid;
+  place-items: center;
+  color: var(--on-surface-var);
+  font-size: 12px;
+  font-weight: 600;
+}
+.aff-asset .t {
+  font-weight: 700;
+  font-size: 14.5px;
+}
+.aff-asset .spec {
+  font-size: 12px;
+  color: var(--on-surface-var);
+}
+.aff-swipe {
+  background: var(--c-low);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r);
+  padding: 14px 16px;
+}
+.aff-swipe .t {
+  font-weight: 700;
+  font-size: 13.5px;
+  margin: 0 0 6px;
+}
+.aff-swipe p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--on-surface-var);
+}
+
+/* Stubbed / coming-soon callout */
+.aff-stub {
+  border: 1px solid var(--outline-var);
+  border-left: 3px solid var(--warn);
+  background: rgba(224, 162, 53, 0.07);
+  border-radius: var(--r);
+  padding: 16px 18px;
+}
+.aff-stub h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+.aff-stub p {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--on-surface-var);
+  max-width: 64ch;
+}
+
+/* Payout status pills */
+.aff-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+.aff-pill.paid {
+  background: rgba(78, 168, 99, 0.16);
+  color: #2c6b3d;
+}
+.aff-pill.pending,
+.aff-pill.in_transit {
+  background: rgba(224, 162, 53, 0.18);
+  color: #8a5a06;
+}
+.aff-pill.approved {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+.aff-pill.reversed {
+  background: var(--error-container);
+  color: var(--on-error-container);
+}
+
+/* Balance cards (payouts) */
+.aff-balance {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+/* Disclosure / settings rows */
+.aff-form {
+  display: grid;
+  gap: 16px;
+  max-width: 620px;
+}
+.aff-disclosure {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r);
+  background: var(--c-low);
+}
+.aff-disclosure input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--lime-dim);
+  flex: none;
+}
+.aff-disclosure .copy {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--on-surface-var);
+}
+
+/* Number cell (tables) */
+.aff-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+.aff-num.neg {
+  color: var(--neg);
+}
+.aff-num.pos {
+  color: #2c6b3d;
+}
+
+/* Responsive collapses */
+@media (max-width: 1080px) {
+  .aff-metrics,
+  .aff-asset-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .aff-grid2 {
+    grid-template-columns: 1fr;
+  }
+  .aff-terms,
+  .aff-balance {
+    grid-template-columns: 1fr;
+  }
+  .aff-terms > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--outline-var);
+  }
+  .aff-terms > div:last-child {
+    border-bottom: 0;
+  }
+}
+@media (max-width: 620px) {
+  .aff-body {
+    padding: 20px 16px;
+  }
+  .aff-metrics,
+  .aff-asset-grid {
+    grid-template-columns: 1fr;
+  }
+  .aff-top {
+    padding: 0 16px;
+  }
+}

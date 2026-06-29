@@ -1,8 +1,31 @@
 import type { Metadata } from 'next';
-import { Logo, SurfaceCard, Badge, Disclaimer } from '@fxunlock/ui';
+import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
 import { createClient } from '@/lib/supabase/server';
-import { profileLabel } from '@/lib/onboarding/labels';
 import { SignOutButton } from '../_components/SignOutButton';
+import { summarize, type JournalSummary } from '../journal/journal-stats';
+import { TRADE_SELECT_COLUMNS, type TradeRow } from '../journal/trade-fields';
+import { derivePlan, type Plan } from './_components/plan';
+import {
+  deriveDashboard,
+  greetingName,
+  timeGreeting,
+  type DashboardProfile,
+} from './_components/dashboard-data';
+import { WelcomeBanner } from './_components/WelcomeBanner';
+import { OnboardingChecklist } from './_components/OnboardingChecklist';
+import { FirstCourseCard } from './_components/FirstCourseCard';
+import { LivePrices } from './_components/LivePrices';
+import {
+  JournalSnapshotCard,
+  RiskCalculatorCard,
+  PerformanceInsightCard,
+  ContinueLearningCard,
+  FocusCard,
+  MarketNewsCard,
+  WebinarCard,
+  AiTutorCard,
+  CommunityPodCard,
+} from './_components/cards';
 import './dashboard.css';
 
 export const metadata: Metadata = {
@@ -10,24 +33,34 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-interface ProfileRow {
-  experience_level: string | null;
-  main_goal: string | null;
+/**
+ * Profile columns the dashboard reads (RLS-scoped — user sees only their row).
+ * Mirrors the M2 onboarding migration (`profiles.schema.sql`) exactly so the
+ * select can never reference a column that isn't deployed. There is no name
+ * column on that row, so the greeting derives from the auth email instead.
+ */
+interface ProfileReadRow {
   account_size: string | null;
-  risk_comfort: string | null;
-  acquisition_source: string | null;
   onboarded_at: string | null;
 }
 
 /**
- * Minimal authenticated landing (PROJECT.md §9 module 18 is the full dashboard;
- * this is the M2 placeholder that proves the protected-route gate). The
- * `(member)` layout already guaranteed a session, so we can greet the user by
- * email and surface their saved trading profile (read through RLS — a user can
- * only ever see their own row).
+ * Member Dashboard (M18 / PROJECT.md §18) — the personalized authenticated home.
  *
- * The profile read is defensive: if the `profiles` table is not provisioned yet
- * it degrades to an "complete onboarding" prompt instead of erroring.
+ * Auth is already guaranteed by the `(member)` layout. Here we:
+ *  1. Derive the caller's plan DEFENSIVELY (defaults Basic; UI locks are hints,
+ *     the real entitlement gate lands with the entitlements API — §6.1/§6.2).
+ *  2. Read the caller's profile + a trade slice through the RLS-scoped server
+ *     client (a user only ever sees their own rows). Both reads DEGRADE
+ *     GRACEFULLY: if `profiles`/`trades` aren't deployed yet we fall back to the
+ *     new-user/empty state and never error (§18 "price widget degrades
+ *     gracefully", applied across the board during bring-up).
+ *  3. Compute the view-model with the pure `deriveDashboard` + `summarize`
+ *     functions, then render either the guided first-run state or the full
+ *     returning-member bento.
+ *
+ * Locked Pro cards leak no protected content — they show value + an upgrade CTA
+ * only; no trade query feeds them (§18 🔒).
  */
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -35,20 +68,42 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // The layout guarantees a user; this satisfies the type and is a cheap guard.
-  const email = user?.email ?? 'trader';
+  const plan: Plan = derivePlan(user?.id);
+  const email = user?.email ?? null;
 
-  let profile: ProfileRow | null = null;
+  // ── RLS-scoped reads (defensive: never throw on undeployed tables) ────────
+  let profile: ProfileReadRow | null = null;
+  let tradeRows: TradeRow[] = [];
+
   if (user) {
-    const { data } = await supabase
+    const { data: profileData } = await supabase
       .from('profiles')
-      .select('experience_level, main_goal, account_size, risk_comfort, acquisition_source, onboarded_at')
+      .select('account_size, onboarded_at')
       .eq('id', user.id)
       .maybeSingle();
-    profile = (data as ProfileRow | null) ?? null;
+    profile = (profileData as ProfileReadRow | null) ?? null;
+
+    const { data: tradeData, error: tradeError } = await supabase
+      .from('trades')
+      .select(TRADE_SELECT_COLUMNS)
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (!tradeError) tradeRows = (tradeData as TradeRow[] | null) ?? [];
   }
 
-  const onboarded = !!profile?.onboarded_at;
+  // ── Pure derivations ─────────────────────────────────────────────────────
+  const dashProfile: DashboardProfile = {
+    onboardedAt: profile?.onboarded_at ?? null,
+    accountSize: profile?.account_size ?? null,
+  };
+  const model = deriveDashboard({ profile: dashProfile, tradeCount: tradeRows.length });
+  const summary: JournalSummary = summarize(tradeRows);
+
+  // No name column on the onboarding profile row — greet from the email local-part.
+  const name = greetingName(null, email);
+  const greeting = timeGreeting();
+  const isPro = plan === 'pro';
 
   return (
     <div className="dash">
@@ -57,56 +112,50 @@ export default async function DashboardPage() {
           <Logo variant="dark" size={26} />
         </a>
         <div className="row gap2" style={{ alignItems: 'center' }}>
-          <Badge tone="lime-dark">Member</Badge>
+          <Badge tone={isPro ? 'lime-dark' : 'outline'}>{isPro ? 'Pro' : 'Basic'}</Badge>
           <SignOutButton />
         </div>
       </header>
 
       <main className="dash-main" id="main">
-        <p className="dash-stat-label">Welcome back</p>
-        <h1 className="dash-greeting h-md">{email}</h1>
-        <p className="muted">
-          You&rsquo;re signed in. This is your member area — the full dashboard lands as later
-          modules ship.
-        </p>
+        <div className="dash-bento">
+          <WelcomeBanner plan={plan} greeting={greeting} name={name} isNewUser={model.isNewUser} />
 
-        {onboarded ? (
-          <SurfaceCard padded style={{ marginTop: 28 }}>
-            <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>Your trading profile</h2>
-            <p className="muted" style={{ fontSize: 13, marginBottom: 4 }}>
-              Used to personalize your dashboard and pre-fill your risk calculator.
-            </p>
-            <div className="dash-grid">
-              <ProfileStat label="Experience" value={profileLabel.experience(profile?.experience_level)} />
-              <ProfileStat label="Main goal" value={profileLabel.goal(profile?.main_goal)} />
-              <ProfileStat label="Account size" value={profileLabel.accountSize(profile?.account_size)} />
-              <ProfileStat label="Risk comfort" value={profileLabel.riskComfort(profile?.risk_comfort)} />
-              <ProfileStat label="Heard via" value={profileLabel.source(profile?.acquisition_source)} />
-            </div>
-          </SurfaceCard>
-        ) : (
-          <SurfaceCard padded hover style={{ marginTop: 28 }}>
-            <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>Finish setting up</h2>
-            <p className="muted" style={{ marginBottom: 14 }}>
-              Complete your trading profile so we can personalize your experience.
-            </p>
-            <a href="/onboarding" className="btn btn-lime btn-sm">
-              Complete onboarding
-            </a>
-          </SurfaceCard>
-        )}
+          {model.isNewUser ? (
+            // First-run guided state: checklist + recommended course + market cards.
+            <>
+              <OnboardingChecklist
+                items={model.checklist}
+                done={model.checklistDone}
+                percent={model.checklistPercent}
+              />
+              <FirstCourseCard />
+              <LivePrices />
+              <MarketNewsCard />
+              <AiTutorCard locked={!isPro} />
+            </>
+          ) : (
+            // Returning-member full dashboard bento.
+            <>
+              <ContinueLearningCard />
+              <FocusCard />
+              <LivePrices />
+              <MarketNewsCard />
+              <JournalSnapshotCard summary={summary} />
+              <RiskCalculatorCard accountSize={profile?.account_size ?? null} />
+              {isPro ? (
+                <PerformanceInsightCard summary={summary} />
+              ) : (
+                <WebinarCard locked={false} />
+              )}
+              <AiTutorCard locked={!isPro} />
+              <CommunityPodCard locked={!isPro} />
+            </>
+          )}
+        </div>
 
         <Disclaimer kind="risk" variant="note" style={{ marginTop: 28 }} />
       </main>
-    </div>
-  );
-}
-
-function ProfileStat({ label, value }: { label: string; value: string | null }) {
-  return (
-    <div>
-      <div className="dash-stat-label">{label}</div>
-      <div className="dash-stat-value">{value ?? '—'}</div>
     </div>
   );
 }

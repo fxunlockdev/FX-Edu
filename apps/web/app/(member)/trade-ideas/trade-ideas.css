@@ -1,0 +1,563 @@
+/* Trade Ideas, Market News & Live Prices (M11) — ported from
+   design/member/trade-ideas.html. Lumina tokens only; compositor-friendly
+   transitions (transform/opacity/box-shadow/border-color); responsive
+   feed + aside layout. */
+
+.ti-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(168, 214, 66, 0.08), transparent 36%),
+    var(--surface);
+}
+
+.ti-top {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--outline-var);
+  background: var(--surface-bright);
+}
+
+.ti-main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+
+.ti-lead {
+  margin: 4px 0 18px;
+  max-width: 60ch;
+}
+
+.ti-disclaimer {
+  border-left-color: var(--warn);
+  margin-bottom: 24px;
+}
+
+/* ── Two-column layout: feed + sticky aside ─────────────────────────── */
+.ti-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+.ti-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ti-empty {
+  padding: 28px 4px;
+}
+
+/* ── Filters (URL state) ────────────────────────────────────────────── */
+.ti-filters {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: end;
+}
+.ti-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ti-filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+}
+.ti-select {
+  font-size: 14px;
+  padding: 10px 12px;
+}
+.ti-clear {
+  grid-column: 1 / -1;
+  justify-self: start;
+  background: none;
+  border: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  padding: 2px 0;
+}
+.ti-clear:hover {
+  color: var(--primary);
+}
+
+/* ── Idea card ──────────────────────────────────────────────────────── */
+.ti-card {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease),
+    border-color 0.2s var(--ease);
+}
+.ti-card:hover,
+.ti-card:focus-within {
+  transform: translateY(-3px);
+  border-color: var(--leaf);
+  box-shadow: var(--shadow);
+}
+
+.ti-card-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.ti-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex: none;
+}
+.ti-avatar-0 { background: linear-gradient(150deg, #0f3218, #436648); }
+.ti-avatar-1 { background: linear-gradient(150deg, #23351c, #11200d); }
+.ti-avatar-2 { background: linear-gradient(150deg, #142a2e, #0c1a1c); }
+.ti-avatar-3 { background: linear-gradient(150deg, #2a2418, #171206); }
+
+.ti-card-byline {
+  min-width: 0;
+}
+.ti-educator {
+  font-weight: 700;
+  font-size: 14px;
+  margin: 0;
+}
+.ti-card-sub {
+  font-size: 12.5px;
+  margin: 1px 0 0;
+}
+.ti-card-instrument {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.ti-pair {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.ti-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 12px;
+}
+
+/* Chart placeholder banner */
+.ti-chart {
+  height: 120px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: flex-end;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.ti-chart::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+.ti-chart-0 { background: linear-gradient(135deg, #1b3024, #0f1d16); }
+.ti-chart-1 { background: linear-gradient(135deg, #23351c, #11200d); }
+.ti-chart-2 { background: linear-gradient(135deg, #142a2e, #0c1a1c); }
+.ti-chart-3 { background: linear-gradient(135deg, #2a2418, #171206); }
+.ti-chart-label {
+  position: relative;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--d-ink-var);
+}
+
+.ti-note {
+  margin: 0 0 14px;
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.ti-levels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 0 0 12px;
+}
+.ti-level {
+  background: var(--c-low);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.ti-level dt {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--on-surface-var);
+  font-weight: 600;
+}
+.ti-level dd {
+  margin: 3px 0 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.ti-card-disclaimer {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--on-surface-var);
+  font-style: italic;
+  margin: 0 0 12px;
+}
+
+.ti-card-foot {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid var(--c-high);
+}
+.ti-actions {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+.ti-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  background: none;
+  border: 0;
+  padding: 0;
+  transition: color 0.15s var(--ease);
+}
+.ti-action:hover {
+  color: var(--primary);
+}
+.ti-action svg {
+  flex: none;
+}
+.ti-action-link {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Aside cards ────────────────────────────────────────────────────── */
+.ti-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 24px;
+}
+
+.ti-side-card {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.ti-side-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ti-side-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+}
+.ti-on-dark {
+  color: var(--d-ink);
+}
+.ti-side-note {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+.ti-unavailable {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* News list */
+.ti-news-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ti-news-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.ti-impact {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  margin-top: 6px;
+}
+.ti-impact-high { background: var(--neg); }
+.ti-impact-medium { background: var(--warn); }
+.ti-impact-low { background: var(--leaf); }
+.ti-news-body {
+  min-width: 0;
+}
+.ti-news-headline {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0 0 6px;
+}
+.ti-news-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  margin: 0;
+}
+.ti-news-meta .chip {
+  text-transform: capitalize;
+}
+.ti-news-asset {
+  font-weight: 700;
+  color: var(--on-surface);
+}
+.ti-news-source {
+  width: 100%;
+}
+
+/* Prices (dark terminal surface) */
+.ti-prices {
+  position: relative;
+  overflow: hidden;
+  background: var(--d-surface);
+  border-color: var(--d-outline);
+  color: var(--d-ink);
+}
+.ti-prices-glow {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 214, 66, 0.18), transparent 70%);
+  pointer-events: none;
+}
+.ti-price-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ti-price-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  column-gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--d-outline);
+}
+.ti-price-row:last-child {
+  border-bottom: 0;
+}
+.ti-price-pair {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--d-ink);
+}
+.ti-spark {
+  grid-column: 2;
+  display: block;
+}
+.ti-price-val {
+  grid-column: 3;
+  font-size: 13px;
+  color: var(--d-ink);
+  text-align: right;
+}
+.ti-price-chg {
+  grid-column: 4;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+  min-width: 52px;
+}
+.ti-up { color: var(--pos-on-dark); }
+.ti-down { color: var(--neg-on-dark); }
+.ti-prices-note {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--d-ink-var);
+  margin: 12px 0 0;
+}
+
+/* Learn-the-framework card (dark) */
+.ti-learn {
+  background: linear-gradient(135deg, #14241b, #0f1d16);
+  border: none;
+  color: var(--d-ink);
+}
+.ti-learn-body {
+  font-size: 13px;
+  color: var(--d-ink-var);
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+/* ── Pro gate (Basic sees this; no idea content rendered) ───────────── */
+.ti-gate {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 0;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  border: 1px solid var(--outline-var);
+  box-shadow: var(--shadow);
+  margin-top: 4px;
+}
+.ti-gate-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, #14241b, #091310);
+  color: var(--d-ink);
+  padding: 32px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+.ti-gate-glow {
+  position: absolute;
+  top: -50px;
+  left: -30px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 214, 66, 0.22), transparent 70%);
+  pointer-events: none;
+}
+.ti-gate-hero h2 {
+  color: var(--d-ink);
+  margin: 0;
+}
+.ti-gate-hero p {
+  position: relative;
+  color: var(--d-ink-var);
+  font-size: 14.5px;
+  line-height: 1.55;
+  margin: 0;
+}
+.ti-gate-body {
+  background: var(--c-lowest);
+  padding: 32px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+}
+.ti-gate-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ti-gate-list li {
+  position: relative;
+  padding-left: 24px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.ti-gate-list li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-full);
+  background: var(--lime-dim);
+}
+.ti-gate-fine {
+  font-size: 12px;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 980px) {
+  .ti-layout {
+    grid-template-columns: 1fr;
+  }
+  .ti-aside {
+    position: static;
+  }
+  .ti-gate {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .ti-top {
+    padding: 0 16px;
+  }
+  .ti-filters {
+    grid-template-columns: 1fr;
+  }
+  .ti-levels {
+    grid-template-columns: 1fr;
+  }
+  .ti-card-instrument {
+    margin-left: 0;
+    width: 100%;
+  }
+  .ti-card-head {
+    flex-wrap: wrap;
+  }
+}

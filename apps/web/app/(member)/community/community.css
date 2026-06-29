@@ -1,0 +1,603 @@
+/* Community & Pods (M12) — ported from design/member/community.html.
+   Lumina tokens only; compositor-friendly motion (transform/opacity); responsive.
+   PROJECT.md §12. */
+
+.cm {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(168, 214, 66, 0.08), transparent 36%),
+    var(--surface);
+}
+
+.cm-top {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--outline-var);
+  background: var(--surface-bright);
+}
+
+.cm-main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+
+.cm-head {
+  margin-bottom: 22px;
+}
+.cm-head h1 {
+  margin: 0 0 4px;
+}
+.cm-head .muted {
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* Screen-reader-only utility (scoped to this surface). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Three-column layout ─────────────────────────────────────────────────── */
+.cm-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 270px;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Shared avatar disc */
+.cm-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ── Left: channel rail ──────────────────────────────────────────────────── */
+.cm-channels {
+  position: sticky;
+  top: 20px;
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
+}
+.cm-rail-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--on-surface-var);
+  padding: 4px 11px 8px;
+  margin: 0;
+}
+.cm-channels ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cm-channel {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 11px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  cursor: pointer;
+  transition: background-color 0.15s var(--ease-out, ease), color 0.15s ease;
+}
+.cm-channel:hover {
+  background: var(--c-low);
+}
+.cm-channel.is-active {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+.cm-hash {
+  opacity: 0.5;
+  font-weight: 700;
+}
+
+/* ── Middle: banner + composer + feed ────────────────────────────────────── */
+.cm-channel-banner {
+  margin-bottom: 14px;
+}
+.cm-channel-banner .muted {
+  margin: 4px 0 0;
+}
+.cm-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.cm-composer {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 18px;
+}
+.cm-composer-input {
+  resize: vertical;
+  min-height: 52px;
+}
+.cm-composer-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+.cm-attach {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.cm-attach:hover {
+  background: var(--c-low);
+  color: var(--primary);
+}
+.cm-attach-name {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cm-error {
+  margin: 10px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neg, #b3261e);
+}
+
+/* Posts */
+.cm-posts {
+  display: grid;
+  gap: 14px;
+}
+.cm-post {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+}
+.cm-post-head {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+}
+.cm-post-meta {
+  min-width: 0;
+}
+.cm-post-author {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  margin: 0;
+}
+.cm-role {
+  font-size: 10.5px;
+  padding: 1px 7px;
+}
+.cm-post-time {
+  color: var(--on-surface-var);
+  font-weight: 500;
+}
+.cm-post-channel {
+  color: var(--on-surface-var);
+  font-size: 12px;
+  margin: 2px 0 0;
+}
+.cm-post-body {
+  margin: 11px 0 0;
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+/* Post actions */
+.cm-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--c-high);
+  font-size: 13px;
+  color: var(--on-surface-var);
+}
+.cm-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 2px 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.cm-action:hover {
+  color: var(--primary);
+}
+.cm-action.is-on {
+  color: var(--primary);
+}
+.cm-action-report {
+  margin-left: auto;
+}
+.cm-action-report:hover {
+  color: var(--neg, #b3261e);
+}
+
+.cm-empty {
+  text-align: center;
+  padding: 48px 24px;
+  border: 1.5px dashed var(--outline-var);
+  border-radius: var(--r-lg);
+  background: var(--c-low);
+}
+.cm-empty h2 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+.cm-empty p {
+  margin: 0 auto;
+  max-width: 44ch;
+}
+
+/* ── Pods ────────────────────────────────────────────────────────────────── */
+.cm-pods {
+  margin-top: 28px;
+}
+.cm-pods-head {
+  margin-bottom: 14px;
+}
+.cm-pods-head .muted {
+  margin: 4px 0 0;
+  max-width: 60ch;
+}
+.cm-pods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.cm-pod {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cm-pod-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.cm-pod-name {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+.cm-pod-count {
+  font-size: 12px;
+  margin: 2px 0 0;
+}
+.cm-pod-goal {
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+.cm-pod-goal-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--on-surface-var);
+  margin-bottom: 3px;
+}
+.cm-pod-progress {
+  display: grid;
+  gap: 6px;
+}
+.cm-pod-bar {
+  height: 7px;
+  border-radius: 99px;
+  background: var(--c-high);
+  overflow: hidden;
+}
+.cm-pod-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: var(--lime-dim, var(--primary));
+  transition: width 0.3s var(--ease-out, ease);
+}
+.cm-pod-progress-label {
+  font-size: 12px;
+}
+.cm-pod-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+}
+.cm-pod-open {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.cm-pod-open:disabled {
+  color: var(--on-surface-var);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Right rail ──────────────────────────────────────────────────────────── */
+.cm-rail {
+  position: sticky;
+  top: 20px;
+  display: grid;
+  gap: 14px;
+}
+.cm-card {
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.cm-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+}
+.cm-card-sub {
+  font-size: 12px;
+  margin: 4px 0 10px;
+}
+.cm-online {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cm-online-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  font-size: 13.5px;
+}
+.cm-online-name {
+  min-width: 0;
+}
+.cm-online-display {
+  display: block;
+  font-weight: 600;
+}
+.cm-online-role {
+  font-size: 11.5px;
+}
+.cm-online-dot {
+  margin-left: auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pos);
+}
+.cm-rules-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.cm-rules {
+  margin: 0;
+  padding-left: 18px;
+}
+.cm-rules li {
+  font-size: 13px;
+  color: var(--on-surface-var);
+  margin-bottom: 7px;
+  line-height: 1.45;
+}
+
+/* ── Pro-gate locked state ───────────────────────────────────────────────── */
+.cm-lock {
+  max-width: 560px;
+  margin: 6vh auto;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--outline-var);
+  background: var(--c-lowest);
+  box-shadow: var(--shadow-sm);
+}
+.cm-lock-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 32px;
+  background: linear-gradient(150deg, #15271c, #0a1410);
+}
+.cm-lock-hero h2 {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 14px 0 8px;
+}
+.cm-lock-hero p {
+  color: var(--d-ink-var, #cdd6cf);
+  font-size: 14.5px;
+  margin: 0;
+}
+.cm-lock-glow {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  top: -120px;
+  right: -60px;
+  opacity: 0.3;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 214, 66, 0.7), transparent 70%);
+  pointer-events: none;
+}
+.cm-lock-body {
+  padding: 24px;
+}
+.cm-lock-list {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.cm-lock-list li {
+  display: flex;
+  gap: 9px;
+  font-size: 13.5px;
+  color: var(--on-surface-var);
+}
+.cm-lock-list li::before {
+  content: '✓';
+  color: var(--lime-dim, var(--primary));
+  font-weight: 700;
+}
+
+/* ── Report modal ────────────────────────────────────────────────────────── */
+.cm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(10, 18, 14, 0.5);
+  animation: cm-fade 0.15s ease;
+}
+@keyframes cm-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.cm-modal {
+  width: 100%;
+  max-width: 460px;
+  background: var(--c-lowest);
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg, var(--shadow-sm));
+  padding: 24px;
+}
+.cm-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+.cm-modal-sub {
+  font-size: 13px;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+.cm-field {
+  margin-bottom: 14px;
+}
+.cm-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.cm-field textarea {
+  resize: vertical;
+}
+.cm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+.cm-modal-done {
+  text-align: center;
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cm-channel,
+  .cm-action,
+  .cm-attach,
+  .cm-pod-bar-fill,
+  .cm-pod-open,
+  .cm-modal-overlay {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .cm-layout {
+    grid-template-columns: 1fr;
+  }
+  .cm-col-left,
+  .cm-col-right {
+    display: none;
+  }
+}
+@media (max-width: 560px) {
+  .cm-main {
+    padding: 24px 16px 64px;
+  }
+  .cm-composer-foot {
+    flex-wrap: wrap;
+  }
+}

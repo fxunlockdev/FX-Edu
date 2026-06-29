@@ -22,7 +22,7 @@
         { "id": "F4", "title": "Entitlements & Billing core (db+entitlements wired; Stripe writer pending keys)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "todo", "design": "na" } },
         { "id": "F5", "title": "Media token & storage", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "todo", "e2e": "todo", "design": "na" } },
         { "id": "F6", "title": "CI/CD & security baseline (GitHub Actions)", "status": "done", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "na", "design": "na" } },
-        { "id": "F7", "title": "Admin shell + content authoring", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } }
+        { "id": "F7", "title": "Admin shell + content authoring", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "todo", "design": "todo" } }
       ]
     },
     {
@@ -30,25 +30,25 @@
       "items": [
         { "id": "M1", "title": "Public Marketing Site (8 pages ✓)", "status": "done", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "done", "design": "done" } },
         { "id": "M2", "title": "Auth · Signup · Onboarding (Supabase Auth; Stripe/Google deferred)", "status": "in_progress", "stages": { "build": "done", "review": "todo", "unit": "done", "e2e": "todo", "design": "todo" } },
-        { "id": "M3", "title": "Learning Paths & Lesson Player (5 tiers)", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M3", "title": "Learning Paths & Lesson Player (5 tiers; video stubbed)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "todo", "design": "todo" } },
         { "id": "M4", "title": "Trading Tools & Risk Calculator (member)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "todo", "design": "todo" } },
         { "id": "M5", "title": "Trade Journal & Logging", "status": "in_progress", "stages": { "build": "done", "review": "todo", "unit": "na", "e2e": "todo", "design": "todo" } },
         { "id": "M6", "title": "Performance Analytics (Pro)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "todo", "design": "todo" } },
-        { "id": "M7", "title": "AI Tutor", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "M8", "title": "Live Webinars & Replays", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "M9", "title": "Certificates", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
+        { "id": "M7", "title": "AI Tutor (UI + guardrails; model stubbed)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "todo", "design": "todo" } },
+        { "id": "M8", "title": "Live Webinars & Replays (member /sessions; Mux stubbed)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "todo", "design": "todo" } },
+        { "id": "M9", "title": "Certificates (+ public verify)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "todo", "design": "todo" } },
         { "id": "M10", "title": "Strategy Library", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "todo", "design": "todo" } },
-        { "id": "M11", "title": "Trade Ideas · News · Live Prices", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "M12", "title": "Community & Pods", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "M13", "title": "Prop Firm Prep", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "M14", "title": "Affiliate Portal", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "M15", "title": "Lifecycle Messaging", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "na", "design": "todo" } },
-        { "id": "M16", "title": "Billing (self-service)", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "M17", "title": "Settings & Notifications", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "M18", "title": "Member Dashboard", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "M19", "title": "Admin Console (full)", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "M20", "title": "White-Label Partner Portal", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "M21", "title": "Elite Cohort & Coaching", "status": "todo", "stages": { "build": "todo", "review": "todo", "unit": "todo", "e2e": "todo", "design": "todo" } }
+        { "id": "M11", "title": "Trade Ideas · News · Live Prices (data stubbed)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "todo", "design": "todo" } },
+        { "id": "M12", "title": "Community & Pods (realtime stubbed)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "todo", "design": "todo" } },
+        { "id": "M13", "title": "Prop Firm Prep", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "todo", "design": "todo" } },
+        { "id": "M14", "title": "Affiliate Portal (Stripe Connect stubbed)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "todo", "design": "todo" } },
+        { "id": "M15", "title": "Lifecycle Messaging (workers + Resend; stubbed)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "na", "design": "na" } },
+        { "id": "M16", "title": "Billing (self-service; Stripe stubbed)", "status": "in_progress", "stages": { "build": "done", "review": "todo", "unit": "na", "e2e": "todo", "design": "todo" } },
+        { "id": "M17", "title": "Settings & Notifications", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "todo", "design": "todo" } },
+        { "id": "M18", "title": "Member Dashboard (aggregates modules)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "todo", "design": "todo" } },
+        { "id": "M19", "title": "Admin Console (shell + core sections)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "todo", "design": "todo" } },
+        { "id": "M20", "title": "White-Label Partner Portal", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "todo", "design": "todo" } },
+        { "id": "M21", "title": "Elite Cohort & Coaching (video stubbed)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "todo", "design": "todo" } }
       ]
     }
   ]

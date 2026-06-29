@@ -1,0 +1,396 @@
+/* Lesson Player (M3) — ported from design/member/lesson.html.
+   Lumina tokens only; compositor-friendly (width/opacity/transform); responsive.
+   The AI Tutor side panel is M7 — this screen is the player + tabs only. */
+
+.lp-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(168, 214, 66, 0.08), transparent 36%),
+    var(--surface);
+}
+
+.lp-top {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--outline-var);
+  background: var(--surface-bright);
+}
+
+.lp-main {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.lp-crumb {
+  font-size: 13px;
+  margin: 0 0 6px;
+}
+.lp-crumb-mod {
+  color: var(--primary);
+  font-weight: 600;
+}
+.lp-h1 {
+  margin: 0 0 18px;
+}
+
+/* ── Stubbed video surface ────────────────────────────────────────────────── */
+.lp-player {
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--d-outline);
+  background: #06100b;
+}
+.lp-stage {
+  aspect-ratio: 16 / 9;
+  background: radial-gradient(circle at 50% 40%, #14241b, #06100b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.lp-stage-badge {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--d-ink-var);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 5px 10px;
+  border-radius: 9999px;
+}
+.lp-stage-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lime);
+}
+.lp-stage-center {
+  text-align: center;
+  color: var(--d-ink);
+  padding: 0 20px;
+}
+.lp-play {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: var(--lime);
+  color: var(--on-lime);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 16px;
+  box-shadow: 0 8px 30px rgba(168, 214, 66, 0.4);
+  opacity: 0.85;
+}
+.lp-stage-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  margin: 0;
+  color: #fff;
+}
+.lp-stage-sub {
+  font-size: 13px;
+  margin: 4px 0 0;
+  color: var(--d-ink-var);
+}
+
+/* Presentational control bar */
+.lp-ctrlbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: #0a1410;
+  color: var(--d-ink);
+  font-size: 13px;
+}
+.lp-ctrl {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: var(--d-ink);
+  opacity: 0.85;
+  display: inline-flex;
+  cursor: pointer;
+  padding: 0;
+}
+.lp-ctrl:hover:not(:disabled) {
+  opacity: 1;
+}
+.lp-ctrl:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.lp-time {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.lp-seek {
+  flex: 1;
+  height: 5px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
+  position: relative;
+}
+.lp-seek i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--lime);
+  border-radius: 9999px;
+}
+.lp-speed {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 0;
+  color: var(--d-ink);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ── Action row: tabbar + buttons ─────────────────────────────────────────── */
+.lp-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.lp-tabbar {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  min-width: 220px;
+}
+.lp-tab {
+  appearance: none;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--on-surface-var);
+  padding: 9px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast, 150ms) ease,
+    color var(--duration-fast, 150ms) ease;
+}
+.lp-tab:hover {
+  background: var(--c-low);
+}
+.lp-tab.on {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+.lp-action-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lp-notice {
+  font-size: 12.5px;
+  color: var(--on-surface-var);
+  margin: 0 0 12px;
+}
+
+/* ── Tab panels ───────────────────────────────────────────────────────────── */
+.lp-tabpanel {
+  margin-top: 4px;
+}
+.lp-transcript {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--on-surface-var);
+  max-height: 320px;
+  overflow-y: auto;
+}
+.lp-transcript p {
+  margin: 0 0 12px;
+}
+.lp-transcript strong {
+  color: var(--on-surface);
+}
+
+.lp-notes h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+.lp-notes ul {
+  margin: 0 0 14px;
+  padding-left: 18px;
+  color: var(--on-surface-var);
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+
+/* Mini quiz */
+.lp-quiz-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+.lp-quiz-q {
+  margin: 0 0 14px;
+  font-size: 16px;
+}
+.lp-quiz-opt {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border: 1.5px solid var(--outline-var);
+  border-radius: var(--r);
+  background: var(--c-lowest);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: border-color var(--duration-fast, 150ms) ease;
+}
+.lp-quiz-opt:hover:not(:disabled) {
+  border-color: var(--leaf);
+}
+.lp-quiz-opt:disabled {
+  cursor: default;
+}
+.lp-quiz-opt.correct {
+  border-color: var(--pos);
+  background: rgba(78, 168, 99, 0.1);
+}
+.lp-quiz-opt.wrong {
+  border-color: var(--neg);
+  background: var(--error-container);
+}
+.lp-quiz-letter {
+  font-weight: 700;
+  color: var(--on-surface-var);
+}
+.lp-quiz-result {
+  font-size: 13.5px;
+  font-weight: 600;
+  margin: 8px 0 0;
+}
+.lp-quiz-result.pos {
+  color: var(--pos);
+}
+.lp-quiz-result.neg {
+  color: var(--neg);
+}
+
+/* ── Pro-gate locked lesson ───────────────────────────────────────────────── */
+.lp-gate {
+  text-align: center;
+  padding: 48px 24px;
+  border: 1px solid var(--outline-var);
+  border-radius: var(--r-lg);
+  background: var(--c-lowest);
+}
+.lp-gate-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(168, 214, 66, 0.15);
+  color: var(--lime-dim);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 16px;
+}
+.lp-gate h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+.lp-gate p {
+  max-width: 44ch;
+  margin: 0 auto 18px;
+}
+.lp-gate-back {
+  margin-left: 8px;
+}
+
+/* ── Completion modal ─────────────────────────────────────────────────────── */
+.lp-modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 16, 0.6);
+  backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 90;
+  padding: 20px;
+}
+.lp-modal-bg.on {
+  display: flex;
+}
+.lp-modal {
+  background: var(--c-lowest);
+  border-radius: var(--r-xl);
+  max-width: 420px;
+  width: 100%;
+  padding: 32px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+.lp-modal-check {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--lime);
+  color: var(--on-lime);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 18px;
+}
+.lp-modal-xp-label {
+  margin: 8px 0 4px;
+}
+.lp-modal-xp {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 32px;
+  color: var(--primary);
+}
+.lp-modal-ctas {
+  display: grid;
+  gap: 8px;
+  margin-top: 22px;
+}
+.lp-modal-next {
+  border: 0;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .lp-top {
+    padding: 0 16px;
+  }
+  .lp-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .lp-action-btns {
+    justify-content: space-between;
+  }
+}
