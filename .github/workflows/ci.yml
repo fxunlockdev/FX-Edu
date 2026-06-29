@@ -27,16 +27,16 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # pnpm must be set up BEFORE setup-node so `cache: pnpm` can find it.
       # Version is taken from the `packageManager` field in package.json.
       # Specifying `version:` here too triggers ERR_PNPM_BAD_PM_VERSION.
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
