@@ -18,7 +18,7 @@
       "items": [
         { "id": "F1", "title": "Design system port (Lumina → packages/ui)", "status": "done", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "na", "design": "done" } },
         { "id": "F2", "title": "Identity & Access (Supabase Auth + RLS)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "todo", "e2e": "todo", "design": "todo" } },
-        { "id": "F3", "title": "Data layer, RLS & audit (Drizzle)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "todo", "e2e": "todo", "design": "na" } },
+        { "id": "F3", "title": "Data layer, RLS & audit — web schema DEPLOYED to Supabase EU", "status": "done", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "na", "design": "na" } },
         { "id": "F4", "title": "Entitlements & Billing core (db+entitlements wired; Stripe writer pending keys)", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "done", "e2e": "todo", "design": "na" } },
         { "id": "F5", "title": "Media token & storage", "status": "in_progress", "stages": { "build": "done", "review": "done", "unit": "todo", "e2e": "todo", "design": "na" } },
         { "id": "F6", "title": "CI/CD & security baseline (GitHub Actions)", "status": "done", "stages": { "build": "done", "review": "done", "unit": "na", "e2e": "na", "design": "na" } },
