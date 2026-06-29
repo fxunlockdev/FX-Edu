@@ -1,0 +1,21 @@
+# gitleaks config — extends the default ruleset and allowlists known
+# client-safe, non-secret patterns that the generic high-entropy rules
+# otherwise flag as false positives.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Client-safe constants, publishable keys, and non-secret seed/test data"
+regexTarget = "line"
+paths = [
+  '''.*\.test\.ts$''',
+  '''.*\.env\.example$''',
+]
+regexes = [
+  # localStorage / cookie / DI-token NAME constants (identifiers, not credentials),
+  # e.g.  export const CONSTRAINTS_STORAGE_KEY = 'fx_prop_firm_constraints_v1'
+  '''(?i)(STORAGE_KEY|_KEY|COOKIE|_TOKEN_KEY)\s*[:=]\s*['"][a-z0-9][a-z0-9_:.\-/]*['"]''',
+  # Supabase publishable / anon key — client-safe by design (access is enforced
+  # by Row-Level Security); never a server secret.
+  '''sb_publishable_[A-Za-z0-9_\-]+''',
+]

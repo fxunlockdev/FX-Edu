@@ -38,6 +38,7 @@ export const DEFAULT_CONSTRAINTS: PropFirmConstraints = {
   endDate: '',
 };
 
+// gitleaks:allow — localStorage key name, not a credential.
 export const CONSTRAINTS_STORAGE_KEY = 'fx_prop_firm_constraints_v1';
 
 /** Numeric fields, for validation/coercion. */
