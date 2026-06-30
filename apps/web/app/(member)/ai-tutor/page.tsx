@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
 import { createClient } from '@/lib/supabase/server';
+import { getViewerPlan, isPro } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../_components/SignOutButton';
-import { TutorChat, TutorLock, derivePlan, type Plan } from './_components';
+import { TutorChat, TutorLock } from './_components';
 import './ai-tutor.css';
 
 export const metadata: Metadata = {
@@ -15,14 +16,13 @@ export const metadata: Metadata = {
  * Member AI Tutor (M7 / PROJECT.md §7) — server component shell.
  *
  * Auth is already guaranteed by the `(member)` layout. The entitlement (plan)
- * gate is enforced HERE, server-side, before any chat island mounts — UI locks
- * are only hints (§6.1). The AI Tutor is Pro-only (§7 🔒).
+ * gate is enforced HERE, server-side, before any chat island mounts — the
+ * server-side gate is authoritative; the UI lock is only a hint (§6.1). The AI
+ * Tutor is Pro-only (§7 🔒).
  *
- * Plan derivation is DEFENSIVE: there is no subscription data wired at runtime
- * yet, so we default the caller to Basic and render the designed "Upgrade to
- * Pro" lock. When the entitlements API is runtime-wired this single flag flips
- * and the Pro branch below renders the chat unchanged.
- * // TODO: read plan from /entitlements once the API is runtime-wired
+ * Plan is read from the shared entitlements helper and defaults DEFENSIVELY to
+ * Basic, so a caller whose access cannot be proven sees the designed "Upgrade to
+ * Pro" lock instead of the chat.
  *
  * AI responses are STUBBED in {@link TutorChat}: no model/API call yet. The live
  * tutor (RAG over approved course content + pre/post moderation through the API
@@ -34,11 +34,10 @@ export default async function AiTutorPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const plan: Plan = derivePlan(user?.id);
-  const isPro = plan === 'pro';
+  const pro = isPro(await getViewerPlan());
 
   return (
-    <Shell isPro={isPro}>
+    <Shell isPro={pro}>
       <header className="tut-head">
         <div>
           <h1 className="h-md">AI Tutor</h1>
@@ -50,7 +49,7 @@ export default async function AiTutorPage() {
         <Badge tone="lime-dark">Course-aware</Badge>
       </header>
 
-      {isPro ? <TutorChat /> : <TutorLock />}
+      {pro ? <TutorChat /> : <TutorLock />}
 
       <Disclaimer kind="risk" variant="note" style={{ marginTop: 28 }} />
     </Shell>

@@ -12,14 +12,11 @@
  */
 
 /**
- * Subscription plan literal. Mirrors `@fxunlock/entitlements`'s `Plan` without
- * taking a hard package dependency before the entitlements read is wired. The
- * sessions screen distinguishes Basic (Pro sessions + the replay library are
- * locked) from Pro/Elite (everything unlocked).
- *
- * TODO: read plan from /entitlements — replace {@link resolvePlan} with the real
- * server-side entitlement read once the API route exists. Until then we default
- * to the most restrictive plan so paid content is never leaked by the UI.
+ * Subscription plan literal. Mirrors `@fxunlock/entitlements`'s `Plan`. The
+ * viewer's actual plan is read server-side by the shared
+ * `@/lib/entitlements/plan` `getViewerPlan` helper and validated through
+ * {@link resolvePlan}. The sessions screen distinguishes Basic (Pro sessions +
+ * the replay library are locked) from Pro/Elite (everything unlocked).
  */
 export type Plan = 'basic' | 'pro' | 'elite';
 
@@ -110,16 +107,11 @@ export function filterByTopic(
 }
 
 /**
- * Defensive plan resolution. Until the real `/entitlements` read is wired, this
- * always returns the most restrictive plan so the UI never *grants* access it
- * cannot prove. Server-side authorization remains the real gate — the UI lock is
- * a hint only (PROJECT.md §6.1).
- *
- * Accepts an optional already-resolved plan (e.g. from a future entitlement
- * fetch) and validates it; anything unrecognized degrades to `'basic'`.
- *
- * TODO: read plan from /entitlements — call the entitlement service here and map
- * its `Plan` onto this literal.
+ * Defensive plan validation. Narrows an already-resolved plan (from the shared
+ * `getViewerPlan` server read) to this surface's literal; anything unrecognized
+ * degrades to the most restrictive plan, so the UI never *grants* access it
+ * cannot prove. The server-side gate is authoritative — the UI lock is a hint
+ * only (PROJECT.md §6.1).
  */
 export function resolvePlan(candidate?: string | null): Plan {
   if (candidate === 'pro' || candidate === 'elite') return candidate;

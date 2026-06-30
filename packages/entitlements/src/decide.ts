@@ -3,7 +3,7 @@ import {
   DATA_PRESERVING_FEATURES,
   PLAN_FEATURES,
   TIER_FEATURE_KEY,
-} from './matrix.js';
+} from './matrix';
 import type {
   CourseTier,
   Decision,
@@ -13,7 +13,7 @@ import type {
   Plan,
   SubscriptionStatus,
   WebinarAccess,
-} from './types.js';
+} from './types';
 
 /**
  * Pure entitlement decision logic. Every function here is total (defined for

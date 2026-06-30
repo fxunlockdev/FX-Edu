@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
+import { getViewerPlan } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../_components/SignOutButton';
 import {
   STRATEGIES,
@@ -33,16 +34,15 @@ function firstParam(v: string | string[] | undefined): string | undefined {
  * signed-in user. The category filter lives in the URL (`?category=`), so the
  * filtered view is shareable and the data stays server-rendered.
  *
- * Plan is derived defensively and defaults to Basic — the UI lock is a hint
- * only; the real entitlement gate is server-side (PROJECT.md §6.1).
- * TODO: read plan from /entitlements — feed the resolved plan into resolvePlan().
+ * Plan is read server-side from the shared entitlements helper and defaults
+ * defensively to Basic — the server-side gate is authoritative; the UI lock is a
+ * hint only (PROJECT.md §6.1).
  */
 export default async function StrategiesPage({ searchParams }: StrategiesPageProps) {
   const params = await searchParams;
   const activeCategory = resolveCategory(firstParam(params.category));
 
-  // TODO: read plan from /entitlements — until then resolvePlan() defaults Basic.
-  const plan: Plan = resolvePlan();
+  const plan: Plan = resolvePlan(await getViewerPlan());
 
   const visible = filterByCategory(STRATEGIES, activeCategory);
 

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
 import { createClient } from '@/lib/supabase/server';
+import { getViewerPlan, isPro } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../_components/SignOutButton';
 import { TRADE_SELECT_COLUMNS, type TradeRow } from '../journal/trade-fields';
 import { analyze } from './_components/analytics';
@@ -43,30 +44,15 @@ const RANGE_LABEL: Record<string, string> = {
 };
 
 /**
- * Derive the caller's plan. There is no subscription/entitlement data wired at
- * runtime yet, so we defensively treat everyone as Basic and show the locked
- * "Upgrade to Pro" state. Returns `boolean` (not a literal) so the Pro branch
- * below is real, type-reachable code that compiles unchanged once the flag is
- * fed by the entitlements API.
- *
- * @param _userId reserved — the entitlements lookup will key on it.
- */
-function derivePlanIsPro(_userId: string | undefined): boolean {
-  // TODO: read plan from /entitlements once the API is runtime-wired
-  return false;
-}
-
-/**
  * Performance Analytics (RSC) — Pro-gated, PROJECT.md §9 module 6 / §8.9.
  *
  * Auth is already guaranteed by the `(member)` layout. The entitlement (plan)
- * gate is enforced HERE, server-side, before any trade query runs — UI locks
- * are only hints (§6.1).
+ * gate is enforced HERE, server-side, before any trade query runs — the
+ * server-side gate is authoritative; the UI lock is only a hint (§6.1).
  *
- * Plan derivation is defensive: there is no subscription data wired yet, so we
- * treat the caller as Basic and render the designed "Upgrade to Pro" locked
- * state. When the entitlements API is runtime-wired this single flag flips.
- * // TODO: read plan from /entitlements once the API is runtime-wired
+ * Plan is read from the shared, RLS-scoped entitlements helper and defaults
+ * defensively to Basic (so the designed "Upgrade to Pro" locked state renders
+ * whenever access cannot be proven).
  *
  * Pro path: read the caller's trades through the RLS-scoped server client (a
  * user only ever sees their own rows), exclude open/draft trades unless the
@@ -85,10 +71,10 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
     data: { user },
   } = await supabase.auth.getUser();
 
-  // ── Entitlement gate (server-side). Defaults to Basic until wired. ──────
-  const isPro = derivePlanIsPro(user?.id);
+  // ── Entitlement gate (server-side; authoritative). Defaults to Basic. ──────
+  const pro = isPro(await getViewerPlan());
 
-  if (!isPro) {
+  if (!pro) {
     return (
       <Shell isPro={false}>
         <div className="ana-head">

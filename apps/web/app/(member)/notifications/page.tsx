@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Logo, Badge } from '@fxunlock/ui';
 import { createClient } from '@/lib/supabase/server';
+import { getViewerPlan, isPro } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../_components/SignOutButton';
 import { NotificationItem } from './_components/NotificationItem';
 import { MarkAllReadButton } from './_components/MarkAllReadButton';
@@ -28,15 +29,6 @@ function firstParam(v: string | string[] | undefined): string {
 }
 
 /**
- * Derive plan for the header badge. No entitlements wired yet → default Basic
- * (the badge is only a hint; the inbox itself is not plan-gated).
- * // TODO: read plan from /entitlements once the API is runtime-wired.
- */
-function derivePlanIsPro(_userId: string | undefined): boolean {
-  return false;
-}
-
-/**
  * Notification inbox (RSC) — PROJECT.md §9 module 17 / §8.16. The `(member)`
  * layout has already enforced the auth gate.
  *
@@ -58,7 +50,9 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isPro = derivePlanIsPro(user?.id);
+  // Badge-only hint; the inbox is not plan-gated. The server-side gate is
+  // authoritative; the UI lock is a hint.
+  const pro = isPro(await getViewerPlan());
 
   let rows: NotificationRow[] = [];
   let tableMissing = false;
@@ -89,7 +83,7 @@ export default async function NotificationsPage({ searchParams }: NotificationsP
           <Logo variant="dark" size={26} />
         </a>
         <div className="row gap2" style={{ alignItems: 'center' }}>
-          <Badge tone={isPro ? 'lime-dark' : 'outline'}>{isPro ? 'Pro' : 'Basic'}</Badge>
+          <Badge tone={pro ? 'lime-dark' : 'outline'}>{pro ? 'Pro' : 'Basic'}</Badge>
           <SignOutButton />
         </div>
       </header>

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { canAccessFeature, resolveEntitlements } from './decide.js';
-import { ALL_FEATURE_KEYS, DATA_PRESERVING_FEATURES } from './matrix.js';
-import type { EntitlementContext, FeatureKey, SubscriptionStatus } from './types.js';
+import { canAccessFeature, resolveEntitlements } from './decide';
+import { ALL_FEATURE_KEYS, DATA_PRESERVING_FEATURES } from './matrix';
+import type { EntitlementContext, FeatureKey, SubscriptionStatus } from './types';
 
 const ctx = (over: Partial<EntitlementContext> & Pick<EntitlementContext, 'featureKey'>): EntitlementContext => ({
   plan: 'pro',

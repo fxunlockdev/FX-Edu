@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { canAccessCourseTier } from './decide.js';
+import { canAccessCourseTier } from './decide';
 import type {
   CourseTier,
   Decision,
@@ -7,7 +7,7 @@ import type {
   MediaTokenState,
   Plan,
   SubscriptionStatus,
-} from './types.js';
+} from './types';
 
 const tierCtx = (
   plan: Plan,

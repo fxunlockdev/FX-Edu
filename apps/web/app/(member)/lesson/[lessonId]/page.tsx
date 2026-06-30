@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
 import { createClient } from '@/lib/supabase/server';
+import { getViewerPlan } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../../_components/SignOutButton';
 import {
   allLessonIds,
-  derivePlan,
   isPro,
   locateLesson,
   nextLesson,
@@ -39,9 +39,10 @@ const LESSON_XP = 50;
  * Lesson Player page (RSC shell — M3 / PROJECT.md §8.4). The `(member)` layout
  * guarantees a session. This shell:
  *  1. resolves the lesson from the static catalogue (404s on unknown ids),
- *  2. derives plan defensively (Basic by default) and applies the course gate
- *     server-side — a Basic member on a Pro course sees the upgrade prompt, never
- *     the player (UI locks are hints; the server is the real gate, §6.1),
+ *  2. reads plan from the shared entitlements helper (Basic by default) and
+ *     applies the course gate server-side — a Basic member on a Pro course sees
+ *     the upgrade prompt, never the player. The server-side gate is
+ *     authoritative; the UI lock is a hint (§6.1),
  *  3. reads the user's resume position + completion through the RLS-scoped client
  *     (degrades to "start from 0" if `lesson_progress` is not deployed),
  *  4. hands all of that to the interactive `LessonPlayer` client leaf.
@@ -61,7 +62,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const plan = derivePlan(user?.id);
+  const plan = await getViewerPlan();
   const proCourse = course.access === 'pro';
   const locked = proCourse && !isPro(plan) && !lesson.preview;
 

@@ -1,6 +1,5 @@
 export { TutorChat } from './TutorChat';
 export { TutorLock } from './TutorLock';
-export { derivePlan, type Plan } from './plan';
 export {
   TUTOR_MODES,
   SUGGESTED_PROMPTS,

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
 import { createClient } from '@/lib/supabase/server';
+import { getViewerPlan, isPro } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../_components/SignOutButton';
 import { TRADE_SELECT_COLUMNS, type TradeRow } from '../journal/trade-fields';
 import {
@@ -22,25 +23,12 @@ export const metadata: Metadata = {
 };
 
 /**
- * Derive whether the caller is on the Pro plan. No subscription/entitlement
- * data is wired at runtime yet, so we DEFENSIVELY default everyone to Basic and
- * render the designed "Upgrade to Pro" locked state. Returning a real `boolean`
- * (not a literal) keeps the Pro branch type-reachable so it compiles unchanged
- * once the flag is fed by the entitlements API.
- *
- * @param _userId reserved — the entitlements lookup will key on it.
- */
-function derivePlanIsPro(_userId: string | undefined): boolean {
-  // TODO: read plan from /entitlements once the API is runtime-wired
-  return false;
-}
-
-/**
  * Prop Firm Prep (RSC) — Pro-gated, PROJECT.md §8.13 / §9 module 13.
  *
  * Auth is already guaranteed by the `(member)` layout. The entitlement (plan)
- * gate is enforced HERE, server-side, before any trade query runs — UI locks
- * are only hints (§6.1). Plan derivation is defensive (Basic until wired).
+ * gate is enforced HERE, server-side, before any trade query runs — the
+ * server-side gate is authoritative; the UI lock is only a hint (§6.1). Plan is
+ * read from the shared entitlements helper and defaults defensively to Basic.
  *
  * Pro path: read the caller's trades through the RLS-scoped server client (a
  * user only ever sees their own rows), compute a pure readiness read and derive
@@ -58,10 +46,10 @@ export default async function PropFirmPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // ── Entitlement gate (server-side). Defaults to Basic until wired. ──────
-  const isPro = derivePlanIsPro(user?.id);
+  // ── Entitlement gate (server-side; authoritative). Defaults to Basic. ──────
+  const pro = isPro(await getViewerPlan());
 
-  if (!isPro) {
+  if (!pro) {
     return (
       <Shell isPro={false}>
         <div className="pf-head">

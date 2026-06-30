@@ -1,5 +1,5 @@
 import { Badge } from '@fxunlock/ui';
-import type { Plan } from './plan';
+import type { Plan } from '@/lib/entitlements/plan';
 
 /**
  * Dashboard welcome banner (M18 / §18) — the dark hero strip with the plan
@@ -19,7 +19,8 @@ interface WelcomeBannerProps {
 }
 
 export function WelcomeBanner({ plan, greeting, name, isNewUser }: WelcomeBannerProps) {
-  const isPro = plan === 'pro';
+  // Pro surfaces unlock for Pro OR Elite; only Basic shows the upgrade CTA.
+  const isPro = plan !== 'basic';
 
   return (
     <section className="mod dash-welcome col-12" aria-labelledby="dash-greeting">

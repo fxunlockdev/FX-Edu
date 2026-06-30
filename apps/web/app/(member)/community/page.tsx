@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
 import { createClient } from '@/lib/supabase/server';
+import { getViewerPlan, isPro } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../_components/SignOutButton';
 import {
   ChannelRail,
@@ -29,20 +30,6 @@ interface CommunityPageProps {
 function firstParam(v: string | string[] | undefined): string | undefined {
   if (Array.isArray(v)) return v[0];
   return v;
-}
-
-/**
- * Derive whether the caller is on Pro. There is no subscription/entitlement data
- * wired at runtime yet, so we DEFENSIVELY default everyone to Basic and render the
- * locked "Upgrade to Pro" state. Returns `boolean` (not a literal) so the Pro
- * branch below is real, type-reachable code that compiles unchanged once the flag
- * is fed by the entitlements API (PROJECT.md §6.1–6.2, §12 🔒).
- *
- * @param _userId reserved — the entitlements lookup will key on it.
- */
-function derivePlanIsPro(_userId: string | undefined): boolean {
-  // TODO: read plan from /entitlements once the API is runtime-wired
-  return false;
 }
 
 /** Shape of a `community_posts` row the feed reads (RLS-scoped). */
@@ -94,10 +81,10 @@ function rowToPost(row: CommunityPostRow): CommunityPost {
  * Community & Pods (RSC) — PROJECT.md §12 module 12 / §8.11.
  *
  * Auth is already guaranteed by the `(member)` layout. The entitlement (plan)
- * gate is enforced HERE, server-side, before any community read runs — UI locks
- * are only hints (§6.1, §12 🔒 "Basic can't read via direct URL — RLS +
- * entitlement"). Plan derivation is defensive: everyone is Basic until the
- * entitlements API is wired, so this single flag flips later.
+ * gate is enforced HERE, server-side, before any community read runs — the
+ * server-side gate is authoritative; the UI lock is only a hint (§6.1, §12 🔒
+ * "Basic can't read via direct URL — RLS + entitlement"). Plan is read from the
+ * shared entitlements helper and defaults defensively to Basic.
  *
  * Pro path: the active channel is URL state (`?channel=`). We read that channel's
  * posts through the RLS-scoped server client and DEGRADE GRACEFULLY to the seed
@@ -114,12 +101,12 @@ export default async function CommunityPage({ searchParams }: CommunityPageProps
     data: { user },
   } = await supabase.auth.getUser();
 
-  // ── Entitlement gate (server-side). Defaults to Basic until wired. ──────
-  const isPro = derivePlanIsPro(user?.id);
+  // ── Entitlement gate (server-side; authoritative). Defaults to Basic. ──────
+  const pro = isPro(await getViewerPlan());
   const email = user?.email ?? null;
   const authorName = email ? (email.split('@')[0] ?? 'You') : 'You';
 
-  if (!isPro) {
+  if (!pro) {
     return (
       <Shell isPro={false}>
         <div className="cm-head">

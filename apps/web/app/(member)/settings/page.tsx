@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
 import { createClient } from '@/lib/supabase/server';
+import { getViewerPlan, isPro } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../_components/SignOutButton';
 import { SettingsView } from './_components/SettingsView';
 import { prefsFromRow, type NotificationPrefs } from './settings-fields';
@@ -19,16 +20,6 @@ interface ProfileRow {
   risk_profile: string | null;
   default_session: string | null;
   risk_comfort: string | null;
-}
-
-/**
- * Resolve the caller's plan. No subscription/entitlement data is runtime-wired
- * yet, so we default to Basic and show the Basic badge — the badge is only a
- * hint; nothing on this page is plan-gated (§6.1).
- * // TODO: read plan from /entitlements once the API is runtime-wired.
- */
-function derivePlanIsPro(_userId: string | undefined): boolean {
-  return false;
 }
 
 /**
@@ -52,7 +43,9 @@ export default async function SettingsPage() {
   } = await supabase.auth.getUser();
 
   const email = user?.email ?? '';
-  const isPro = derivePlanIsPro(user?.id);
+  // Badge-only hint here; nothing on this page is plan-gated (§6.1). The
+  // server-side gate is authoritative; the UI lock is a hint.
+  const pro = isPro(await getViewerPlan());
 
   let profile: ProfileRow | null = null;
   let prefs: NotificationPrefs = prefsFromRow(null);
@@ -88,7 +81,7 @@ export default async function SettingsPage() {
           <Logo variant="dark" size={26} />
         </a>
         <div className="row gap2" style={{ alignItems: 'center' }}>
-          <Badge tone={isPro ? 'lime-dark' : 'outline'}>{isPro ? 'Pro' : 'Basic'}</Badge>
+          <Badge tone={pro ? 'lime-dark' : 'outline'}>{pro ? 'Pro' : 'Basic'}</Badge>
           <SignOutButton />
         </div>
       </header>

@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
 import { createClient } from '@/lib/supabase/server';
+import { getViewerPlan, isPro, type Plan } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../_components/SignOutButton';
 import { summarize, type JournalSummary } from '../journal/journal-stats';
 import { TRADE_SELECT_COLUMNS, type TradeRow } from '../journal/trade-fields';
-import { derivePlan, type Plan } from './_components/plan';
 import {
   deriveDashboard,
   greetingName,
@@ -48,8 +48,9 @@ interface ProfileReadRow {
  * Member Dashboard (M18 / PROJECT.md §18) — the personalized authenticated home.
  *
  * Auth is already guaranteed by the `(member)` layout. Here we:
- *  1. Derive the caller's plan DEFENSIVELY (defaults Basic; UI locks are hints,
- *     the real entitlement gate lands with the entitlements API — §6.1/§6.2).
+ *  1. Read the caller's plan from the shared entitlements helper. It defaults
+ *     DEFENSIVELY to Basic; the server-side gate is authoritative — the UI lock
+ *     is a hint (§6.1/§6.2).
  *  2. Read the caller's profile + a trade slice through the RLS-scoped server
  *     client (a user only ever sees their own rows). Both reads DEGRADE
  *     GRACEFULLY: if `profiles`/`trades` aren't deployed yet we fall back to the
@@ -68,7 +69,7 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const plan: Plan = derivePlan(user?.id);
+  const plan: Plan = await getViewerPlan();
   const email = user?.email ?? null;
 
   // ── RLS-scoped reads (defensive: never throw on undeployed tables) ────────
@@ -103,7 +104,7 @@ export default async function DashboardPage() {
   // No name column on the onboarding profile row — greet from the email local-part.
   const name = greetingName(null, email);
   const greeting = timeGreeting();
-  const isPro = plan === 'pro';
+  const pro = isPro(plan);
 
   return (
     <div className="dash">
@@ -112,7 +113,7 @@ export default async function DashboardPage() {
           <Logo variant="dark" size={26} />
         </a>
         <div className="row gap2" style={{ alignItems: 'center' }}>
-          <Badge tone={isPro ? 'lime-dark' : 'outline'}>{isPro ? 'Pro' : 'Basic'}</Badge>
+          <Badge tone={pro ? 'lime-dark' : 'outline'}>{pro ? 'Pro' : 'Basic'}</Badge>
           <SignOutButton />
         </div>
       </header>
@@ -132,7 +133,7 @@ export default async function DashboardPage() {
               <FirstCourseCard />
               <LivePrices />
               <MarketNewsCard />
-              <AiTutorCard locked={!isPro} />
+              <AiTutorCard locked={!pro} />
             </>
           ) : (
             // Returning-member full dashboard bento.
@@ -143,13 +144,13 @@ export default async function DashboardPage() {
               <MarketNewsCard />
               <JournalSnapshotCard summary={summary} />
               <RiskCalculatorCard accountSize={profile?.account_size ?? null} />
-              {isPro ? (
+              {pro ? (
                 <PerformanceInsightCard summary={summary} />
               ) : (
                 <WebinarCard locked={false} />
               )}
-              <AiTutorCard locked={!isPro} />
-              <CommunityPodCard locked={!isPro} />
+              <AiTutorCard locked={!pro} />
+              <CommunityPodCard locked={!pro} />
             </>
           )}
         </div>

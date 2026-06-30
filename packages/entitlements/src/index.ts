@@ -10,14 +10,14 @@ export {
   canAccessFeature,
   isSubscriptionActive,
   resolveEntitlements,
-} from './decide.js';
+} from './decide';
 
 export {
   ALL_FEATURE_KEYS,
   DATA_PRESERVING_FEATURES,
   PLAN_FEATURES,
   TIER_FEATURE_KEY,
-} from './matrix.js';
+} from './matrix';
 
 export type {
   CourseTier,
@@ -29,4 +29,4 @@ export type {
   Plan,
   SubscriptionStatus,
   WebinarAccess,
-} from './types.js';
+} from './types';

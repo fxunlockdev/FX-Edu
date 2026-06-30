@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
+import { getViewerPlan } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../../_components/SignOutButton';
 import {
   PlaybookContent,
@@ -38,17 +39,16 @@ export async function generateMetadata({ params }: DetailPageProps): Promise<Met
  * accessible playbooks. A Pro-gated playbook viewed on a Basic plan renders a
  * blurred preview plus an upgrade prompt instead of the body.
  *
- * Plan is derived defensively (defaults Basic) — the UI lock is a hint; the real
- * gate is server-side (PROJECT.md §6.1).
- * TODO: read plan from /entitlements — feed the resolved plan into resolvePlan().
+ * Plan is read server-side from the shared entitlements helper and defaults
+ * defensively to Basic — the server-side gate is authoritative; the UI lock is a
+ * hint (PROJECT.md §6.1).
  */
 export default async function StrategyDetailPage({ params }: DetailPageProps) {
   const { slug } = await params;
   const strategy = getStrategyBySlug(slug);
   if (!strategy) notFound();
 
-  // TODO: read plan from /entitlements — until then resolvePlan() defaults Basic.
-  const plan: Plan = resolvePlan();
+  const plan: Plan = resolvePlan(await getViewerPlan());
   const locked = isLocked(strategy, plan);
 
   return (

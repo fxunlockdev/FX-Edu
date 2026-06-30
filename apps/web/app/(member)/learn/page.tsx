@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
 import { createClient } from '@/lib/supabase/server';
+import { getViewerPlan } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../_components/SignOutButton';
 import {
   CourseCard,
@@ -8,7 +9,6 @@ import {
   UpgradeModal,
   applyFilters,
   buildCardModels,
-  derivePlan,
   isPro,
   readProgress,
   resolveDifficulty,
@@ -41,10 +41,10 @@ function firstParam(v: string | string[] | undefined): string | undefined {
  * lives in the URL, so the filtered grid is shareable and server-rendered with no
  * client data fetching. The interactive controls are an isolated client leaf.
  *
- * Plan is derived defensively and defaults to Basic — the course lock is a UI hint
- * only; the real entitlement gate is server-side (§6.1, §8.4). Progress is read
- * through the RLS-scoped client and degrades to "not started" if the
- * `lesson_progress` table is not deployed yet.
+ * Plan is read server-side from the shared entitlements helper and defaults
+ * defensively to Basic — the course lock is a UI hint only; the server-side gate
+ * is authoritative (§6.1, §8.4). Progress is read through the RLS-scoped client
+ * and degrades to "not started" if the `lesson_progress` table is not deployed yet.
  */
 export default async function LearnPage({ searchParams }: LearnPageProps) {
   const params = await searchParams;
@@ -62,8 +62,8 @@ export default async function LearnPage({ searchParams }: LearnPageProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Entitlement (hint) + progress are derived server-side. Both default safely.
-  const plan = derivePlan(user?.id);
+  // Entitlement + progress are read server-side. Both default safely.
+  const plan = await getViewerPlan();
   const progressById = await readProgress(supabase);
 
   const models = buildCardModels(isPro(plan), progressById);

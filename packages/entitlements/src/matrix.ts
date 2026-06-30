@@ -1,4 +1,4 @@
-import type { CourseTier, FeatureKey, Plan } from './types.js';
+import type { CourseTier, FeatureKey, Plan } from './types';
 
 /**
  * The plan → feature entitlement matrix, encoded verbatim from PRD §5.

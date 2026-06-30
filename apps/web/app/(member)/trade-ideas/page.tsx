@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
+import { getViewerPlan } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../_components/SignOutButton';
 import {
   TRADE_IDEAS,
@@ -36,11 +37,11 @@ interface TradeIdeasPageProps {
  * AND a per-idea disclaimer make this explicit; `bias` is presented as a view,
  * never a buy/sell directive.
  *
- * Entitlement: the feature is Pro-gated. Plan is derived DEFENSIVELY and defaults
- * to Basic (the UI lock is a hint only — the real entitlement gate is server-side,
- * §6.1). A Basic member sees the designed {@link UpgradeGate} and NO idea content
- * is rendered for them, so locked content cannot leak.
- * TODO: read plan from /entitlements — feed the resolved plan into resolvePlan().
+ * Entitlement: the feature is Pro-gated. Plan is read server-side from the
+ * shared entitlements helper and defaults DEFENSIVELY to Basic (the server-side
+ * gate is authoritative — the UI lock is a hint only, §6.1). A Basic member sees
+ * the designed {@link UpgradeGate} and NO idea content is rendered for them, so
+ * locked content cannot leak.
  *
  * Filters live in the URL (`?instrument=&timeframe=&educator=&tag=`) so the
  * filtered feed is shareable and the data stays server-rendered. Market news and
@@ -49,8 +50,7 @@ interface TradeIdeasPageProps {
 export default async function TradeIdeasPage({ searchParams }: TradeIdeasPageProps) {
   const params = await searchParams;
 
-  // TODO: read plan from /entitlements — until then resolvePlan() defaults Basic.
-  const plan: Plan = resolvePlan();
+  const plan: Plan = resolvePlan(await getViewerPlan());
   const locked = isLocked(plan);
 
   const facets = deriveFacets(TRADE_IDEAS);

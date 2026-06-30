@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { isSubscriptionActive } from './decide.js';
-import type { SubscriptionStatus } from './types.js';
+import { isSubscriptionActive } from './decide';
+import type { SubscriptionStatus } from './types';
 
 describe('isSubscriptionActive', () => {
   it('treats active and trialing as active', () => {

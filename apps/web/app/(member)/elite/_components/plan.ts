@@ -1,16 +1,17 @@
 /**
- * Elite-tier (entitlement) derivation for Elite Cohort & Coaching (M21 /
- * PROJECT.md §9 module 21, §6.1–6.2). Elite is the high-touch tier — and per the
- * pricing (§5: "Elite from $147 waitlist") it is COMING SOON: there is no Elite
- * billing or entitlement data wired at runtime yet.
+ * Elite-tier (entitlement) access for Elite Cohort & Coaching (M21 /
+ * PROJECT.md §9 module 21, §6.1–6.2).
  *
- * So we DEFENSIVELY default every caller to not-Elite and render the designed
- * "coming soon / join the waitlist" surface instead of any Elite content. The UI
- * lock is only a hint — the real server-side entitlement gate lands with the
- * entitlements API (§6.2). `deriveEliteAccess` returns an {@link EliteAccess}
- * value (not a literal) so the Elite branch stays real, type-reachable code that
- * compiles unchanged once the flag is fed by the entitlements API.
+ * The viewer's plan is read server-side from the shared entitlements helper
+ * (`@/lib/entitlements/plan` `getViewerPlan`) and Elite access is decided with
+ * its pure `isElite` predicate. Per the pricing (§5: "Elite from $147 waitlist")
+ * Elite is COMING SOON, so in practice this resolves to not-Elite until Elite
+ * billing/entitlement rows exist — and any failure defaults DEFENSIVELY to
+ * not-Elite so the "join the waitlist" surface renders instead of Elite content.
+ *
+ * The server-side gate is authoritative; the UI lock is only a hint (§6.1).
  */
+import { getViewerPlan, isElite, type Plan } from '@/lib/entitlements/plan';
 
 export type EliteTier = 'none' | 'pro' | 'elite';
 
@@ -21,15 +22,19 @@ export interface EliteAccess {
   readonly tier: EliteTier;
 }
 
+/** Map a resolved {@link Plan} onto the Elite tier shown in waitlist copy. */
+function tierFromPlan(plan: Plan): EliteTier {
+  if (plan === 'elite') return 'elite';
+  if (plan === 'pro') return 'pro';
+  return 'none';
+}
+
 /**
- * Resolve the caller's Elite access. Elite is not yet sellable (waitlist /
- * coming-soon), so this defaults to not-Elite until the entitlements API is
- * runtime-wired.
- *
- * @param _userId reserved — the entitlements lookup will key on it.
+ * Resolve the caller's Elite access from their server-read plan. Defaults
+ * DEFENSIVELY to not-Elite (the shared helper returns Basic on any error), so a
+ * caller whose Elite entitlement cannot be proven sees the waitlist gate.
  */
-export function deriveEliteAccess(_userId: string | undefined): EliteAccess {
-  // TODO: read plan from /entitlements once the API is runtime-wired.
-  // When Elite ships, an entitled caller resolves to { isElite: true, tier: 'elite' }.
-  return { isElite: false, tier: 'none' };
+export async function deriveEliteAccess(): Promise<EliteAccess> {
+  const plan = await getViewerPlan();
+  return { isElite: isElite(plan), tier: tierFromPlan(plan) };
 }

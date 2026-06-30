@@ -15,6 +15,7 @@
     "e2e": "playwright test"
   },
   "dependencies": {
+    "@fxunlock/entitlements": "workspace:*",
     "@fxunlock/trading": "workspace:*",
     "@fxunlock/ui": "workspace:*",
     "@supabase/ssr": "^0.5.2",

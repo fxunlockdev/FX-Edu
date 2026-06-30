@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
-import { createClient } from '@/lib/supabase/server';
 import { SignOutButton } from '../_components/SignOutButton';
 import {
   deriveEliteAccess,
@@ -25,12 +24,12 @@ export const metadata: Metadata = {
  * signed-in user.
  *
  * Entitlement gate (server-side, §6.1 "UI locks are hints; the server decides"):
- * Elite access is derived DEFENSIVELY via {@link deriveEliteAccess}. Elite is not
+ * Elite access is read from the shared entitlements helper via
+ * {@link deriveEliteAccess} and defaults DEFENSIVELY to not-Elite. Elite is not
  * yet sellable — per the pricing it is "from $147/mo" on a waitlist (§5) — so the
  * default is not-Elite. A non-Elite caller gets the designed {@link WaitlistGate}
  * and NONE of the Elite sections are rendered, so coaching calls, the Q&A
  * library, and early-access content cannot leak.
- * TODO: read plan from /entitlements — feed the resolved access in here.
  *
  * Stubs: the coaching "Join call" button is non-functional (two-way small-group
  * video via LiveKit Cloud / Amazon Chime SDK is not wired — no SDK/dep added),
@@ -38,13 +37,9 @@ export const metadata: Metadata = {
  * coming soon. Copy is education-only — no profit/guarantee language (§6.7).
  */
 export default async function ElitePage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // ── Entitlement gate (server-side). Defaults to not-Elite until wired. ──────
-  const access: EliteAccess = deriveEliteAccess(user?.id);
+  // ── Entitlement gate (server-side; authoritative). Defaults to not-Elite. ──
+  // The shared helper does its own RLS-scoped auth + subscription read.
+  const access: EliteAccess = await deriveEliteAccess();
 
   if (!access.isElite) {
     return (

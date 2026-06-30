@@ -4,9 +4,9 @@ import {
   DATA_PRESERVING_FEATURES,
   PLAN_FEATURES,
   TIER_FEATURE_KEY,
-} from './matrix.js';
-import { resolveEntitlements } from './decide.js';
-import type { Decision, FeatureKey, Plan } from './types.js';
+} from './matrix';
+import { resolveEntitlements } from './decide';
+import type { Decision, FeatureKey, Plan } from './types';
 
 /**
  * Expected entitlement decisions for an ACTIVE subscription, per PRD §5.

@@ -49,5 +49,5 @@ export {
 } from './lesson-progress';
 export type { LessonProgress, MarkCompleteResult } from './lesson-progress';
 
-export { derivePlan, isPro } from './plan';
+export { isPro } from './plan';
 export type { Plan } from './plan';

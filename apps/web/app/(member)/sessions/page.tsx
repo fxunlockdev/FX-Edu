@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Logo, Badge, Disclaimer } from '@fxunlock/ui';
 import { createClient } from '@/lib/supabase/server';
+import { getViewerPlan } from '@/lib/entitlements/plan';
 import { SignOutButton } from '../_components/SignOutButton';
 import {
   NextLiveHero,
@@ -42,11 +43,10 @@ function firstParam(v: string | string[] | undefined): string | undefined {
  *
  * Auth is already guaranteed by the `(member)` layout. On top of that:
  *
- *  1. PLAN is derived DEFENSIVELY and defaults to Basic (`resolvePlan()` with no
- *     argument). The UI lock is a hint only; the authoritative entitlement gate
- *     is server-side — `GET /webinars/:id/join-token` re-checks before minting a
+ *  1. PLAN is read server-side from the shared entitlements helper and defaults
+ *     DEFENSIVELY to Basic. The server-side gate is authoritative; the UI lock is
+ *     a hint only — `GET /webinars/:id/join-token` re-checks before minting a
  *     signed Mux playback token (§6.1, §8.6 🔒).
- *     // TODO: read plan from /entitlements once the API is runtime-wired.
  *
  *  2. SESSION/REPLAY data is read through the RLS-scoped server client when the
  *     `webinars` / `webinar_recordings` tables are deployed, and DEGRADES
@@ -69,9 +69,8 @@ export default async function SessionsPage({ searchParams }: SessionsPageProps) 
     data: { user },
   } = await supabase.auth.getUser();
 
-  // ── Entitlement (server-side, defensive). Defaults Basic until wired. ──────
-  // TODO: read plan from /entitlements — feed the resolved plan into resolvePlan().
-  const plan: Plan = resolvePlan();
+  // ── Entitlement (server-side; authoritative). Defaults Basic defensively. ──
+  const plan: Plan = resolvePlan(await getViewerPlan());
   const isPro = plan !== 'basic';
 
   // ── Data: RLS read when deployed, else degrade to the typed seed. ──────────

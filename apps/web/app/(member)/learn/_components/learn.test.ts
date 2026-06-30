@@ -21,7 +21,7 @@ import {
   type LibraryState,
 } from './library-filters';
 import { courseProgressPercent, type LessonProgress } from './lesson-progress';
-import { derivePlan, isPro } from './plan';
+import { isPro } from './plan';
 
 /**
  * Learning Paths pure-logic tests (M3 / PROJECT.md §8.4). Deterministic, no I/O.
@@ -109,11 +109,11 @@ describe('lesson navigation', () => {
   });
 });
 
-describe('plan derivation — defensive default', () => {
-  it('defaults to basic when no user id is provided', () => {
-    expect(derivePlan(undefined)).toBe('basic');
-    expect(derivePlan('user-123')).toBe('basic');
-    expect(isPro(derivePlan('user-123'))).toBe(false);
+describe('isPro — Pro check (hint)', () => {
+  it('treats Basic as not Pro and Pro/Elite as Pro', () => {
+    expect(isPro('basic')).toBe(false);
+    expect(isPro('pro')).toBe(true);
+    expect(isPro('elite')).toBe(true);
   });
 });
 

@@ -55,7 +55,7 @@ const nextConfig = {
   poweredByHeader: false,
   // @fxunlock/ui and @fxunlock/trading ship TypeScript source; let Next transpile
   // them in the app build (no separate compile step in the workspace packages).
-  transpilePackages: ['@fxunlock/ui', '@fxunlock/trading'],
+  transpilePackages: ['@fxunlock/ui', '@fxunlock/trading', '@fxunlock/entitlements'],
   // Linting runs as its own workspace task (`pnpm lint`), not inside the
   // production build, so a missing/locked ESLint config never blocks builds.
   eslint: {
